@@ -26,20 +26,13 @@
 
 	<context:component-scan base-package="com.firrael.spring" />
 
-	<beans:bean name="xmlParser" class="com.firrael.spring.xml.XmlParser">
-		<beans:property name="marshaller" ref="xstreamMarshaller"></beans:property>
-		<beans:property name="unmarshaller" ref="xstreamMarshaller"></beans:property>
+	<beans:bean id="XmlConverter" class="com.firrael.spring.xml.XmlConverter">
+		<beans:property name="marshaller" ref="castorMarshaller" />
+		<beans:property name="unmarshaller" ref="castorMarshaller" />
 	</beans:bean>
-	<beans:bean id="xstreamMarshaller"
-		class="org.springframework.oxm.xstream.XStreamMarshaller">
-		<beans:property name="supportedClasses">
-			<beans:list>
-				<beans:value>com.firrael.spring.xml.Rss</beans:value>
-				<beans:value>com.firrael.spring.xml.Channel</beans:value>
-				<beans:value>com.firrael.spring.xml.Article</beans:value>
-				<beans:value>java.lang.String</beans:value>
-			</beans:list>
-		</beans:property>
+	<beans:bean id="castorMarshaller"
+		class="org.springframework.oxm.castor.CastorMarshaller">
+		<beans:property name="mappingLocation" value="classpath:mapping.xml" />
 	</beans:bean>
 
 
