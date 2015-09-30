@@ -26,14 +26,4 @@
 
 	<context:component-scan base-package="com.firrael.spring" />
 
-	<beans:bean id="XmlConverter" class="com.firrael.spring.xml.XmlConverter">
-		<beans:property name="marshaller" ref="castorMarshaller" />
-		<beans:property name="unmarshaller" ref="castorMarshaller" />
-	</beans:bean>
-	<beans:bean id="castorMarshaller"
-		class="org.springframework.oxm.castor.CastorMarshaller">
-		<beans:property name="mappingLocation" value="classpath:mapping.xml" />
-	</beans:bean>
-
-
 </beans:beans>
