@@ -71,4 +71,15 @@ public class Article {
 	public String toString() {
 		return author + category + pubDate + description + link;
 	}
+	
+	public Article clone() {
+		Article article = new Article();
+		article.setAuthor(getAuthor());
+		article.setCategory(getCategory());
+		article.setDescription(getDescription());
+		article.setLink(getLink());
+		article.setPubDate(getPubDate());
+		article.setTitle(getTitle());
+		return article;
+	}
 }

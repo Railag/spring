@@ -76,7 +76,9 @@ public class ArticleHandler extends DefaultHandler2 {
 	}
 	
 	public Article getArticle() {
-		return currentArticle;
+		Article article = currentArticle.clone();
+		currentArticle = new Article();
+		return article;
 	}
 
 }
