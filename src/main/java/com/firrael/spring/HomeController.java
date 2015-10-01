@@ -1,6 +1,7 @@
 package com.firrael.spring;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.firrael.spring.xml.Article;
@@ -32,8 +34,9 @@ import com.firrael.spring.xml.Rss;
 public class HomeController {
 
 	private final static String HABR_HOST = "http://habrahabr.ru/rss";
-
-	private static final String XML_FILE_NAME = "rss.xml";
+	private final static String GEEKTIMES_HOST = "http://geektimes.ru/rss";
+	private final static String MEGAMOZG_HOST = "http://megamozg.ru/rss";
+	
 
 	@Autowired
 	private ApplicationContext context;
@@ -52,27 +55,26 @@ public class HomeController {
 //
 //		String formattedDate = dateFormat.format(date);
 //
-//		RestTemplate template = new RestTemplate();
-//		//template.setMessageConverters(getMessageConverters());
-//		Rss rss = null;
-//		ResponseEntity<?> response = null;
-//		try {
-//			response = template.getForEntity(HABR_HOST, String.class);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		RestTemplate template = new RestTemplate();
+
+		ResponseEntity<?> response = null;
+		try {
+			response = template.getForEntity(HABR_HOST, String.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
-		//logger.info(response);
 		List<Article> articles = null;
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		try {
 			SAXParser saxParser = factory.newSAXParser();
 			HabrHandler handler = new HabrHandler();
-			saxParser.parse(HABR_HOST, handler);
+			saxParser.parse(new InputSource(new StringReader(response.getBody().toString())), handler);
 			articles = handler.getArticles();
 			for (Article a : articles)
 				logger.info(a);
+			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -81,7 +83,7 @@ public class HomeController {
 			e.printStackTrace();
 		}
 
-		model.addAttribute("serverTime", articles.get(0).getDescription());
+		model.addAttribute("serverTime", articles);
 
 		return "home";
 	}

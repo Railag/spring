@@ -1,106 +1,91 @@
 package com.firrael.spring.xml;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
 public class HabrHandler extends DefaultHandler2 {
 
 	private final static String ITEM = "item";
-	private final static String TITLE = "title";
-	private final static String LINK = "link";
-	private final static String DESCRIPTION = "description";
-	private final static String DATE = "pubDate";
-	private final static String AUTHOR = "author";
+	private final static String ITEM_START_TAG = "<item>";
+	private final static String ITEM_END_TAG = "</item>";
 
 	private ArrayList<Article> articles;
 
-	private Article currentArticle;
+	private ArticleHandler articleHandler;
 
 	// basic
 	private boolean isItem;
 
-	// inside item
-	private boolean isTitle;
-	private boolean isLink;
-	private boolean isDescription;
-	private boolean isDate;
-	private boolean isAuthor;
-	
 	public HabrHandler() {
 		articles = new ArrayList<>();
-		currentArticle = new Article();
+		articleHandler = new ArticleHandler();
 	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-
 		isItem = checkElement(ITEM, qName);
-
-		isTitle = checkInsideElement(TITLE, qName);
-
-		isLink = checkInsideElement(LINK, qName);
-
-		isDescription = checkInsideElement(DESCRIPTION, qName);
-
-		isDate = checkInsideElement(DATE, qName);
-
-		isAuthor = checkInsideElement(AUTHOR, qName);
 	}
 
 	private boolean checkElement(String itemName, String currentName) {
 		return currentName.equalsIgnoreCase(itemName);
 	}
 
-	private boolean checkInsideElement(String itemName, String currentName) {
-		if (!isItem)
-			return false;
-
-		return checkElement(itemName, currentName);
-	}
-
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 
-		if (isItem)
-			return; //parseArticle(ch, start, length); 
-		
-		if (isTitle) {
-			currentArticle.setTitle(new String(ch, start, length));
-			isTitle = false;
-			return;
-		}
+		if (isItem) {
+			int end = new String(ch).indexOf(ITEM_END_TAG, start);
+			if (end == -1)
+				return;
 
-		if (isLink) {
-			currentArticle.setLink(new String(ch, start, length));
-			isLink = false;
-			return;
-		}
+			String articleXml = new String(ch, start, end - start);
 
-		if (isDescription) {
-			currentArticle.setDescription(new String(ch, start, length));
-			isDescription = false;
-			return;
-		}
+			articleXml = wrapXml(articleXml);
+			
+			System.out.println(articleXml);
 
-		if (isDate) {
-			currentArticle.setPubDate(new String(ch, start, length));
-			isDate = false;
-			return;
-		}
-
-		if (isAuthor) {
-			currentArticle.setAuthor(new String(ch, start, length));
-			isAuthor = false;
-			articles.add(currentArticle);
-			currentArticle = new Article();
+			try {
+				SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+				parser.parse(new InputSource(new StringReader(articleXml)), articleHandler);
+				articles.add(articleHandler.getArticle());
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			isItem = false;
-			return;
 		}
+	}
 
+	private String wrapXml(String xml) {
+		xml = ITEM_START_TAG + xml + ITEM_END_TAG;
+		xml = xml.replace("\n", "").replace("\t", "") // for escape chars
+				.replace("/</", "</"); // for http://example.com/</link> case
+		return xml;
+	}
+
+	@Override
+	public void startCDATA() throws SAXException {
+		super.startCDATA();
+	}
+
+	@Override
+	public void endCDATA() throws SAXException {
+		super.endCDATA();
 	}
 
 	public List<Article> getArticles() {
