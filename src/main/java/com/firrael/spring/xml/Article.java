@@ -1,5 +1,6 @@
 package com.firrael.spring.xml;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,11 @@ public class Article implements Cloneable, Comparable<Article> {
 	private String description;
 	private Date date;
 	private String author;
-	private List<String> category;
+	private List<String> categories;
+	
+	public Article() {
+		categories = new ArrayList<>();
+	}
 
 	public String getTitle() {
 		return title;
@@ -60,17 +65,13 @@ public class Article implements Cloneable, Comparable<Article> {
 		this.author = author;
 	}
 
-	public List<String> getCategory() {
-		return category;
-	}
-
-	public void setCategory(List<String> category) {
-		this.category = category;
+	public List<String> getCategories() {
+		return categories;
 	}
 
 	@Override
 	public String toString() {
-		return author + category + date + description + link;
+		return author + categories + date + description + link;
 	}
 
 	@Override
@@ -86,5 +87,9 @@ public class Article implements Cloneable, Comparable<Article> {
 	@Override
 	public int compareTo(Article secondArticle) {
 		return date.compareTo(secondArticle.getDate());
+	}
+
+	public void addCategory(String category) {
+		categories.add(category);
 	}
 }

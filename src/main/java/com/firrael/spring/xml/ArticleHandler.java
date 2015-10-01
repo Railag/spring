@@ -15,10 +15,12 @@ public class ArticleHandler extends DefaultHandler2 {
 	private final static String DESCRIPTION = "description";
 	private final static String DATE = "pubDate";
 	private final static String AUTHOR = "author";
+	private final static String CATEGORY = "category";
 
 	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
 			Locale.ENGLISH);
 	// Thu, 01 Oct 2015 07:10:00 GMT
+	
 	private Article currentArticle;
 
 	// inside item
@@ -27,6 +29,7 @@ public class ArticleHandler extends DefaultHandler2 {
 	private boolean isDescription;
 	private boolean isDate;
 	private boolean isAuthor;
+	private boolean isCategory;
 
 	public ArticleHandler() {
 		currentArticle = new Article();
@@ -44,6 +47,8 @@ public class ArticleHandler extends DefaultHandler2 {
 		isDate = checkInsideElement(DATE, qName);
 
 		isAuthor = checkInsideElement(AUTHOR, qName);
+		
+		isCategory = checkInsideElement(CATEGORY, qName);
 	}
 
 	@Override
@@ -77,6 +82,12 @@ public class ArticleHandler extends DefaultHandler2 {
 		if (isAuthor) {
 			currentArticle.setAuthor(new String(ch, start, length));
 			isAuthor = false;
+			return;
+		}
+		
+		if (isCategory) {
+			currentArticle.addCategory(new String(ch, start, length));
+			isCategory = false;
 			return;
 		}
 	}
