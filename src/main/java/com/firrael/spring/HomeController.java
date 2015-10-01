@@ -2,8 +2,8 @@ package com.firrael.spring;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.DateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,7 +25,6 @@ import org.xml.sax.SAXException;
 
 import com.firrael.spring.xml.Article;
 import com.firrael.spring.xml.HabrHandler;
-import com.firrael.spring.xml.Rss;
 
 /**
  * Handles requests for the application home page.
@@ -36,7 +35,8 @@ public class HomeController {
 	private final static String HABR_HOST = "http://habrahabr.ru/rss";
 	private final static String GEEKTIMES_HOST = "http://geektimes.ru/rss";
 	private final static String MEGAMOZG_HOST = "http://megamozg.ru/rss";
-	
+
+	private ArrayList<Article> articles = new ArrayList<>();
 
 	@Autowired
 	private ApplicationContext context;
@@ -48,33 +48,44 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
-		logger.info(String.format("Welcome home! The client locale is {}.", locale));
 
-//		Date date = new Date();
-//		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-//
-//		String formattedDate = dateFormat.format(date);
-//
+		getFeed(HABR_HOST);
+		getFeed(GEEKTIMES_HOST);
+		getFeed(MEGAMOZG_HOST);
+
+		sortFeed();
+
+		model.addAttribute("serverTime", articles);
+
+		return "home";
+	}
+
+	private void sortFeed() {
+		Collections.sort(articles);
+	}
+
+	private void getFeed(String host) {
 		RestTemplate template = new RestTemplate();
 
 		ResponseEntity<?> response = null;
 		try {
-			response = template.getForEntity(HABR_HOST, String.class);
+			response = template.getForEntity(host, String.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		List<Article> articles = null;
-		
+
+		List<Article> newArticles = null;
+
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		try {
 			SAXParser saxParser = factory.newSAXParser();
 			HabrHandler handler = new HabrHandler();
 			saxParser.parse(new InputSource(new StringReader(response.getBody().toString())), handler);
-			articles = handler.getArticles();
-			for (Article a : articles)
+			newArticles = handler.getArticles();
+			for (Article a : newArticles)
 				logger.info(a);
-			
+			articles.addAll(newArticles);
+
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -83,10 +94,6 @@ public class HomeController {
 			e.printStackTrace();
 		}
 
-		model.addAttribute("serverTime", articles);
-
-		return "home";
 	}
 
-	
 }

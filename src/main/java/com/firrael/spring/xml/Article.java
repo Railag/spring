@@ -67,12 +67,12 @@ public class Article implements Cloneable, Comparable<Article> {
 	public void setCategory(List<String> category) {
 		this.category = category;
 	}
-	
+
 	@Override
 	public String toString() {
 		return author + category + date + description + link;
 	}
-	
+
 	@Override
 	public Article clone() {
 		try {
@@ -85,6 +85,6 @@ public class Article implements Cloneable, Comparable<Article> {
 
 	@Override
 	public int compareTo(Article secondArticle) {
-		return 0;
+		return date.compareTo(secondArticle.getDate());
 	}
 }

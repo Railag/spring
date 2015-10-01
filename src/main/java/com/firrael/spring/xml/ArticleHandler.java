@@ -15,9 +15,10 @@ public class ArticleHandler extends DefaultHandler2 {
 	private final static String DESCRIPTION = "description";
 	private final static String DATE = "pubDate";
 	private final static String AUTHOR = "author";
-	
-	private final static  SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
-															//Thu, 01 Oct 2015 07:10:00 GMT
+
+	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
+			Locale.ENGLISH);
+	// Thu, 01 Oct 2015 07:10:00 GMT
 	private Article currentArticle;
 
 	// inside item
@@ -92,7 +93,7 @@ public class ArticleHandler extends DefaultHandler2 {
 	private boolean checkInsideElement(String itemName, String currentName) {
 		return currentName.equalsIgnoreCase(itemName);
 	}
-	
+
 	public Article getArticle() {
 		Article article = currentArticle.clone();
 		currentArticle = new Article();
