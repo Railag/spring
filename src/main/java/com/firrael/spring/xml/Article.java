@@ -1,13 +1,14 @@
 package com.firrael.spring.xml;
 
+import java.util.Date;
 import java.util.List;
 
-public class Article implements Cloneable {
+public class Article implements Cloneable, Comparable<Article> {
 	private String title;
 	private String guid;
 	private String link;
 	private String description;
-	private String pubDate;
+	private Date date;
 	private String author;
 	private List<String> category;
 
@@ -43,12 +44,12 @@ public class Article implements Cloneable {
 		this.description = description;
 	}
 
-	public String getPubDate() {
-		return pubDate;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setPubDate(String pubDate) {
-		this.pubDate = pubDate;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public String getAuthor() {
@@ -69,7 +70,7 @@ public class Article implements Cloneable {
 	
 	@Override
 	public String toString() {
-		return author + category + pubDate + description + link;
+		return author + category + date + description + link;
 	}
 	
 	@Override
@@ -80,5 +81,10 @@ public class Article implements Cloneable {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public int compareTo(Article secondArticle) {
+		return 0;
 	}
 }
