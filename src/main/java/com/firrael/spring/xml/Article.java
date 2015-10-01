@@ -2,7 +2,7 @@ package com.firrael.spring.xml;
 
 import java.util.List;
 
-public class Article {
+public class Article implements Cloneable {
 	private String title;
 	private String guid;
 	private String link;
@@ -72,14 +72,13 @@ public class Article {
 		return author + category + pubDate + description + link;
 	}
 	
+	@Override
 	public Article clone() {
-		Article article = new Article();
-		article.setAuthor(getAuthor());
-		article.setCategory(getCategory());
-		article.setDescription(getDescription());
-		article.setLink(getLink());
-		article.setPubDate(getPubDate());
-		article.setTitle(getTitle());
-		return article;
+		try {
+			return (Article) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
