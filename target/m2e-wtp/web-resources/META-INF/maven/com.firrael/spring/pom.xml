@@ -138,6 +138,11 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.13</version>
 		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring3</artifactId>
+			<version>2.1.4.RELEASE</version>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>

@@ -55,7 +55,7 @@ public class HomeController {
 
 		sortFeed();
 
-		model.addAttribute("serverTime", articles);
+		model.addAttribute("articles", articles);
 
 		return "home";
 	}
