@@ -49,11 +49,14 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 
-		getFeed(HABR_HOST);
-		getFeed(GEEKTIMES_HOST);
-		getFeed(MEGAMOZG_HOST);
+		if (articles == null) {
 
-		sortFeed();
+			getFeed(HABR_HOST);
+			getFeed(GEEKTIMES_HOST);
+			getFeed(MEGAMOZG_HOST);
+
+			sortFeed();
+		}
 
 		model.addAttribute("articles", articles);
 
