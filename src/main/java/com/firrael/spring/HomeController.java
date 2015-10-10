@@ -2,11 +2,13 @@ package com.firrael.spring;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Resource;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -14,6 +16,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +47,19 @@ public class HomeController {
 
 	private static Logger logger = Logger.getLogger(HomeController.class.getName());
 
+	@Autowired
+    private RedisTemplate<String, String> template;
+	
+	@Resource(name="redisTemplate")
+    private ListOperations<String, String> listOps;
+	
+	
+	 public void addLink(String userId, URL url) {
+	        listOps.leftPush(userId, url.toExternalForm());
+	        
+	        template.boundListOps(userId).leftPush(url.toExternalForm());
+	    }
+	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
