@@ -10,12 +10,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
 public class ArticleHandler extends DefaultHandler2 {
-	private final static String TITLE = "title";
-	private final static String LINK = "link";
-	private final static String DESCRIPTION = "description";
-	private final static String DATE = "pubDate";
-	private final static String AUTHOR = "author";
-	private final static String CATEGORY = "category";
 
 	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
 			Locale.ENGLISH);
@@ -38,17 +32,17 @@ public class ArticleHandler extends DefaultHandler2 {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
-		isTitle = checkInsideElement(TITLE, qName);
+		isTitle = checkInsideElement(ArticleFields.TITLE, qName);
 
-		isLink = checkInsideElement(LINK, qName);
+		isLink = checkInsideElement(ArticleFields.LINK, qName);
 
-		isDescription = checkInsideElement(DESCRIPTION, qName);
+		isDescription = checkInsideElement(ArticleFields.DESCRIPTION, qName);
 
-		isDate = checkInsideElement(DATE, qName);
+		isDate = checkInsideElement(ArticleFields.DATE, qName);
 
-		isAuthor = checkInsideElement(AUTHOR, qName);
+		isAuthor = checkInsideElement(ArticleFields.AUTHOR, qName);
 		
-		isCategory = checkInsideElement(CATEGORY, qName);
+		isCategory = checkInsideElement(ArticleFields.CATEGORY, qName);
 	}
 
 	@Override

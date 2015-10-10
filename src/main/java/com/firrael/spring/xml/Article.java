@@ -2,17 +2,18 @@ package com.firrael.spring.xml;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Article implements Cloneable, Comparable<Article> {
 	private String title;
-	private String guid;
 	private String link;
 	private String description;
 	private Date date;
 	private String author;
 	private List<String> categories;
-	
+
 	public Article() {
 		categories = new ArrayList<>();
 	}
@@ -23,14 +24,6 @@ public class Article implements Cloneable, Comparable<Article> {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public String getGuid() {
-		return guid;
-	}
-
-	public void setGuid(String guid) {
-		this.guid = guid;
 	}
 
 	public String getLink() {
@@ -91,5 +84,39 @@ public class Article implements Cloneable, Comparable<Article> {
 
 	public void addCategory(String category) {
 		categories.add(category);
+	}
+
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
+
+	public Map<String, Object> toHashMap() {
+		Map<String, Object> map = new HashMap<>();
+		map.put(ArticleFields.TITLE, getTitle());
+		map.put(ArticleFields.LINK, getLink());
+		map.put(ArticleFields.DESCRIPTION, getDescription());
+		map.put(ArticleFields.DATE, getDate());
+		map.put(ArticleFields.AUTHOR, getAuthor());
+		map.put(ArticleFields.CATEGORY, getCategories());
+		return map;
+	}
+
+	public static Article create(List<Object> values) {
+		Article article = new Article();
+		article.setTitle(values.get(0).toString());
+		article.setLink(values.get(1).toString());
+		article.setDescription(values.get(2).toString());
+		article.setDate((Date) values.get(3));
+		article.setAuthor(values.get(4).toString());
+		article.setCategories((List<String>) values.get(5));
+		return article;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = title.hashCode();
+		if (Integer.signum(hash) == -1)
+			hash *= -1;
+		return hash;
 	}
 }
