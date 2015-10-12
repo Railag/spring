@@ -1,9 +1,9 @@
-package com.firrael.spring.xml;
+package com.firrael.spring.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticleFields {
+public class ArticleFields implements Fields {
 	public final static String TITLE = "title";
 	public final static String LINK = "link";
 	public final static String DESCRIPTION = "description";
@@ -11,7 +11,7 @@ public class ArticleFields {
 	public final static String AUTHOR = "author";
 	public final static String CATEGORY = "category";
 
-	public static List<Object> asArray() {
+	public List<Object> asArray() {
 		List<Object> fields = new ArrayList<>();
 		fields.add(TITLE);
 		fields.add(LINK);

@@ -1,0 +1,28 @@
+package com.firrael.spring.data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserFields implements Fields {
+	public final static String LOGIN = "login";
+	public final static String PASSWORD = "password";
+	public final static String EMAIL = "email";
+	public final static String FAVORITE_ARTICLES = "fav_articles";
+	public final static String SELECTED_CATEGORIES = "selected_categories";
+	public final static String AUTH_TYPE = "auth_type";
+	public final static String IS_LOGGED_IN = "is_logged_in";
+	public final static String AUTH_TOKEN = "auth_token";
+
+	public List<Object> asArray() {
+		List<Object> fields = new ArrayList<>();
+		fields.add(LOGIN);
+		fields.add(PASSWORD);
+		fields.add(EMAIL);
+		fields.add(FAVORITE_ARTICLES);
+		fields.add(SELECTED_CATEGORIES);
+		fields.add(AUTH_TYPE);
+		fields.add(IS_LOGGED_IN);
+		fields.add(AUTH_TOKEN);
+		return fields;
+	}
+}

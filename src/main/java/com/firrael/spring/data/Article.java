@@ -1,4 +1,4 @@
-package com.firrael.spring.xml;
+package com.firrael.spring.data;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Article implements Cloneable, Comparable<Article> {
+public class Article implements Cloneable, Comparable<Article>, Entity<Article> {
 	private String title;
 	private String link;
 	private String description;
@@ -101,7 +101,8 @@ public class Article implements Cloneable, Comparable<Article> {
 		return map;
 	}
 
-	public static Article create(List<Object> values) {
+	@Override
+	public Article initialize(List<Object> values) {
 		Article article = new Article();
 		article.setTitle(values.get(0).toString());
 		article.setLink(values.get(1).toString());
@@ -111,12 +112,9 @@ public class Article implements Cloneable, Comparable<Article> {
 		article.setCategories((List<String>) values.get(5));
 		return article;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		int hash = title.hashCode();
-		if (Integer.signum(hash) == -1)
-			hash *= -1;
-		return hash;
+		return title.hashCode();
 	}
 }

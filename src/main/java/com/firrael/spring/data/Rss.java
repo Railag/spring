@@ -1,4 +1,4 @@
-package com.firrael.spring.xml;
+package com.firrael.spring.data;
 
 public class Rss {
 	private Channel channel;

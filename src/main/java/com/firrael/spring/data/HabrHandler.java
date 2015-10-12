@@ -1,4 +1,4 @@
-package com.firrael.spring.xml;
+package com.firrael.spring.data;
 
 import java.io.IOException;
 import java.io.StringReader;

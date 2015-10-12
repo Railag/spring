@@ -1,4 +1,4 @@
-package com.firrael.spring;
+package com.firrael.spring.controllers;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -24,6 +24,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ScanOptions.ScanOptionsBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +34,10 @@ import org.springframework.web.client.RestTemplate;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.firrael.spring.xml.Article;
-import com.firrael.spring.xml.ArticleFields;
-import com.firrael.spring.xml.HabrHandler;
+import com.firrael.spring.data.Article;
+import com.firrael.spring.data.ArticleFields;
+import com.firrael.spring.data.Fields;
+import com.firrael.spring.data.HabrHandler;
 
 /**
  * Handles requests for the application home page.
@@ -47,6 +50,8 @@ public class HomeController {
 	private final static String MEGAMOZG_HOST = "http://megamozg.ru/rss";
 
 	private final static String ARTICLE_KEY = "article";
+
+	private final static int PULL_DELAY = 1000 * 60 * 5; // 5 mins
 
 	private static int ARTICLES_COUNT = 0;
 
@@ -73,9 +78,10 @@ public class HomeController {
 	}
 
 	public Article getArticle(String hash) {
-		List<Object> fields = ArticleFields.asArray();
+		Fields articleFields = new ArticleFields();
+		List<Object> fields = articleFields.asArray();
 		List<Object> values = template.opsForHash().multiGet(hash, fields);
-		Article article = Article.create(values);
+		Article article = new Article().initialize(values);
 
 		return article;
 	}
@@ -88,20 +94,31 @@ public class HomeController {
 
 		articles = getCachedArticles();
 
-		if (articles.isEmpty()) {
-
-			getFeed(HABR_HOST);
-			getFeed(GEEKTIMES_HOST);
-			getFeed(MEGAMOZG_HOST);
-
-			sortFeed();
-		}
+		if (articles.isEmpty())
+			loadFeed();
 
 		cacheArticles(articles);
 
 		model.addAttribute("articles", articles);
 
 		return "home";
+	}
+
+	@Async
+	private void loadFeed() {
+		getFeed(HABR_HOST);
+		getFeed(GEEKTIMES_HOST);
+		getFeed(MEGAMOZG_HOST);
+
+		sortFeed();
+	}
+
+	// request feed every 5 minutes
+	@Scheduled(fixedDelay = PULL_DELAY)
+	@Async
+	private void pullNewArticles() {
+		logger.info("feed updated");
+		loadFeed();
 	}
 
 	private void cacheArticles(ArrayList<Article> articles) {
@@ -171,10 +188,7 @@ public class HomeController {
 			HabrHandler handler = new HabrHandler();
 			saxParser.parse(new InputSource(new StringReader(response.getBody().toString())), handler);
 			newArticles = handler.getArticles();
-			for (Article a : newArticles)
-				logger.info(a);
 			articles.addAll(newArticles);
-
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
