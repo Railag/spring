@@ -3,6 +3,8 @@ package com.firrael.spring.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.firrael.spring.data.base.Fields;
+
 public class UserFields implements Fields {
 	public final static String LOGIN = "login";
 	public final static String PASSWORD = "password";

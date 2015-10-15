@@ -1,4 +1,4 @@
-package com.firrael.spring.data;
+package parsing;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -16,6 +16,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
+
+import com.firrael.spring.data.Article;
 
 public class HabrHandler extends DefaultHandler2 {
 

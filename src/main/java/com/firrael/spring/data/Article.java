@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.firrael.spring.data.base.Entity;
+
 public class Article implements Cloneable, Comparable<Article>, Entity<Article> {
 	private String title;
 	private String link;

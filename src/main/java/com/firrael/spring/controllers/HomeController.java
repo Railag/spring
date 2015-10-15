@@ -15,14 +15,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.core.ScanOptions.ScanOptionsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -35,9 +29,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.firrael.spring.data.Article;
-import com.firrael.spring.data.ArticleFields;
-import com.firrael.spring.data.Fields;
-import com.firrael.spring.data.HabrHandler;
+import com.firrael.spring.data.ArticleStorage;
+import com.firrael.spring.data.Redis;
+
+import parsing.HabrHandler;
 
 /**
  * Handles requests for the application home page.
@@ -49,7 +44,6 @@ public class HomeController {
 	private final static String GEEKTIMES_HOST = "http://geektimes.ru/rss";
 	private final static String MEGAMOZG_HOST = "http://megamozg.ru/rss";
 
-	private final static String ARTICLE_KEY = "article";
 
 	private final static int PULL_DELAY = 1000 * 60 * 5; // 5 mins
 
@@ -68,30 +62,14 @@ public class HomeController {
 	@Resource(name = "redisTemplate")
 	private ListOperations<String, String> listOps;
 
-	public void addArticle(Article article) {
-		// listOps.leftPush(userId, url.toExternalForm());
-
-		// template.boundListOps(userId).leftPush(url.toExternalForm());
-		String key = String.format("%s:%s", ARTICLE_KEY, article.hashCode());
-		template.opsForHash().putAll(key, article.toHashMap());
-		template.opsForValue().increment("count", 1);
-	}
-
-	public Article getArticle(String hash) {
-		Fields articleFields = new ArticleFields();
-		List<Object> fields = articleFields.asArray();
-		List<Object> values = template.opsForHash().multiGet(hash, fields);
-		Article article = new Article().initialize(values);
-
-		return article;
-	}
-
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 
+		Redis.initialize(template);
+		
 		articles = getCachedArticles();
 
 		if (articles.isEmpty())
@@ -122,48 +100,14 @@ public class HomeController {
 	}
 
 	private void cacheArticles(ArrayList<Article> articles) {
+		ArticleStorage storage = new ArticleStorage();
 		for (Article a : articles)
-			addArticle(a);
+			storage.add(a);
 	}
 
 	private ArrayList<Article> getCachedArticles() {
-		ArrayList<Article> cachedArticles = new ArrayList<>();
-		Iterable<byte[]> results = template.execute(new RedisCallback<Iterable<byte[]>>() {
-
-			@Override
-			public Iterable<byte[]> doInRedis(RedisConnection connection) throws DataAccessException {
-
-				List<byte[]> binaryKeys = new ArrayList<byte[]>();
-
-				ScanOptionsBuilder builder = new ScanOptionsBuilder();
-				builder.count(30);
-				builder.match(ARTICLE_KEY + ":*");
-				ScanOptions options = builder.build();
-
-				Cursor<byte[]> cursor = connection.scan(options);
-				while (cursor.hasNext()) {
-					binaryKeys.add(cursor.next());
-				}
-
-				try {
-					cursor.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				return binaryKeys;
-			}
-		});
-
-		List<String> hashes = new ArrayList<String>();
-
-		for (byte[] b : results)
-			hashes.add(new String(b));
-
-		for (String hash : hashes)
-			cachedArticles.add(getArticle(hash));
-
-		return cachedArticles;
+		ArticleStorage storage = new ArticleStorage();
+		return new ArrayList<>(storage.getItems(30));
 	}
 
 	private void sortFeed() {

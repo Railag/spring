@@ -1,4 +1,4 @@
-package com.firrael.spring.data;
+package parsing;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,6 +8,9 @@ import java.util.Locale;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
+
+import com.firrael.spring.data.Article;
+import com.firrael.spring.data.ArticleFields;
 
 public class ArticleHandler extends DefaultHandler2 {
 

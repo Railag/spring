@@ -1,4 +1,4 @@
-package com.firrael.spring.data;
+package com.firrael.spring.data.base;
 
 import java.util.List;
 

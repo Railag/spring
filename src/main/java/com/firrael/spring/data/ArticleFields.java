@@ -3,6 +3,8 @@ package com.firrael.spring.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.firrael.spring.data.base.Fields;
+
 public class ArticleFields implements Fields {
 	public final static String TITLE = "title";
 	public final static String LINK = "link";

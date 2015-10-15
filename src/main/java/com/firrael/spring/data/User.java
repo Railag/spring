@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.firrael.spring.data.base.Entity;
+
 public class User implements Entity<User> {
 	private String login;
 	private String password;
@@ -95,7 +97,7 @@ public class User implements Entity<User> {
 	}
 
 	@Override
-	public Map toHashMap() {
+	public Map<String, Object> toHashMap() {
 		Map<String, Object> map = new HashMap<>();
 		map.put(UserFields.LOGIN, getLogin());
 		map.put(UserFields.PASSWORD, getPassword());
