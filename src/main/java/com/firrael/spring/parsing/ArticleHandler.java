@@ -1,4 +1,4 @@
-package parsing;
+package com.firrael.spring.parsing;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

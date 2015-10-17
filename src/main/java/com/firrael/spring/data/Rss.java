@@ -1,6 +1,6 @@
 package com.firrael.spring.data;
 
-import parsing.Channel;
+import com.firrael.spring.parsing.Channel;
 
 public class Rss {
 	private Channel channel;

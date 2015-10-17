@@ -1,4 +1,4 @@
-package parsing;
+package com.firrael.spring.parsing;
 
 import java.util.List;
 

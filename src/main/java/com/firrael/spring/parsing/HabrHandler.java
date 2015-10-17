@@ -1,4 +1,4 @@
-package parsing;
+package com.firrael.spring.parsing;
 
 import java.io.IOException;
 import java.io.StringReader;
