@@ -5,6 +5,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 
 <title>Home</title>
 </head>
@@ -19,30 +20,23 @@
 	</div>
 
 
-	<div class="table-pagination">
-		<ul class="pagination">
-			<li th:class="${currentPage.number eq 0} ? 'disabled' : ''"><a
-				th:if="${not currentPage.isFirst()}"
-				th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous</a> <a
-				th:if="${currentPage.isFirst()}" href="javascript:void(0);">Previous</a>
-			</li>
 
-			<li th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
-				th:class="${currentPage.number eq pageNo}? 'active' : ''"><a
-				th:if="${currentPage.number  eq pageNo}" href="javascript:void(0);">
-					<span th:text="${pageNo + 1}"></span>
-			</a> <a th:if="${not (currentPage.number  eq pageNo)}"
-				th:href="@{${'/home'}(page=${pageNo})}"> <span
-					th:text="${pageNo + 1}"></span>
-			</a></li>
-			<li
-				th:class="${currentPage.number + 1 ge pages.size()} ? 'disabled' : ''">
-				<a th:if="${not currentPage.isLast()}"
-				th:href="@{${'/home'}(page=${currentPage.number+1})}">Next</a> <a
-				th:if="${currentPage.isLast()}" href="javascript:void(0);">Next</a>
-			</li>
-		</ul>
+	<div class="pagination dark">
+		<a th:class="'page dark gradient'"
+			th:if="${not currentPage.isFirst()}"
+			th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous
+		</a>
+		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
+			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
+			th:text="${pageNo + 1}" th:href="@{${'/home'}(page=${pageNo})}">
+		</a>
+		
+		<a th:if="${not currentPage.isLast()}"
+			th:class="'page dark gradient'"
+			th:href="@{${'/home'}(page=${currentPage.number+1})}">Next
+		</a>
 	</div>
+
 
 	<div th:replace="footer :: footer"></div>
 
