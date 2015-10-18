@@ -10,7 +10,24 @@
 <title>Home</title>
 </head>
 <body>
+<div id="content">
 	<div th:replace="header :: header"></div>
+	
+		<div class="pagination dark">
+		<a th:class="'page dark gradient'"
+			th:if="${not currentPage.isFirst()}"
+			th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous
+		</a>
+		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
+			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
+			th:text="${pageNo + 1}" th:href="@{${'/home'}(page=${pageNo})}">
+		</a>
+		
+		<a th:if="${not currentPage.isLast()}"
+			th:class="'page dark gradient'"
+			th:href="@{${'/home'}(page=${currentPage.number+1})}">Next
+		</a>
+	</div>
 
 	<div th:each="article, articleStatus : ${currentPage.getItems()}"
 		th:if="${articleStatus.index &lt; 5}">
@@ -37,7 +54,7 @@
 		</a>
 	</div>
 
-
+</div>
 	<div th:replace="footer :: footer"></div>
 
 </body>
