@@ -84,6 +84,8 @@ public class HomeController {
 	public String home(Locale locale, Model model, @RequestParam int page) {
 
 		Redis.initialize(template);
+		
+		logger.info("/home controller");
 
 		articles = getCachedArticles();
 
