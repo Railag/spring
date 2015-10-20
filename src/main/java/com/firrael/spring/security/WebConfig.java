@@ -20,17 +20,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
 
-//	@Override
-//	public void addViewControllers(ViewControllerRegistry registry) {
-//		registry.addViewController("/login").setViewName("login");
-//		registry.addViewController("/home").setViewName("home");
-//		registry.addViewController("/").setViewName("home");
-//	}
-
 	@Bean
 	public ServletContextTemplateResolver templateResolver() {
 		ServletContextTemplateResolver resolver = new ServletContextTemplateResolver();
-		resolver.setPrefix("/WEB-INF/views/");
+		resolver.setPrefix("/resources/templates/");
 		resolver.setSuffix(".html");
 		resolver.setTemplateMode("HTML5");
 		resolver.setCacheable(false);
