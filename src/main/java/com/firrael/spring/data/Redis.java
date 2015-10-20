@@ -1,8 +1,6 @@
 package com.firrael.spring.data;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 
 public class Redis {
@@ -15,11 +13,6 @@ public class Redis {
 	}
 
 	public static RedisTemplate<String, String> getInstance() {
-		if (redisTemplate != null)
-			return redisTemplate;
-		else {
-			ApplicationContext context = new ClassPathXmlApplicationContext("/WEB-INF/spring/root-context.xml");
-			return redisTemplate = (RedisTemplate<String, String>) context.getBean("redisTemplate");
-		}
+		return redisTemplate;
 	}
 }
