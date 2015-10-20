@@ -62,6 +62,16 @@ public class HomeController {
 	@Resource(name = "redisTemplate")
 	private ListOperations<String, String> listOps;
 
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(Locale locale, Model model) {
+		return "login";
+	}
+	
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
+	public String admin(Locale locale, Model model) {
+		return "admin";
+	}
+	
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		return home(locale, model, 0);
@@ -74,6 +84,8 @@ public class HomeController {
 	public String home(Locale locale, Model model, @RequestParam int page) {
 
 		Redis.initialize(template);
+		
+		logger.info("/home controller");
 
 		articles = getCachedArticles();
 
