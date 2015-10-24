@@ -16,14 +16,13 @@ import com.firrael.spring.data.base.Storage;
 
 public class ArticleStorage implements Storage<Article, ArticleFields> {
 
-	private final static String ARTICLE_KEY = "article";
+	private final static String ARTICLE_KEY = "aid";
 
 	@Override
-	public void add(Article article) {
-		String key = String.format("%s:%s", ARTICLE_KEY, article.hashCode());
+	public void add(Article article, String aid) {
+		String key = String.format("%s:%s", ARTICLE_KEY, aid);
 		RedisTemplate<String, String> template = Redis.getInstance();
 		template.opsForHash().putAll(key, article.toHashMap());
-		template.opsForValue().increment("countArticles", 1);
 	}
 
 	@Override

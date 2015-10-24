@@ -12,6 +12,8 @@ import org.xml.sax.ext.DefaultHandler2;
 import com.firrael.spring.data.Article;
 import com.firrael.spring.data.ArticleFields;
 
+import com.firrael.spring.data.Host;
+
 public class ArticleHandler extends DefaultHandler2 {
 
 	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
@@ -57,7 +59,9 @@ public class ArticleHandler extends DefaultHandler2 {
 		}
 
 		if (isLink) {
-			currentArticle.setLink(new String(ch, start, length));
+			String link = new String(ch, start, length);
+			currentArticle.setLink(link);
+			currentArticle.setHost(Host.parseHost(link));
 			isLink = false;
 			return;
 		}

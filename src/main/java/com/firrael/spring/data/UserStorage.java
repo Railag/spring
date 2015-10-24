@@ -16,14 +16,13 @@ import com.firrael.spring.data.base.Storage;
 
 public class UserStorage implements Storage<User, UserFields> {
 
-	private final static String USER_KEY = "user";
+	private final static String USER_KEY = "uid";
 
 	@Override
-	public void add(User user) {
-		String key = String.format("%s:%s", USER_KEY, user.hashCode());
+	public void add(User user, String uid) {
+		String key = String.format("%s:%s", USER_KEY, uid);
 		RedisTemplate<String, String> template = Redis.getInstance();
 		template.opsForHash().putAll(key, user.toHashMap());
-		template.opsForValue().increment("countUsers", 1);
 	}
 
 	@Override

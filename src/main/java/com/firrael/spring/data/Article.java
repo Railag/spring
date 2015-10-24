@@ -15,6 +15,7 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 	private Date date;
 	private String author;
 	private List<String> categories;
+	private Host host;
 
 	public Article() {
 		categories = new ArrayList<>();
@@ -63,6 +64,14 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 	public List<String> getCategories() {
 		return categories;
 	}
+	
+	public Host getHost() {
+		return host;
+	}
+	
+	public void setHost(Host host) {
+		this.host = host;
+	}
 
 	@Override
 	public String toString() {
@@ -108,6 +117,7 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 		Article article = new Article();
 		article.setTitle(values.get(0).toString());
 		article.setLink(values.get(1).toString());
+		article.setHost(Host.parseHost(values.get(1).toString()));
 		article.setDescription(values.get(2).toString());
 		article.setDate((Date) values.get(3));
 		article.setAuthor(values.get(4).toString());
