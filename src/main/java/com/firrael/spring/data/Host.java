@@ -3,9 +3,9 @@ package com.firrael.spring.data;
 public enum Host {
 	Habrahabr, GeekTimes, MegaMozg;
 
-	private final static String HABR_HOST = "http://habrahabr.ru/rss";
-	private final static String GEEKTIMES_HOST = "http://geektimes.ru/rss";
-	private final static String MEGAMOZG_HOST = "http://megamozg.ru/rss";
+	public final static String HABR_HOST = "http://habrahabr.ru/rss";
+	public final static String GEEKTIMES_HOST = "http://geektimes.ru/rss";
+	public final static String MEGAMOZG_HOST = "http://megamozg.ru/rss";
 
 	private final static String HABR = "habrahabr";
 	private final static String GEEKTIMES = "geektimes";
@@ -35,5 +35,19 @@ public enum Host {
 			return MegaMozg;
 		else
 			return Habrahabr;
+	}
+	
+	public String getChannelName() {
+		switch(this) {
+		
+		case Habrahabr:
+			return HABR;
+		case GeekTimes:
+			return GEEKTIMES;
+		case MegaMozg:
+			return MEGAMOZG;
+		default:
+			return HABR;	
+		}
 	}
 }

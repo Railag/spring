@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
 
 import com.firrael.spring.data.Article;
 import com.firrael.spring.data.ArticleStorage;
+import com.firrael.spring.data.Host;
 import com.firrael.spring.data.Redis;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.parsing.HabrHandler;
@@ -41,18 +42,9 @@ import com.firrael.spring.parsing.HabrHandler;
 @Controller
 public class HomeController {
 
-	private final static String HABR_HOST = "http://habrahabr.ru/rss";
-	private final static String GEEKTIMES_HOST = "http://geektimes.ru/rss";
-	private final static String MEGAMOZG_HOST = "http://megamozg.ru/rss";
-
 	private final static int PULL_DELAY = 1000 * 60 * 5; // 5 mins
 
-	private static int ARTICLES_COUNT = 0;
-
 	private ArrayList<Article> articles = new ArrayList<>();
-
-	@Autowired
-	private ApplicationContext context;
 
 	private static Logger logger = Logger.getLogger(HomeController.class.getName());
 
@@ -108,9 +100,9 @@ public class HomeController {
 
 	@Async
 	private void loadFeed() {
-		getFeed(HABR_HOST);
-		getFeed(GEEKTIMES_HOST);
-		getFeed(MEGAMOZG_HOST);
+		getFeed(Host.HABR_HOST);
+		getFeed(Host.GEEKTIMES_HOST);
+		getFeed(Host.MEGAMOZG_HOST);
 
 		sortFeed();
 	}

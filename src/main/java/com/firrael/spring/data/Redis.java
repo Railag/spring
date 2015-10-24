@@ -23,8 +23,12 @@ public class Redis {
 	
 	private final static String USER_PREFIX = "user:"; // to get user by input login via user:<name>:uid
 	private final static String ARTICLE_PREFIX = "article:";
+	private final static String CATEGORY_PREFIX = "category:"; // to get category name by cid via category:<cid>
+	private final static String CHANNEL_PREFIX = "channel:"; // to get channel name by chid via channel:<chid>
 	
-	private final static String ARTICLE_POSTFIX = ":article";
+	private final static String ARTICLE_POSTFIX = ":aid";
+	private final static String CATEGORY_POSTFIX = ":cid";
+	private final static String CHANNEL_POSTFIX = ":chid";
 	
 	// uid:<uid>:favArticles list с избранными статьями
 	
@@ -125,14 +129,12 @@ public class Redis {
 	 */
 	
 	/*
-	 * Save all articles names to article:<title>:aid  in order to check if article is already in db =>
-	 * Save all articles by their aid-s =>
-	 * Increase aid-s counter =>
-	 * Add new categories to cid list if they are not already there =>
-	 * Increase cid-s counter =>
+	 * Save all articles names to article:<title>:aid  in order to check if article is already in db =>		+
+	 * Save all articles by their aid-s =>  																+
+	 * Increase aid-s counter =>																			+
+	 * Add new categories to cid list if they are not already there =>										+
 	 * Add all new articles to cid's lists =>
-	 * Add new channels to chid list if they are not already there =>
-	 * Increase chid-s counter =>
+	 * Add new channels to chid list if they are not already there =>										+
 	 * Add all new articles to chid's lists.
 	*/
 	public void saveArticles(ArrayList<Article> newArticles) {
@@ -150,16 +152,18 @@ public class Redis {
 		ArticleStorage storage = new ArticleStorage();
 		storage.add(article, aid);
 		
-		addCategories(article.getCategories());
 		
-		addChannels(article.get);
+		addCategories(article.getCategories(), aid);
 		
-		
+		addChannel(article.getHost(), aid);	
 	}
 
-	private void addCategories(List<String> categories) {
+	private void addCategories(List<String> categories, String aid) {
 		Set<String> cids = redisTemplate.opsForZSet().range(CID_SET, 0, -1);
 
+		int currentCid;
+
+		
 		for (String category : categories) {
 			boolean exists = false;
 			
@@ -167,18 +171,44 @@ public class Redis {
 				String existingCategory = redisTemplate.opsForValue().get(CATEGORY + cid);
 				if (existingCategory.equals(category)) {
 					exists = true;
+					currentCid = Integer.valueOf(cid);
 					break;
 				}
 			}
 			
 			if (!exists) {
-				int newCid = cids.size();
-				redisTemplate.opsForZSet().add(CID_SET, category, newCid);
-				redisTemplate.opsForValue().set(CATEGORY + newCid, category);
+				currentCid = cids.size();
+				redisTemplate.opsForZSet().add(CID_SET, category, currentCid);
+				redisTemplate.opsForValue().set(CATEGORY_PREFIX + currentCid + CATEGORY_POSTFIX, category);
 				cids.add(category);
 			}
+			
+			redisTemplate.opsForZSet().add(CATEGORY + currentCid, String.valueOf(currentCid), Double.valueOf(aid));
 		}
 	}
+	
+	private void addChannel(Host host, String aid) {
+		Set<String> chids = redisTemplate.opsForZSet().range(CHID_SET, 0, -1);
+		
+		String newChannel = host.getChannelName();
+		
+		boolean exists = false;
+		
+		for (String chid : chids) {
+			String existingChannel = redisTemplate.opsForValue().get(CHANNEL + chid);
+			if (existingChannel.equals(newChannel)) {
+				exists = true;
+				break;
+			}
+		}
+		
+		if (!exists) {
+			int newChid = chids.size();
+			redisTemplate.opsForZSet().add(CHID_SET, newChannel, newChid);
+			redisTemplate.opsForValue().set(CHANNEL + newChid, newChannel);
+		}
+	}
+
 
 	@Autowired
 	private static RedisTemplate<String, String> redisTemplate;
