@@ -14,7 +14,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +48,7 @@ public class HomeController {
 	private static Logger logger = Logger.getLogger(HomeController.class.getName());
 
 	@Autowired
-	private RedisTemplate<String, String> template;
+	private RedisTemplate<String, String> redisTemplate;
 
 	@Resource(name = "redisTemplate")
 	private ListOperations<String, String> listOps;
@@ -75,7 +74,7 @@ public class HomeController {
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET, params = "page")
 	public String home(Locale locale, Model model, @RequestParam int page) {
 
-		Redis.initialize(template);
+		Redis.initialize(redisTemplate);
 		
 		logger.info("/home controller");
 
@@ -83,8 +82,6 @@ public class HomeController {
 
 		if (articles.isEmpty())
 			loadFeed();
-
-		cacheArticles(articles);
 
 		List<ArticlePage> pages = ArticlePage.getPagingList(articles);
 
@@ -100,6 +97,8 @@ public class HomeController {
 
 	@Async
 	private void loadFeed() {
+		Redis.initialize(redisTemplate);
+		
 		getFeed(Host.HABR_HOST);
 		getFeed(Host.GEEKTIMES_HOST);
 		getFeed(Host.MEGAMOZG_HOST);
@@ -116,9 +115,7 @@ public class HomeController {
 	}
 
 	private void cacheArticles(ArrayList<Article> articles) {
-		ArticleStorage storage = new ArticleStorage();
-		for (Article a : articles)
-			storage.add(a);
+		Redis.saveArticles(articles);
 	}
 
 	private ArrayList<Article> getCachedArticles() {
@@ -127,7 +124,7 @@ public class HomeController {
 	}
 
 	private void sortFeed() {
-		Collections.sort(articles);
+	//	Collections.sort(articles);
 	}
 
 	private void getFeed(String host) {
@@ -148,6 +145,7 @@ public class HomeController {
 			HabrHandler handler = new HabrHandler();
 			saxParser.parse(new InputSource(new StringReader(response.getBody().toString())), handler);
 			newArticles = handler.getArticles();
+			cacheArticles(new ArrayList<>(newArticles));
 			articles.addAll(newArticles);
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();

@@ -18,6 +18,7 @@ public class Redis {
 	private final static String CATEGORY = "cid:"; // cid : 25
 	private final static String CHANNEL = "chid:"; // chid : 35
 	
+	private final static String AID_SET = "aids"; //zset for all aids
 	private final static String CID_SET = "cids:"; //zset for all cids
 	private final static String CHID_SET = "chids:"; //zset for all chids
 	
@@ -26,6 +27,7 @@ public class Redis {
 	private final static String CATEGORY_PREFIX = "category:"; // to get category name by cid via category:<cid>
 	private final static String CHANNEL_PREFIX = "channel:"; // to get channel name by chid via channel:<chid>
 	
+	private final static String USER_POSTFIX = ":uid";
 	private final static String ARTICLE_POSTFIX = ":aid";
 	private final static String CATEGORY_POSTFIX = ":cid";
 	private final static String CHANNEL_POSTFIX = ":chid";
@@ -133,43 +135,47 @@ public class Redis {
 	 * Save all articles by their aid-s =>  																+
 	 * Increase aid-s counter =>																			+
 	 * Add new categories to cid list if they are not already there =>										+
-	 * Add all new articles to cid's lists =>
+	 * Add all new articles to cid's lists =>                                                               +?
 	 * Add new channels to chid list if they are not already there =>										+
-	 * Add all new articles to chid's lists.
+	 * Add all new articles to chid's lists.																+?
 	*/
-	public void saveArticles(ArrayList<Article> newArticles) {
+	public static void saveArticles(ArrayList<Article> newArticles) {
 		for (Article a : newArticles) {
-			int aid = Integer.valueOf(redisTemplate.opsForValue().get(ARTICLE_PREFIX + a.getTitle() + ARTICLE_POSTFIX));
-			if (aid <= 0) // new article
+			String aid = getInstance().opsForValue().get(ARTICLE_PREFIX + a.getTitle().hashCode() + ARTICLE_POSTFIX);
+			if (aid == null) // new article
 				saveArticle(a);
 		}
 	}
 	
-	private void saveArticle(Article article) {
+	private static void saveArticle(Article article) {
 		String aid = redisTemplate.opsForValue().get(GLOBAL_ARTICLE_ID);
-		redisTemplate.opsForValue().set(ARTICLE_PREFIX + article.getTitle() + ARTICLE_POSTFIX, aid);
+		if (aid == null) {
+			aid = "1";
+			redisTemplate.opsForValue().increment(GLOBAL_ARTICLE_ID, 1);
+		}
+		redisTemplate.opsForValue().set(ARTICLE_PREFIX + article.getTitle().hashCode() + ARTICLE_POSTFIX, aid);
 		redisTemplate.opsForValue().increment(GLOBAL_ARTICLE_ID, 1);
 		ArticleStorage storage = new ArticleStorage();
 		storage.add(article, aid);
 		
+		redisTemplate.opsForZSet().add(AID_SET, aid, Double.parseDouble(aid));
 		
 		addCategories(article.getCategories(), aid);
 		
 		addChannel(article.getHost(), aid);	
 	}
 
-	private void addCategories(List<String> categories, String aid) {
+	private static void addCategories(List<String> categories, String aid) {
 		Set<String> cids = redisTemplate.opsForZSet().range(CID_SET, 0, -1);
 
-		int currentCid;
+		int currentCid = 0;
 
-		
 		for (String category : categories) {
 			boolean exists = false;
 			
 			for (String cid : cids) {
-				String existingCategory = redisTemplate.opsForValue().get(CATEGORY + cid);
-				if (existingCategory.equals(category)) {
+				String existingCategory = redisTemplate.opsForValue().get(CATEGORY_PREFIX + cid + CATEGORY_POSTFIX);
+ 				if (existingCategory.equals(category)) {
 					exists = true;
 					currentCid = Integer.valueOf(cid);
 					break;
@@ -178,40 +184,44 @@ public class Redis {
 			
 			if (!exists) {
 				currentCid = cids.size();
-				redisTemplate.opsForZSet().add(CID_SET, category, currentCid);
+				redisTemplate.opsForZSet().add(CID_SET, String.valueOf(currentCid), currentCid);
 				redisTemplate.opsForValue().set(CATEGORY_PREFIX + currentCid + CATEGORY_POSTFIX, category);
-				cids.add(category);
+				cids.add(String.valueOf(currentCid));
 			}
 			
-			redisTemplate.opsForZSet().add(CATEGORY + currentCid, String.valueOf(currentCid), Double.valueOf(aid));
+			redisTemplate.opsForZSet().add(CATEGORY + currentCid, String.valueOf(currentCid), Double.valueOf(aid)); // add aid to zset
 		}
 	}
 	
-	private void addChannel(Host host, String aid) {
+	private static void addChannel(Host host, String aid) {
 		Set<String> chids = redisTemplate.opsForZSet().range(CHID_SET, 0, -1);
+		
+		int currentChid = 0;
 		
 		String newChannel = host.getChannelName();
 		
 		boolean exists = false;
 		
 		for (String chid : chids) {
-			String existingChannel = redisTemplate.opsForValue().get(CHANNEL + chid);
+			String existingChannel = redisTemplate.opsForValue().get(CHANNEL_PREFIX + chid + CHANNEL_POSTFIX);
 			if (existingChannel.equals(newChannel)) {
 				exists = true;
+				currentChid = Integer.valueOf(chid);
 				break;
 			}
 		}
 		
 		if (!exists) {
-			int newChid = chids.size();
-			redisTemplate.opsForZSet().add(CHID_SET, newChannel, newChid);
-			redisTemplate.opsForValue().set(CHANNEL + newChid, newChannel);
+			currentChid = chids.size();
+			redisTemplate.opsForZSet().add(CHID_SET, String.valueOf(currentChid), currentChid);
+			redisTemplate.opsForValue().set(CHANNEL_PREFIX + currentChid + CHANNEL_POSTFIX, newChannel);
 		}
+		
+		redisTemplate.opsForZSet().add(CHANNEL + currentChid, String.valueOf(currentChid), Double.valueOf(aid));
 	}
 
 
-	@Autowired
-	private static RedisTemplate<String, String> redisTemplate;
+	public static RedisTemplate<String, String> redisTemplate;
 
 	public static void initialize(RedisTemplate<String, String> template) {
 		Redis.redisTemplate = template;

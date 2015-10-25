@@ -20,11 +20,13 @@ public class RootConfiguration {
 		return factory;
 	}
 
-	@Bean
+	@Bean()
 	public RedisTemplate<String, String> redisTemplate() {
 		RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setKeySerializer(stringRedisSerializer());
 		redisTemplate.setValueSerializer(stringRedisSerializer());
+		redisTemplate.setHashKeySerializer(stringRedisSerializer());
+		redisTemplate.setDefaultSerializer(stringRedisSerializer());
 		redisTemplate.setConnectionFactory(jedisConnFactory());
 		return redisTemplate;
 	}

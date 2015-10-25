@@ -1,6 +1,7 @@
 package com.firrael.spring.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,11 +65,11 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 	public List<String> getCategories() {
 		return categories;
 	}
-	
+
 	public Host getHost() {
 		return host;
 	}
-	
+
 	public void setHost(Host host) {
 		this.host = host;
 	}
@@ -101,14 +102,22 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 		this.categories = categories;
 	}
 
+	private Object getCategoriesAsString() {
+		StringBuilder builder = new StringBuilder();
+		for (String s : getCategories()) {
+			builder.append(s).append("|");
+		}
+		return builder.substring(0, builder.length() - 1);
+	}
+
 	public Map<String, Object> toHashMap() {
 		Map<String, Object> map = new HashMap<>();
 		map.put(ArticleFields.TITLE, getTitle());
 		map.put(ArticleFields.LINK, getLink());
 		map.put(ArticleFields.DESCRIPTION, getDescription());
-		map.put(ArticleFields.DATE, getDate());
+		map.put(ArticleFields.DATE, String.valueOf(getDate().getTime()));
 		map.put(ArticleFields.AUTHOR, getAuthor());
-		map.put(ArticleFields.CATEGORY, getCategories());
+		map.put(ArticleFields.CATEGORY, getCategoriesAsString());
 		return map;
 	}
 
@@ -119,10 +128,16 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 		article.setLink(values.get(1).toString());
 		article.setHost(Host.parseHost(values.get(1).toString()));
 		article.setDescription(values.get(2).toString());
-		article.setDate((Date) values.get(3));
+		article.setDate(new Date(Long.valueOf(values.get(3).toString())));
 		article.setAuthor(values.get(4).toString());
-		article.setCategories((List<String>) values.get(5));
+		article.setCategories(getCategoriesAsList(values.get(5)));
 		return article;
+	}
+
+	private List<String> getCategoriesAsList(Object object) {
+		String categories = object.toString();
+		List<String> categoriesList = new ArrayList<String>(Arrays.asList(categories.split("|")));
+		return categoriesList;
 	}
 
 	@Override
