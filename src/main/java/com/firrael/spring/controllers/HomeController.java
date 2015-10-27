@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Resource;
+import javax.annotation.Resource.AuthenticationType;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -32,6 +33,8 @@ import com.firrael.spring.data.Article;
 import com.firrael.spring.data.ArticleStorage;
 import com.firrael.spring.data.Host;
 import com.firrael.spring.data.Redis;
+import com.firrael.spring.data.User;
+import com.firrael.spring.data.User.AUTH;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.parsing.HabrHandler;
 
@@ -61,6 +64,28 @@ public class HomeController {
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
 	public String admin(Locale locale, Model model) {
 		return "admin";
+	}
+	
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public String register(Locale locale, Model model) {
+		User user = new User();
+		user.setEmail("test");
+		user.setLoggedIn(true);
+		user.setAuthToken("testToken");
+		ArrayList<String> favArticleHashes = new ArrayList<>();
+		favArticleHashes.add("412412");
+		favArticleHashes.add("4125353");
+		user.setFavoriteArticleHashes(favArticleHashes);
+		user.setLogin("test login");
+		user.setPassword("test password");
+		ArrayList<String> selectedCategories = new ArrayList<>();
+		selectedCategories.add("2");
+		selectedCategories.add("3");
+		user.setSelectedCategories(selectedCategories);
+		
+		Redis.saveUser(user);
+		
+		return "register";
 	}
 	
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)

@@ -37,44 +37,44 @@ public class UserStorage implements Storage<User, UserFields> {
 
 	@Override
 	public List<User> getItems(final int count) {
-		ArrayList<User> cachedUsers = new ArrayList<>();
-		RedisTemplate<String, String> template = Redis.getInstance();
-		Iterable<byte[]> results = template.execute(new RedisCallback<Iterable<byte[]>>() {
-
-			@Override
-			public Iterable<byte[]> doInRedis(RedisConnection connection) throws DataAccessException {
-
-				List<byte[]> binaryKeys = new ArrayList<byte[]>();
-
-				ScanOptionsBuilder builder = new ScanOptionsBuilder();
-				builder.count(count);
-				builder.match(USER_KEY + ":*");
-				ScanOptions options = builder.build();
-
-				Cursor<byte[]> cursor = connection.scan(options);
-				while (cursor.hasNext()) {
-					binaryKeys.add(cursor.next());
-				}
-
-				try {
-					cursor.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				return binaryKeys;
-			}
-		});
-
-		List<String> hashes = new ArrayList<String>();
-
-		for (byte[] b : results)
-			hashes.add(new String(b));
-
-		for (String hash : hashes)
-			cachedUsers.add(get(hash, new UserFields()));
-
-		return cachedUsers;
+//		ArrayList<User> cachedUsers = new ArrayList<>();
+//		RedisTemplate<String, String> template = Redis.getInstance();
+//		Iterable<byte[]> results = template.execute(new RedisCallback<Iterable<byte[]>>() {
+//
+//			@Override
+//			public Iterable<byte[]> doInRedis(RedisConnection connection) throws DataAccessException {
+//
+//				List<byte[]> binaryKeys = new ArrayList<byte[]>();
+//
+//				ScanOptionsBuilder builder = new ScanOptionsBuilder();
+//				builder.count(count);
+//				builder.match(USER_KEY + ":*");
+//				ScanOptions options = builder.build();
+//
+//				Cursor<byte[]> cursor = connection.scan(options);
+//				while (cursor.hasNext()) {
+//					binaryKeys.add(cursor.next());
+//				}
+//
+//				try {
+//					cursor.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//				return binaryKeys;
+//			}
+//		});
+//
+//		List<String> hashes = new ArrayList<String>();
+//
+//		for (byte[] b : results)
+//			hashes.add(new String(b));
+//
+//		for (String hash : hashes)
+//			cachedUsers.add(get(hash, new UserFields()));
+//
+//		return cachedUsers;
 	}
 
 }

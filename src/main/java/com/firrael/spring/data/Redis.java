@@ -6,7 +6,9 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisZSetCommands.Tuple;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 public class Redis {
 	
@@ -19,6 +21,7 @@ public class Redis {
 	private final static String CHANNEL = "chid:"; // chid : 35
 	
 	private final static String AID_SET = "aids"; //zset for all aids
+	private final static String UID_SET = "uids:"; //zset for all uids
 	private final static String CID_SET = "cids:"; //zset for all cids
 	private final static String CHID_SET = "chids:"; //zset for all chids
 	
@@ -31,6 +34,10 @@ public class Redis {
 	private final static String ARTICLE_POSTFIX = ":aid";
 	private final static String CATEGORY_POSTFIX = ":cid";
 	private final static String CHANNEL_POSTFIX = ":chid";
+	
+	private final static String USER_ARTICLE_SET = "uaids:";
+	private final static String USER_CATEGORY_SET = "ucids";
+	private final static String USER_CHANNEL_SET = "uchids";
 	
 	// uid:<uid>:favArticles list с избранными статьями
 	
@@ -218,6 +225,64 @@ public class Redis {
 		}
 		
 		redisTemplate.opsForZSet().add(CHANNEL + currentChid, String.valueOf(currentChid), Double.valueOf(aid));
+	}
+	
+	public static void saveUser(User user) {
+		String uid = getInstance().opsForValue().get(USER_PREFIX + user.getLogin() + USER_POSTFIX);
+		if (uid == null) { // new user
+			uid = redisTemplate.opsForValue().get(GLOBAL_USER_ID);
+			if (uid == null) {
+				uid = "1";
+				redisTemplate.opsForValue().increment(GLOBAL_USER_ID, 1);
+			}
+			redisTemplate.opsForValue().set(USER_PREFIX + user.getLogin() + USER_POSTFIX, uid);
+			redisTemplate.opsForValue().increment(GLOBAL_USER_ID, 1);
+
+			UserStorage storage = new UserStorage();
+			storage.add(user, uid);
+			
+			redisTemplate.opsForZSet().add(UID_SET, uid, Double.parseDouble(uid));
+	
+			saveUserFavorites(user.getFavoriteArticleHashes(), uid);
+			
+			saveUserCategories(user.getSelectedCategories(), uid);
+			
+			saveUserChannels(user.getSelectedChannels(), uid);
+		}
+	}
+
+	private static void saveUserFavorites(List<String> favoriteArticleHashes, String uid) {
+		
+		TypedTuple typle = new TypedTuple<String>() {
+
+			@Override
+			public int compareTo(TypedTuple<String> arg0) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Double getScore() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+		redisTemplate.opsForZSet().add(USER_ARTICLE_SET, uid, Double.parseDouble(uid));
+	}
+	
+	private static void saveUserCategories(List<String> selectedCategories, String uid) {
+		redisTemplate.opsForZSet().add(USER_CATEGORY_SET, uid, Double.parseDouble(uid));
+	}
+	
+
+	private static void saveUserChannels(List<String> selectedChannels, String uid) {
+		redisTemplate.opsForZSet().add(USER_CHANNEL_SET, uid, Double.parseDouble(uid));
 	}
 
 

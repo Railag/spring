@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.firrael.spring.data.base.Entity;
+import com.firrael.spring.utils.ListSerializer;
 
 public class User implements Entity<User> {
 	private String login;
@@ -13,6 +14,7 @@ public class User implements Entity<User> {
 	private String email;
 	private List<String> favoriteArticleHashes;
 	private List<String> selectedCategories;
+	private List<String> selectedChannels;
 	private AUTH authType;
 	private boolean isLoggedIn;
 	private Object authToken;
@@ -23,7 +25,7 @@ public class User implements Entity<User> {
 		authType = AUTH.NONE;
 	}
 
-	enum AUTH {
+	public enum AUTH {
 		EMAIL, GOOGLE, FACEBOOK, TWITTER, NONE
 	}
 
@@ -67,6 +69,14 @@ public class User implements Entity<User> {
 		this.selectedCategories = selectedCategories;
 	}
 
+	public List<String> getSelectedChannels() {
+		return selectedChannels;
+	}
+
+	public void setSelectedChannels(List<String> selectedChannels) {
+		this.selectedChannels = selectedChannels;
+	}
+
 	@Override
 	public int hashCode() {
 		return login.hashCode();
@@ -102,8 +112,9 @@ public class User implements Entity<User> {
 		map.put(UserFields.LOGIN, getLogin());
 		map.put(UserFields.PASSWORD, getPassword());
 		map.put(UserFields.EMAIL, getEmail());
-		map.put(UserFields.FAVORITE_ARTICLES, getFavoriteArticleHashes());
-		map.put(UserFields.SELECTED_CATEGORIES, getSelectedCategories());
+		map.put(UserFields.FAVORITE_ARTICLES, ListSerializer.getInstance().serialize(getFavoriteArticleHashes()));
+		map.put(UserFields.SELECTED_CATEGORIES, ListSerializer.getInstance().serialize(getSelectedCategories()));
+		map.put(UserFields.SELECTED_CHANNELS, ListSerializer.getInstance().serialize(getSelectedChannels()));
 		map.put(UserFields.AUTH_TYPE, getAuthType());
 		map.put(UserFields.IS_LOGGED_IN, isLoggedIn());
 		map.put(UserFields.AUTH_TOKEN, getAuthToken());
@@ -116,11 +127,12 @@ public class User implements Entity<User> {
 		user.setLogin(values.get(0).toString());
 		user.setPassword(values.get(1).toString());
 		user.setEmail(values.get(2).toString());
-		user.setFavoriteArticleHashes((List<String>) values.get(3));
-		user.setSelectedCategories((List<String>) values.get(4));
-		user.setAuthType((AUTH) values.get(5));
-		user.setLoggedIn((boolean) values.get(6));
-		user.setAuthToken(values.get(7));
+		user.setFavoriteArticleHashes(ListSerializer.getInstance().deserialize(values.get(3).toString()));
+		user.setSelectedCategories(ListSerializer.getInstance().deserialize(values.get(4).toString()));
+		user.setSelectedChannels(ListSerializer.getInstance().deserialize(values.get(5).toString()));
+		user.setAuthType((AUTH) values.get(6));
+		user.setLoggedIn((boolean) values.get(7));
+		user.setAuthToken(values.get(8));
 		return user;
 	}
 }
