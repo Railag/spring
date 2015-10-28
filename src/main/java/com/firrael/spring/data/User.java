@@ -9,6 +9,7 @@ import com.firrael.spring.data.base.Entity;
 import com.firrael.spring.utils.ListSerializer;
 
 public class User implements Entity<User> {
+	private String uid;
 	private String login;
 	private String password;
 	private String email;
@@ -26,7 +27,20 @@ public class User implements Entity<User> {
 	}
 
 	public enum AUTH {
-		EMAIL, GOOGLE, FACEBOOK, TWITTER, NONE
+		EMAIL, GOOGLE, FACEBOOK, TWITTER, NONE;
+		
+		@Override
+		public String toString() {
+			return this.name();
+		};
+	}
+	
+	public String getUid() {
+		return uid;
+	}
+	
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
 	public String getLogin() {
@@ -115,8 +129,8 @@ public class User implements Entity<User> {
 		map.put(UserFields.FAVORITE_ARTICLES, ListSerializer.getInstance().serialize(getFavoriteArticleHashes()));
 		map.put(UserFields.SELECTED_CATEGORIES, ListSerializer.getInstance().serialize(getSelectedCategories()));
 		map.put(UserFields.SELECTED_CHANNELS, ListSerializer.getInstance().serialize(getSelectedChannels()));
-		map.put(UserFields.AUTH_TYPE, getAuthType());
-		map.put(UserFields.IS_LOGGED_IN, isLoggedIn());
+		map.put(UserFields.AUTH_TYPE, getAuthType().toString());
+		map.put(UserFields.IS_LOGGED_IN, String.valueOf(isLoggedIn()));
 		map.put(UserFields.AUTH_TOKEN, getAuthToken());
 		return map;
 	}

@@ -26,7 +26,7 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 		RedisTemplate<String, String> template = Redis.getInstance();
 		List<Object> values = template.opsForHash().multiGet(hash, fields);
 		Article article = new Article().initialize(values);
-
+		article.setAid(hash);
 		return article;
 	}
 

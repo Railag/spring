@@ -46,7 +46,7 @@ public class HomeController {
 
 	private final static int PULL_DELAY = 1000 * 60 * 5; // 5 mins
 
-	private ArrayList<Article> articles = new ArrayList<>();
+	private List<Article> articles = new ArrayList<>();
 
 	private static Logger logger = Logger.getLogger(HomeController.class.getName());
 
@@ -76,12 +76,17 @@ public class HomeController {
 		favArticleHashes.add("412412");
 		favArticleHashes.add("4125353");
 		user.setFavoriteArticleHashes(favArticleHashes);
-		user.setLogin("test login");
+		user.setLogin("user");
 		user.setPassword("test password");
 		ArrayList<String> selectedCategories = new ArrayList<>();
 		selectedCategories.add("2");
 		selectedCategories.add("3");
 		user.setSelectedCategories(selectedCategories);
+		
+		ArrayList<String> selectedChannels = new ArrayList<>();
+		selectedChannels.add("1");
+		selectedChannels.add("2");
+		user.setSelectedChannels(selectedChannels);
 		
 		Redis.saveUser(user);
 		
@@ -143,9 +148,10 @@ public class HomeController {
 		Redis.saveArticles(articles);
 	}
 
-	private ArrayList<Article> getCachedArticles() {
-		ArticleStorage storage = new ArticleStorage();
-		return new ArrayList<>(storage.getItems(30));
+	private List<Article> getCachedArticles() {
+//		ArticleStorage storage = new ArticleStorage();
+//		return new ArrayList<>(storage.getItems(30));
+		return Redis.getArticlesForUser("user");
 	}
 
 	private void sortFeed() {

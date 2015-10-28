@@ -1,7 +1,6 @@
 package com.firrael.spring.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +10,7 @@ import com.firrael.spring.data.base.Entity;
 import com.firrael.spring.utils.ListSerializer;
 
 public class Article implements Cloneable, Comparable<Article>, Entity<Article> {
+	private String aid;
 	private String title;
 	private String link;
 	private String description;
@@ -21,6 +21,14 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 
 	public Article() {
 		categories = new ArrayList<>();
+	}
+	
+	public String getAid() {
+		return aid;
+	}
+	
+	public void setAid(String aid) {
+		this.aid = aid;
 	}
 
 	public String getTitle() {

@@ -4,21 +4,26 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 public class UserTyple implements TypedTuple<String> {
 	
+	private final String value;
+	private final Double score;
+	
+	public UserTyple(String value, Double score) {
+		this.value = value;
+		this.score = score;
+	}
+	
 		@Override
-		public int compareTo(TypedTuple<String> arg0) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int compareTo(TypedTuple<String> second) {
+			return this.getScore().compareTo(second.getScore());
 		}
 
 		@Override
 		public String getValue() {
-			// TODO Auto-generated method stub
-			return null;
+			return value;
 		}
 
 		@Override
 		public Double getScore() {
-			// TODO Auto-generated method stub
-			return null;
+			return score;
 		}
 }
