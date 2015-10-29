@@ -137,9 +137,11 @@ public class HomeController {
 
 		articles = getCachedArticles(login);
 
-		if (articles.isEmpty())
-			loadFeed();
-
+		if (articles.isEmpty()) {
+			articles = loadFeed();
+			sortFeed();
+		}
+		
 		List<ArticlePage> pages = ArticlePage.getPagingList(articles);
 
 		model.addAttribute("pages", pages);
@@ -152,15 +154,12 @@ public class HomeController {
 		return "home";
 	}
 
-	@Async
-	private void loadFeed() {
-		Redis.initialize(redisTemplate);
-
-		getFeed(Host.HABR_HOST);
-		getFeed(Host.GEEKTIMES_HOST);
-		getFeed(Host.MEGAMOZG_HOST);
-
-		sortFeed();
+	private List<Article> loadFeed() {
+		ArrayList<Article> articles = new ArrayList<>();
+		articles.addAll(getFeed(Host.HABR_HOST));
+		articles.addAll(getFeed(Host.GEEKTIMES_HOST));
+		articles.addAll(getFeed(Host.MEGAMOZG_HOST));
+		return articles;
 	}
 
 	// request feed every 5 minutes
@@ -171,7 +170,7 @@ public class HomeController {
 		loadFeed();
 	}
 
-	private void cacheArticles(ArrayList<Article> articles) {
+	private void cacheArticles(List<Article> articles) {
 		Redis.saveArticles(articles);
 	}
 
@@ -188,7 +187,7 @@ public class HomeController {
 		Collections.sort(articles);
 	}
 
-	private void getFeed(String host) {
+	private List<Article> getFeed(String host) {
 		RestTemplate template = new RestTemplate();
 
 		ResponseEntity<?> response = null;
@@ -207,7 +206,7 @@ public class HomeController {
 			saxParser.parse(new InputSource(new StringReader(response.getBody().toString())), handler);
 			newArticles = handler.getArticles();
 			cacheArticles(new ArrayList<>(newArticles));
-			articles.addAll(newArticles);
+			return newArticles;
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -215,6 +214,8 @@ public class HomeController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		return new ArrayList<>();
 
 	}
 

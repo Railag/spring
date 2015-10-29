@@ -149,8 +149,8 @@ public class Redis {
 	 * channels to chid list if they are not already there => + Add all new
 	 * articles to chid's lists. +?
 	 */
-	public static void saveArticles(ArrayList<Article> newArticles) {
-		for (Article a : newArticles) {
+	public static void saveArticles(List<Article> articles) {
+		for (Article a : articles) {
 			String aid = getInstance().opsForValue().get(ARTICLE_PREFIX + a.getTitle().hashCode() + ARTICLE_POSTFIX);
 			if (aid == null) // new article
 				saveArticle(a);
@@ -195,9 +195,9 @@ public class Redis {
 			if (!exists) {
 				currentCid = cids.size();
 				redisTemplate.opsForZSet().add(CID_SET, String.valueOf(currentCid), currentCid);
-				redisTemplate.opsForValue().set(CATEGORY_PREFIX + currentCid + CATEGORY_POSTFIX, category);
-				redisTemplate.opsForValue().set(CATEGORY_PREFIX + category + CATEGORY_NAME_POSTFIX,
+				redisTemplate.opsForValue().set(CATEGORY_PREFIX + category + CATEGORY_POSTFIX,
 						String.valueOf(currentCid));
+				redisTemplate.opsForValue().set(CATEGORY_PREFIX + currentCid + CATEGORY_NAME_POSTFIX, category);
 				cids.add(String.valueOf(currentCid));
 			}
 
@@ -229,9 +229,8 @@ public class Redis {
 		if (!exists) {
 			currentChid = chids.size();
 			redisTemplate.opsForZSet().add(CHID_SET, String.valueOf(currentChid), currentChid);
-			redisTemplate.opsForValue().set(CHANNEL_PREFIX + currentChid + CHANNEL_POSTFIX, newChannel);
-			redisTemplate.opsForValue().set(CHANNEL_PREFIX + newChannel + CHANNEL_NAME_POSTFIX,
-					String.valueOf(currentChid));
+			redisTemplate.opsForValue().set(CHANNEL_PREFIX + newChannel + CHANNEL_POSTFIX, String.valueOf(currentChid));
+			redisTemplate.opsForValue().set(CHANNEL_PREFIX + currentChid + CHANNEL_NAME_POSTFIX, newChannel);
 		}
 
 		redisTemplate.opsForZSet().add(CHANNEL + currentChid, String.valueOf(currentChid), Double.valueOf(aid));
