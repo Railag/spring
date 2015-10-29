@@ -22,12 +22,18 @@ public class UserStorage implements Storage<User, UserFields> {
 
 	@Override
 	public User get(String hash, UserFields userFields) {
+		String key = String.format("%s:%s", USER_KEY, hash);
 		List<Object> fields = userFields.asArray();
 		RedisTemplate<String, String> template = Redis.getInstance();
-		List<Object> values = template.opsForHash().multiGet(hash, fields);
+		List<Object> values = template.opsForHash().multiGet(key, fields);
 		User user = new User().initialize(values);
 		user.setUid(hash);
 		return user;
+	}
+	
+	public User findUserByLogin(String login) {
+		String uid = Redis.getUidForLogin(login);
+		return get(uid, new UserFields());
 	}
 
 	@Override
@@ -40,7 +46,7 @@ public class UserStorage implements Storage<User, UserFields> {
 		Set<TypedTuple<String>> set = template.opsForZSet().rangeByScoreWithScores("uids", counter - count, counter);
 		for (TypedTuple<String> tt : set) {
 			String uid = tt.getValue();
-			User user = get("uid:" + uid, new UserFields());
+			User user = get(uid, new UserFields());
 			cachedUsers.add(user);
 		}
 		return cachedUsers;

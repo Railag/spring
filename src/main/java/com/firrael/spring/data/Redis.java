@@ -48,10 +48,13 @@ public class Redis {
 	private final static String CATEGORY_POSTFIX = ":cid";
 	private final static String CHANNEL_POSTFIX = ":chid";
 
+	private final static String CATEGORY_NAME_POSTFIX = ":name";
+	private final static String CHANNEL_NAME_POSTFIX = ":name";
+
 	private final static String CHANNEL_TEMP = "chtmp:";
 	private final static String CATEGORY_TEMP = "ctmp:";
 	private final static String ARTICLES_TEMP = "atmp:";
-	
+
 	private static Logger logger = Logger.getLogger(Redis.class.getName());
 
 	// uid:<uid>:favArticles list с избранными статьями
@@ -193,6 +196,8 @@ public class Redis {
 				currentCid = cids.size();
 				redisTemplate.opsForZSet().add(CID_SET, String.valueOf(currentCid), currentCid);
 				redisTemplate.opsForValue().set(CATEGORY_PREFIX + currentCid + CATEGORY_POSTFIX, category);
+				redisTemplate.opsForValue().set(CATEGORY_PREFIX + category + CATEGORY_NAME_POSTFIX,
+						String.valueOf(currentCid));
 				cids.add(String.valueOf(currentCid));
 			}
 
@@ -225,6 +230,8 @@ public class Redis {
 			currentChid = chids.size();
 			redisTemplate.opsForZSet().add(CHID_SET, String.valueOf(currentChid), currentChid);
 			redisTemplate.opsForValue().set(CHANNEL_PREFIX + currentChid + CHANNEL_POSTFIX, newChannel);
+			redisTemplate.opsForValue().set(CHANNEL_PREFIX + newChannel + CHANNEL_NAME_POSTFIX,
+					String.valueOf(currentChid));
 		}
 
 		redisTemplate.opsForZSet().add(CHANNEL + currentChid, String.valueOf(currentChid), Double.valueOf(aid));
@@ -265,41 +272,47 @@ public class Redis {
 
 	private static List<Article> getFilteredArticlesForUser(User user) {
 		// based on categories and channels
-		
-		// getting union of all selected categories aids and intersecting them with all selecting channels aids.
-		
-		List<String> categories = user.getSelectedCategories(); //cids
+
+		// getting union of all selected categories aids and intersecting them
+		// with all selecting channels aids.
+
+		List<String> categories = user.getSelectedCategories(); // cids
 		boolean isInTempCategories = false;
 		if (categories.size() > 1) {
-			Long count = redisTemplate.opsForZSet().unionAndStore(CATEGORY + categories.get(0), categories.subList(1, categories.size()), CATEGORY_TEMP + user.getUid());
+			Long count = redisTemplate.opsForZSet().unionAndStore(CATEGORY + categories.get(0),
+					categories.subList(1, categories.size()), CATEGORY_TEMP + user.getUid());
 			logger.info("Total selected user articles for categories: " + count);
 			isInTempCategories = true;
 		}
-		
+
 		List<String> channels = user.getSelectedChannels(); // chids
 		boolean isInTempChannels = false;
 		if (channels.size() > 1) {
-				Long count = redisTemplate.opsForZSet().unionAndStore(CHANNEL + channels.get(0), channels.subList(1, channels.size()), CHANNEL_TEMP + user.getUid());
-				logger.info("Total selected user articles for channels: " + count);
-				isInTempChannels = true;
+			Long count = redisTemplate.opsForZSet().unionAndStore(CHANNEL + channels.get(0),
+					channels.subList(1, channels.size()), CHANNEL_TEMP + user.getUid());
+			logger.info("Total selected user articles for channels: " + count);
+			isInTempChannels = true;
 		}
-		
-		String articlesForSelectedCategoriesKey = isInTempCategories ? CATEGORY_TEMP + user.getUid() : CATEGORY + categories.get(0);
-		String articlesForSelectedChannelsKey = isInTempChannels ? CHANNEL_TEMP + user.getUid() : CHANNEL + channels.get(0);
+
+		String articlesForSelectedCategoriesKey = isInTempCategories ? CATEGORY_TEMP + user.getUid()
+				: CATEGORY + categories.get(0);
+		String articlesForSelectedChannelsKey = isInTempChannels ? CHANNEL_TEMP + user.getUid()
+				: CHANNEL + channels.get(0);
 
 		String filteredArticlesKey = ARTICLES_TEMP + user.getUid();
-		
-		Long count = redisTemplate.opsForZSet().intersectAndStore(articlesForSelectedCategoriesKey, articlesForSelectedChannelsKey, filteredArticlesKey);
+
+		Long count = redisTemplate.opsForZSet().intersectAndStore(articlesForSelectedCategoriesKey,
+				articlesForSelectedChannelsKey, filteredArticlesKey);
 		logger.info("Total filtered user articles: " + count);
-		
+
 		Set<String> filteredAids = redisTemplate.opsForZSet().range(filteredArticlesKey, 0, -1);
 		ArticleStorage storage = new ArticleStorage();
 		ArticleFields fields = new ArticleFields();
-		
+
 		ArrayList<Article> filteredArticles = new ArrayList<>();
 		for (String aid : filteredAids)
 			filteredArticles.add(storage.get(aid, fields));
-		
+
 		return filteredArticles;
 	}
 
@@ -309,6 +322,14 @@ public class Redis {
 
 	public static String getUidForLogin(String login) {
 		return redisTemplate.opsForValue().get(USER_PREFIX + login + USER_POSTFIX);
+	}
+
+	public static String getChannelForChid(String chid) {
+		return redisTemplate.opsForValue().get(CHANNEL_PREFIX + chid + CHANNEL_NAME_POSTFIX);
+	}
+
+	public static String getCategoryForCid(String cid) {
+		return redisTemplate.opsForValue().get(CATEGORY_PREFIX + cid + CATEGORY_NAME_POSTFIX);
 	}
 
 	// private static void saveUserFavorites(List<String> favoriteArticleHashes,
@@ -351,5 +372,43 @@ public class Redis {
 
 	public static RedisTemplate<String, String> getInstance() {
 		return redisTemplate;
+	}
+
+	public static List<String> getChannelsForUser(User user) {
+		List<String> chids = user.getSelectedChannels();
+		return getChannelsForChids(chids);
+	}
+
+	public static List<String> getChannelsForChids(List<String> chids) {
+		List<String> channels = new ArrayList<>();
+		for (String chid : chids)
+			channels.add(getChannelForChid(chid));
+
+		return channels;
+	}
+
+	public static List<String> getCategoriesForUser(User user) {
+		List<String> cids = user.getSelectedCategories();
+		return getCategoriesForCids(cids);
+	}
+
+	private static List<String> getCategoriesForCids(List<String> cids) {
+		List<String> categories = new ArrayList<>();
+		for (String cid : cids)
+			categories.add(getCategoryForCid(cid));
+
+		return categories;
+	}
+
+	public static List<String> getAllChannels() {
+		Set<String> chids = redisTemplate.opsForZSet().range(CHID_SET, 0, -1);
+		List<String> chidsList = new ArrayList<>(chids);
+		return getChannelsForChids(chidsList);
+	}
+
+	public static List<String> getAllCategories() {
+		Set<String> cids = redisTemplate.opsForZSet().range(CID_SET, 0, -1);
+		List<String> cidsList = new ArrayList<>(cids);
+		return getCategoriesForCids(cidsList);
 	}
 }

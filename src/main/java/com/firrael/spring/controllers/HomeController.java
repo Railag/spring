@@ -2,6 +2,7 @@ package com.firrael.spring.controllers;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +36,7 @@ import com.firrael.spring.data.Host;
 import com.firrael.spring.data.Redis;
 import com.firrael.spring.data.User;
 import com.firrael.spring.data.User.AUTH;
+import com.firrael.spring.data.UserStorage;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.parsing.HabrHandler;
 
@@ -60,12 +62,12 @@ public class HomeController {
 	public String login(Locale locale, Model model) {
 		return "login";
 	}
-	
+
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
 	public String admin(Locale locale, Model model) {
 		return "admin";
 	}
-	
+
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String register(Locale locale, Model model) {
 		User user = new User();
@@ -82,33 +84,58 @@ public class HomeController {
 		selectedCategories.add("2");
 		selectedCategories.add("3");
 		user.setSelectedCategories(selectedCategories);
-		
+
 		ArrayList<String> selectedChannels = new ArrayList<>();
 		selectedChannels.add("1");
 		selectedChannels.add("2");
 		user.setSelectedChannels(selectedChannels);
-		
+
 		Redis.saveUser(user);
-		
+
 		return "register";
 	}
-	
+
+	@RequestMapping(value = "/selection", method = RequestMethod.GET)
+	public String selection(Locale locale, Model model, Principal principal) {
+
+		String login = principal.getName();
+
+		UserStorage storage = new UserStorage();
+		User user = storage.findUserByLogin(login);
+
+		List<String> userChannels = Redis.getChannelsForUser(user);
+		List<String> userCategories = Redis.getCategoriesForUser(user);
+
+		model.addAttribute("userChannels", userChannels);
+		model.addAttribute("userCategories", userCategories);
+
+		List<String> allChannels = Redis.getAllChannels();
+		List<String> allCategories = Redis.getAllCategories();
+
+		model.addAttribute("allChannels", allChannels);
+		model.addAttribute("allCategories", allCategories);
+
+		return "selection";
+	}
+
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		return home(locale, model, 0);
+	public String home(Locale locale, Model model, Principal principal) {
+		return home(locale, model, principal, 0);
 	}
 
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET, params = "page")
-	public String home(Locale locale, Model model, @RequestParam int page) {
+	public String home(Locale locale, Model model, Principal principal, @RequestParam int page) {
+
+		String login = principal != null ? principal.getName() : null;
 
 		Redis.initialize(redisTemplate);
-		
+
 		logger.info("/home controller");
 
-		articles = getCachedArticles();
+		articles = getCachedArticles(login);
 
 		if (articles.isEmpty())
 			loadFeed();
@@ -128,7 +155,7 @@ public class HomeController {
 	@Async
 	private void loadFeed() {
 		Redis.initialize(redisTemplate);
-		
+
 		getFeed(Host.HABR_HOST);
 		getFeed(Host.GEEKTIMES_HOST);
 		getFeed(Host.MEGAMOZG_HOST);
@@ -148,14 +175,17 @@ public class HomeController {
 		Redis.saveArticles(articles);
 	}
 
-	private List<Article> getCachedArticles() {
-//		ArticleStorage storage = new ArticleStorage();
-//		return new ArrayList<>(storage.getItems(30));
-		return Redis.getArticlesForUser("user");
+	private List<Article> getCachedArticles(String login) {
+		if (login != null)
+			return Redis.getArticlesForUser(login);
+		else {
+			ArticleStorage storage = new ArticleStorage();
+			return new ArrayList<>(storage.getItems(100));
+		}
 	}
 
 	private void sortFeed() {
-	//	Collections.sort(articles);
+		Collections.sort(articles);
 	}
 
 	private void getFeed(String host) {

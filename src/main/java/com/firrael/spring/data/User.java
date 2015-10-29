@@ -144,8 +144,8 @@ public class User implements Entity<User> {
 		user.setFavoriteArticleHashes(ListSerializer.getInstance().deserialize(values.get(3).toString()));
 		user.setSelectedCategories(ListSerializer.getInstance().deserialize(values.get(4).toString()));
 		user.setSelectedChannels(ListSerializer.getInstance().deserialize(values.get(5).toString()));
-		user.setAuthType((AUTH) values.get(6));
-		user.setLoggedIn((boolean) values.get(7));
+		user.setAuthType(AUTH.valueOf(values.get(6).toString()));
+		user.setLoggedIn(Boolean.parseBoolean(values.get(7).toString()));
 		user.setAuthToken(values.get(8));
 		return user;
 	}
