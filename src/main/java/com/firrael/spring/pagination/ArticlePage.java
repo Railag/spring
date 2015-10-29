@@ -32,7 +32,7 @@ public class ArticlePage implements Page<Article> {
 		
 		for (int i = 0; i < articles.size(); i += PAGE_SIZE) {
 			if (articles.size() - PAGE_SIZE < i) {
-				ArticlePage page = new ArticlePage(articles.subList(i, articles.size()), (i / 5) + 1);
+				ArticlePage page = new ArticlePage(articles.subList(i, articles.size()), i / 5);
 				page.setLast(true);
 				pages.add(page);
 				return pages;
