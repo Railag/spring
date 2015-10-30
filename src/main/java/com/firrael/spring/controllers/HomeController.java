@@ -74,20 +74,14 @@ public class HomeController {
 		user.setEmail("test");
 		user.setLoggedIn(true);
 		user.setAuthToken("testToken");
-		ArrayList<String> favArticleHashes = new ArrayList<>();
-		favArticleHashes.add("412412");
-		favArticleHashes.add("4125353");
+		List<String> favArticleHashes = new ArrayList<>();
 		user.setFavoriteArticleHashes(favArticleHashes);
 		user.setLogin("user");
 		user.setPassword("test password");
-		ArrayList<String> selectedCategories = new ArrayList<>();
-		selectedCategories.add("2");
-		selectedCategories.add("3");
+		List<String> selectedCategories = Redis.getAllCategories();
 		user.setSelectedCategories(selectedCategories);
 
-		ArrayList<String> selectedChannels = new ArrayList<>();
-		selectedChannels.add("1");
-		selectedChannels.add("2");
+		List<String> selectedChannels = Redis.getAllChannels();
 		user.setSelectedChannels(selectedChannels);
 
 		Redis.saveUser(user);
@@ -118,6 +112,12 @@ public class HomeController {
 		return "selection";
 	}
 
+	@RequestMapping(value = { "/selection" }, method = RequestMethod.GET, params = "selectedCategories")
+	public String selection(Locale locale, Model model, Principal principal,
+			@RequestParam List<String> selectedCategories) {
+		return "selection";
+	}
+
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
 	public String home(Locale locale, Model model, Principal principal) {
 		return home(locale, model, principal, 0);
@@ -141,7 +141,7 @@ public class HomeController {
 			articles = loadFeed();
 			sortFeed();
 		}
-		
+
 		List<ArticlePage> pages = ArticlePage.getPagingList(articles);
 
 		model.addAttribute("pages", pages);
@@ -216,7 +216,7 @@ public class HomeController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return new ArrayList<>();
 
 	}

@@ -12,6 +12,9 @@ public class ListSerializer implements Serializer<List<String>, String> {
 	
 	@Override
 	public String serialize(List<String> list) {
+		if (list.isEmpty())
+			return "";
+		
 		StringBuilder builder = new StringBuilder();
 		for (String s : list) {
 			builder.append(s).append("|");
