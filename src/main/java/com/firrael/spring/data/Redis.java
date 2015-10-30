@@ -3,16 +3,9 @@ package com.firrael.spring.data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisZSetCommands.Tuple;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
-
-import com.firrael.spring.controllers.HomeController;
 
 public class Redis {
 
@@ -184,7 +177,8 @@ public class Redis {
 			boolean exists = false;
 
 			for (String cid : cids) {
-				String existingCategory = redisTemplate.opsForValue().get(CATEGORY_PREFIX + cid + CATEGORY_POSTFIX);
+				String existingCategory = redisTemplate.opsForValue()
+						.get(CATEGORY_PREFIX + cid + CATEGORY_NAME_POSTFIX);
 				if (existingCategory.equals(category)) {
 					exists = true;
 					currentCid = Integer.valueOf(cid);
@@ -218,7 +212,7 @@ public class Redis {
 		boolean exists = false;
 
 		for (String chid : chids) {
-			String existingChannel = redisTemplate.opsForValue().get(CHANNEL_PREFIX + chid + CHANNEL_POSTFIX);
+			String existingChannel = redisTemplate.opsForValue().get(CHANNEL_PREFIX + chid + CHANNEL_NAME_POSTFIX);
 			if (existingChannel.equals(newChannel)) {
 				exists = true;
 				currentChid = Integer.valueOf(chid);

@@ -155,6 +155,8 @@ public class HomeController {
 	}
 
 	private List<Article> loadFeed() {
+		Redis.initialize(redisTemplate);
+
 		ArrayList<Article> articles = new ArrayList<>();
 		articles.addAll(getFeed(Host.HABR_HOST));
 		articles.addAll(getFeed(Host.GEEKTIMES_HOST));

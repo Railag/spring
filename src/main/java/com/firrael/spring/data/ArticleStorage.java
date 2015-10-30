@@ -1,6 +1,7 @@
 package com.firrael.spring.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,9 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 		
 		RedisTemplate<String, String> template = Redis.getInstance();
 		String articleCounter = template.opsForValue().get("global:aid");
+		if (articleCounter == null)
+			return Collections.emptyList();
+		
 		Double counter = Double.parseDouble(articleCounter);
 		Set<TypedTuple<String>> set = template.opsForZSet().rangeByScoreWithScores("aids", counter - count, counter);
 		for (TypedTuple<String> tt : set) {
