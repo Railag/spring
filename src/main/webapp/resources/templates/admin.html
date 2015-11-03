@@ -5,9 +5,17 @@
         <title>Hello World!</title>
     </head>
     <body>
+    <div th:replace="header :: header"></div>
         <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Sign Out"/>
         </form>
+        
+        <form th:action="@{/selection}" method="post">
+            <input type="submit" value="To selection"/>
+        </form>
+        
+        	<div th:replace="footer :: footer"></div>
+        
     </body>
 </html>

@@ -58,8 +58,6 @@ public class HabrHandler extends DefaultHandler2 {
 
 			articleXml = wrapXml(articleXml);
 			
-			System.out.println(articleXml);
-
 			try {
 				SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 				parser.parse(new InputSource(new StringReader(articleXml)), articleHandler);

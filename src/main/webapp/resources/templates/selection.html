@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Selection</title>
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+
+	<form action="#" th:action="@{/selection}" method="get"
+		th:object="${allChannels}">
+		<div th:each="channel : ${allChannels}">
+			<input type="checkbox" th:field="${allChannels}"
+				th:value="${channel}"/> <label th:text="${channel}">Channel</label>
+		</div>
+		<input type="submit" />
+	</form>
+
+	<form action="#" th:action="@{/selection}" method="get"
+		th:object="${allCategories}">
+		<div th:each="category : ${allCategories}">
+			<input type="checkbox" th:field="${allCategories}"
+				th:value="${category}"/> <label th:text="${category}">Category</label>
+		</div>
+		<input type="submit" />
+	</form>
+
+	<div th:replace="footer :: footer"></div>
+
+</body>
+</html>

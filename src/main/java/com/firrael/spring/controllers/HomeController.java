@@ -2,19 +2,20 @@ package com.firrael.spring.controllers;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Resource;
+import javax.annotation.Resource.AuthenticationType;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,11 @@ import org.xml.sax.SAXException;
 
 import com.firrael.spring.data.Article;
 import com.firrael.spring.data.ArticleStorage;
+import com.firrael.spring.data.Host;
 import com.firrael.spring.data.Redis;
+import com.firrael.spring.data.User;
+import com.firrael.spring.data.User.AUTH;
+import com.firrael.spring.data.UserStorage;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.parsing.HabrHandler;
 
@@ -41,23 +46,14 @@ import com.firrael.spring.parsing.HabrHandler;
 @Controller
 public class HomeController {
 
-	private final static String HABR_HOST = "http://habrahabr.ru/rss";
-	private final static String GEEKTIMES_HOST = "http://geektimes.ru/rss";
-	private final static String MEGAMOZG_HOST = "http://megamozg.ru/rss";
-
 	private final static int PULL_DELAY = 1000 * 60 * 5; // 5 mins
 
-	private static int ARTICLES_COUNT = 0;
-
-	private ArrayList<Article> articles = new ArrayList<>();
-
-	@Autowired
-	private ApplicationContext context;
+	private List<Article> articles = new ArrayList<>();
 
 	private static Logger logger = Logger.getLogger(HomeController.class.getName());
 
 	@Autowired
-	private RedisTemplate<String, String> template;
+	private RedisTemplate<String, String> redisTemplate;
 
 	@Resource(name = "redisTemplate")
 	private ListOperations<String, String> listOps;
@@ -66,33 +62,85 @@ public class HomeController {
 	public String login(Locale locale, Model model) {
 		return "login";
 	}
-	
+
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
 	public String admin(Locale locale, Model model) {
 		return "admin";
 	}
-	
+
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public String register(Locale locale, Model model) {
+		User user = new User();
+		user.setEmail("test");
+		user.setLoggedIn(true);
+		user.setAuthToken("testToken");
+		List<String> favArticleHashes = new ArrayList<>();
+		user.setFavoriteArticleHashes(favArticleHashes);
+		user.setLogin("user");
+		user.setPassword("test password");
+		List<String> selectedCategories = Redis.getAllCategories();
+		user.setSelectedCategories(selectedCategories);
+
+		List<String> selectedChannels = Redis.getAllChannels();
+		user.setSelectedChannels(selectedChannels);
+
+		Redis.saveUser(user);
+
+		return "register";
+	}
+
+	@RequestMapping(value = "/selection", method = RequestMethod.GET)
+	public String selection(Locale locale, Model model, Principal principal) {
+
+		String login = principal.getName();
+
+		UserStorage storage = new UserStorage();
+		User user = storage.findUserByLogin(login);
+
+		List<String> userChannels = Redis.getChannelsForUser(user);
+		List<String> userCategories = Redis.getCategoriesForUser(user);
+
+		model.addAttribute("userChannels", userChannels);
+		model.addAttribute("userCategories", userCategories);
+
+		List<String> allChannels = Redis.getAllChannels();
+		List<String> allCategories = Redis.getAllCategories();
+
+		model.addAttribute("allChannels", allChannels);
+		model.addAttribute("allCategories", allCategories);
+
+		return "selection";
+	}
+
+	@RequestMapping(value = { "/selection" }, method = RequestMethod.GET, params = "selectedCategories")
+	public String selection(Locale locale, Model model, Principal principal,
+			@RequestParam List<String> selectedCategories) {
+		return "selection";
+	}
+
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		return home(locale, model, 0);
+	public String home(Locale locale, Model model, Principal principal) {
+		return home(locale, model, principal, 0);
 	}
 
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET, params = "page")
-	public String home(Locale locale, Model model, @RequestParam int page) {
+	public String home(Locale locale, Model model, Principal principal, @RequestParam int page) {
 
-		Redis.initialize(template);
-		
+		String login = principal != null ? principal.getName() : null;
+
+		Redis.initialize(redisTemplate);
+
 		logger.info("/home controller");
 
-		articles = getCachedArticles();
+		articles = getCachedArticles(login);
 
-		if (articles.isEmpty())
-			loadFeed();
-
-		cacheArticles(articles);
+		if (articles.isEmpty()) {
+			articles = loadFeed();
+			sortFeed();
+		}
 
 		List<ArticlePage> pages = ArticlePage.getPagingList(articles);
 
@@ -106,13 +154,14 @@ public class HomeController {
 		return "home";
 	}
 
-	@Async
-	private void loadFeed() {
-		getFeed(HABR_HOST);
-		getFeed(GEEKTIMES_HOST);
-		getFeed(MEGAMOZG_HOST);
+	private List<Article> loadFeed() {
+		Redis.initialize(redisTemplate);
 
-		sortFeed();
+		ArrayList<Article> articles = new ArrayList<>();
+		articles.addAll(getFeed(Host.HABR_HOST));
+		articles.addAll(getFeed(Host.GEEKTIMES_HOST));
+		articles.addAll(getFeed(Host.MEGAMOZG_HOST));
+		return articles;
 	}
 
 	// request feed every 5 minutes
@@ -123,22 +172,24 @@ public class HomeController {
 		loadFeed();
 	}
 
-	private void cacheArticles(ArrayList<Article> articles) {
-		ArticleStorage storage = new ArticleStorage();
-		for (Article a : articles)
-			storage.add(a);
+	private void cacheArticles(List<Article> articles) {
+		Redis.saveArticles(articles);
 	}
 
-	private ArrayList<Article> getCachedArticles() {
-		ArticleStorage storage = new ArticleStorage();
-		return new ArrayList<>(storage.getItems(30));
+	private List<Article> getCachedArticles(String login) {
+		if (login != null)
+			return Redis.getArticlesForUser(login);
+		else {
+			ArticleStorage storage = new ArticleStorage();
+			return new ArrayList<>(storage.getItems(100));
+		}
 	}
 
 	private void sortFeed() {
 		Collections.sort(articles);
 	}
 
-	private void getFeed(String host) {
+	private List<Article> getFeed(String host) {
 		RestTemplate template = new RestTemplate();
 
 		ResponseEntity<?> response = null;
@@ -156,7 +207,8 @@ public class HomeController {
 			HabrHandler handler = new HabrHandler();
 			saxParser.parse(new InputSource(new StringReader(response.getBody().toString())), handler);
 			newArticles = handler.getArticles();
-			articles.addAll(newArticles);
+			cacheArticles(new ArrayList<>(newArticles));
+			return newArticles;
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -164,6 +216,8 @@ public class HomeController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		return new ArrayList<>();
 
 	}
 

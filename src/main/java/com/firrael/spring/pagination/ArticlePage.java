@@ -21,12 +21,27 @@ public class ArticlePage implements Page<Article> {
 
 	public static List<ArticlePage> getPagingList(List<Article> articles) {
 		ArrayList<ArticlePage> pages = new ArrayList<>();
+		
+		if (articles.size() <= PAGE_SIZE) {
+			ArticlePage page = new ArticlePage(articles, 0);
+			page.setFirst(true);
+			page.setLast(true);
+			pages.add(page);
+			return pages;
+		}
+		
 		for (int i = 0; i < articles.size(); i += PAGE_SIZE) {
+			if (articles.size() - PAGE_SIZE < i) {
+				ArticlePage page = new ArticlePage(articles.subList(i, articles.size()), i / 5);
+				page.setLast(true);
+				pages.add(page);
+				return pages;
+			}
+				
 			ArticlePage page = new ArticlePage(articles.subList(i, i + PAGE_SIZE), i / 5);
 			if (i == 0)
 				page.setFirst(true);
-			if (i >= articles.size() - PAGE_SIZE)
-				page.setLast(true);
+			
 			pages.add(page);
 		}
 
