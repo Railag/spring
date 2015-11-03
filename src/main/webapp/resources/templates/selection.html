@@ -2,27 +2,73 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}"/>
 <title>Selection</title>
 </head>
+<script type="text/javascript">
+$(document).ready(function(){
+	validateChannels();
+	validateCategories();
+});
+
+function validateChannels() {
+	var isValid = false;
+	$("#channel input").each(function() {
+		isValid = $(this).is(':checked');
+		return !isValid;
+	});
+	
+	if (isValid) {
+		$("#channel-submit").hover(function() {
+			$(this).fadeOut(500);
+		}, function() {
+			$(this).fadeIn(1000);
+		});
+	}
+}
+
+function validateCategories() {
+	var isValid = false;
+	$("#category input").each(function() {
+		isValid = $(this).is(':checked');
+		return !isValid;
+	});
+	
+	if (isValid) {
+		$("#category-submit").hover(function() {
+			$(this).fadeOut(500);
+		}, function() {
+			$(this).fadeIn(1000);
+		});
+	}
+}
+</script>
+
 <body>
 	<div th:replace="header :: header"></div>
 
-	<form action="#" th:action="@{/selection}"
-		th:object="${selectionModel}" method="post">
-		<div th:each="channel : *{allChannels}">
-			<input type="checkbox" th:field="*{selectedChannels}"
-				th:value="${channel}" /> <label th:text="${channel.name}">Channel</label>
-		</div>
-		<input type="submit" />
-	</form>
+	<h2 id="selection-title">Сайты</h2>
 
 	<form action="#" th:action="@{/selection}"
 		th:object="${selectionModel}" method="post">
-		<div th:each="category : *{allCategories}">
+		<div th:each="channel : *{allChannels}" th:class="'checkbox'" id="channel">
+			<input type="checkbox" th:field="*{selectedChannels}"
+				th:value="${channel}" /> <label th:text="${channel.name}">Channel</label>
+		</div>
+		<input type="submit" id="channel-submit" class="selection-submit" />
+	</form>
+
+	<h2 id="selection-title">Теги</h2>
+
+	<form action="#" th:action="@{/selection}"
+		th:object="${selectionModel}" method="post">
+		<div th:each="category : *{allCategories}" th:class="'checkbox'" id="category">
 			<input type="checkbox" th:field="*{selectedCategories}"
 				th:value="${category}" /> <label th:text="${category.name}">Category</label>
 		</div>
-		<input type="submit" />
+		<input type="submit" id="category-submit" class="selection-submit" />
 	</form>
 
 	<div th:replace="footer :: footer"></div>
