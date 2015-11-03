@@ -32,8 +32,11 @@ import org.xml.sax.SAXException;
 
 import com.firrael.spring.data.Article;
 import com.firrael.spring.data.ArticleStorage;
+import com.firrael.spring.data.Category;
+import com.firrael.spring.data.Channel;
 import com.firrael.spring.data.Host;
 import com.firrael.spring.data.Redis;
+import com.firrael.spring.data.SelectionModel;
 import com.firrael.spring.data.User;
 import com.firrael.spring.data.User.AUTH;
 import com.firrael.spring.data.UserStorage;
@@ -105,16 +108,39 @@ public class HomeController {
 
 		List<String> allChannels = Redis.getAllChannels();
 		List<String> allCategories = Redis.getAllCategories();
+		
+		ArrayList<Channel> channels = new ArrayList<>();
+		for (String channel : allChannels) {
+			channels.add(new Channel(channel));
+		}
+		
+		ArrayList<Category> categories = new ArrayList<>();
+		for (String category : allCategories) {
+			categories.add(new Category(category));
+		}
+		
+		SelectionModel selectionModel = new SelectionModel();
+		selectionModel.setAllCategories(categories);
+		selectionModel.setAllChannels(channels);
 
-		model.addAttribute("allChannels", allChannels);
-		model.addAttribute("allCategories", allCategories);
+	/*	model.addAttribute("allChannels", channels);
+		model.addAttribute("allCategories", categories);*/
+		model.addAttribute("selectionModel", selectionModel);
 
 		return "selection";
 	}
 
-	@RequestMapping(value = { "/selection" }, method = RequestMethod.GET, params = "selectedCategories")
-	public String selection(Locale locale, Model model, Principal principal,
-			@RequestParam List<String> selectedCategories) {
+	@RequestMapping(value = { "/selection" }, method = RequestMethod.POST, params = "selectedChannels")
+	public String selectionChannels(Locale locale, Model model, Principal principal,
+			@RequestParam List<Channel> selectedChannels) {
+		// update user selected channels
+		return "selection";
+	}
+	
+	@RequestMapping(value = { "/selection" }, method = RequestMethod.POST, params = "selectedCategories")
+	public String selectionCategories(Locale locale, Model model, Principal principal,
+			@RequestParam List<Category> selectedCategories) {
+		// update user selected categories
 		return "selection";
 	}
 
