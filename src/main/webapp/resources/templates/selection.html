@@ -4,46 +4,66 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
-<script th:src="@{/resources/js/jquery-2.1.4.min.js}"/>
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}" />
 <title>Selection</title>
 </head>
 <script type="text/javascript">
-$(document).ready(function(){
-	validateChannels();
-	validateCategories();
-});
-
-function validateChannels() {
-	var isValid = false;
-	$("#channel input").each(function() {
-		isValid = $(this).is(':checked');
-		return !isValid;
+	$(document).ready(function() {
+		validateChannels();
+		validateCategories();
+		setupCheckboxesClick();
 	});
-	
-	if (isValid) {
-		$("#channel-submit").hover(function() {
-			$(this).fadeOut(500);
-		}, function() {
-			$(this).fadeIn(1000);
+
+	function validateChannels() {
+		var isValid = false;
+		$("#channel input").each(function() {
+			isValid = $(this).is(':checked');
+			return !isValid;
+		});
+
+		if (isValid) {
+			$("#channel-submit").hover(function() {
+				$(this).fadeOut(500);
+			}, function() {
+				$(this).fadeIn(1000);
+			});
+			$("#channel-submit").attr("disabled", false);
+		} else {
+			$("#channel-submit").off( "mouseenter mouseleave" );
+			$("#channel-submit").attr("disabled", true);
+		}
+	}
+
+	function validateCategories() {
+		var isValid = false;
+		$("#category input").each(function() {
+			isValid = $(this).is(':checked');
+			return !isValid;
+		});
+		// TODO: can finish after all the items and isValid would be unknown
+
+		if (isValid) {
+			$("#category-submit").hover(function() {
+				$(this).fadeOut(500);
+			}, function() {
+				$(this).fadeIn(1000);
+			});
+			$("#category-submit").attr("disabled", false);
+		} else {
+			$("#category-submit").off( "mouseenter mouseleave" );
+			$("#category-submit").attr("disabled", true);
+		}
+	}
+
+	function setupCheckboxesClick() {
+		$("#channel input").change(function() {
+			validateChannels();
+		});
+
+		$("#category input").change(function() {
+			validateCategories();
 		});
 	}
-}
-
-function validateCategories() {
-	var isValid = false;
-	$("#category input").each(function() {
-		isValid = $(this).is(':checked');
-		return !isValid;
-	});
-	
-	if (isValid) {
-		$("#category-submit").hover(function() {
-			$(this).fadeOut(500);
-		}, function() {
-			$(this).fadeIn(1000);
-		});
-	}
-}
 </script>
 
 <body>
@@ -53,7 +73,8 @@ function validateCategories() {
 
 	<form action="#" th:action="@{/selection}"
 		th:object="${selectionModel}" method="post">
-		<div th:each="channel : *{allChannels}" th:class="'checkbox'" id="channel">
+		<div th:each="channel : *{allChannels}" th:class="'checkbox'"
+			id="channel">
 			<input type="checkbox" th:field="*{selectedChannels}"
 				th:value="${channel}" /> <label th:text="${channel.name}">Channel</label>
 		</div>
@@ -64,7 +85,8 @@ function validateCategories() {
 
 	<form action="#" th:action="@{/selection}"
 		th:object="${selectionModel}" method="post">
-		<div th:each="category : *{allCategories}" th:class="'checkbox'" id="category">
+		<div th:each="category : *{allCategories}" th:class="'checkbox'"
+			id="category">
 			<input type="checkbox" th:field="*{selectedCategories}"
 				th:value="${category}" /> <label th:text="${category.name}">Category</label>
 		</div>
