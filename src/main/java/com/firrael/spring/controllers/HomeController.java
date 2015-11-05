@@ -143,16 +143,11 @@ public class HomeController {
 		return selection(locale, model, principal);
 	}
 
-	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
-	public String home(Locale locale, Model model, Principal principal) {
-		return home(locale, model, principal, 0);
-	}
-
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET, params = "page")
-	public String home(Locale locale, Model model, Principal principal, @RequestParam int page) {
+	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
+	public String home(Locale locale, Model model, Principal principal, @RequestParam(required=false)Integer page) {
 
 		String login = principal != null ? principal.getName() : null;
 
@@ -171,7 +166,7 @@ public class HomeController {
 
 		model.addAttribute("pages", pages);
 
-		if (page >= pages.size())
+		if (page == null || page >= pages.size() || page < 0)
 			page = 0;
 
 		model.addAttribute("currentPage", pages.get(page));

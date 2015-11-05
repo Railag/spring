@@ -197,10 +197,10 @@ public class Redis {
 				cids.add(String.valueOf(currentCid));
 			}
 
-			redisTemplate.opsForZSet().add(CATEGORY + currentCid, String.valueOf(currentCid), Double.valueOf(aid)); // add
-																													// aid
-																													// to
-																													// zset
+			redisTemplate.opsForZSet().add(CATEGORY + currentCid, String.valueOf(aid), Double.valueOf(aid)); // add
+																												// aid
+																												// to
+																												// zset
 		}
 	}
 
@@ -229,7 +229,7 @@ public class Redis {
 			redisTemplate.opsForValue().set(CHANNEL_PREFIX + currentChid + CHANNEL_NAME_POSTFIX, newChannel);
 		}
 
-		redisTemplate.opsForZSet().add(CHANNEL + currentChid, String.valueOf(currentChid), Double.valueOf(aid));
+		redisTemplate.opsForZSet().add(CHANNEL + currentChid, String.valueOf(aid), Double.valueOf(aid));
 	}
 
 	public static void saveUser(User user) {
@@ -271,28 +271,36 @@ public class Redis {
 		// getting union of all selected categories aids and intersecting them
 		// with all selecting channels aids.
 
-		List<String> categories = user.getSelectedCategories(); // cids
+		List<String> categoryKeys = user.getSelectedCategories(); // cids
+		for (String category : categoryKeys) {
+			category = CATEGORY + category;
+		}
+		
 		boolean isInTempCategories = false;
-		if (categories.size() > 1) {
-			Long count = redisTemplate.opsForZSet().unionAndStore(CATEGORY + categories.get(0),
-					categories.subList(1, categories.size()), CATEGORY_TEMP + user.getUid());
+		if (categoryKeys.size() > 1) {
+			Long count = redisTemplate.opsForZSet().unionAndStore(categoryKeys.get(0),
+					categoryKeys.subList(1, categoryKeys.size()), CATEGORY_TEMP + user.getUid());
 			logger.info("Total selected user articles for categories: " + count);
 			isInTempCategories = true;
 		}
 
-		List<String> channels = user.getSelectedChannels(); // chids
+		List<String> channelKeys = user.getSelectedChannels(); // chids
+		for (String channel : channelKeys)
+			channel = CHANNEL + channel;
+		
+		
 		boolean isInTempChannels = false;
-		if (channels.size() > 1) {
-			Long count = redisTemplate.opsForZSet().unionAndStore(CHANNEL + channels.get(0),
-					channels.subList(1, channels.size()), CHANNEL_TEMP + user.getUid());
+		if (channelKeys.size() > 1) {
+			Long count = redisTemplate.opsForZSet().unionAndStore(channelKeys.get(0),
+					channelKeys.subList(1, channelKeys.size()), CHANNEL_TEMP + user.getUid());
 			logger.info("Total selected user articles for channels: " + count);
 			isInTempChannels = true;
 		}
 
 		String articlesForSelectedCategoriesKey = isInTempCategories ? CATEGORY_TEMP + user.getUid()
-				: CATEGORY + categories.get(0);
+				: categoryKeys.get(0);
 		String articlesForSelectedChannelsKey = isInTempChannels ? CHANNEL_TEMP + user.getUid()
-				: CHANNEL + channels.get(0);
+				: channelKeys.get(0);
 
 		String filteredArticlesKey = ARTICLES_TEMP + user.getUid();
 
@@ -314,7 +322,7 @@ public class Redis {
 	public static String getChidForChannel(String channel) {
 		return redisTemplate.opsForValue().get(CHANNEL_PREFIX + channel + CHANNEL_POSTFIX);
 	}
-	
+
 	public static String getCidForCategory(String category) {
 		return redisTemplate.opsForValue().get(CATEGORY_PREFIX + category + CATEGORY_POSTFIX);
 	}
@@ -422,18 +430,20 @@ public class Redis {
 		for (Channel c : selectedChannels)
 			chids.add(getChidForChannel(c.getName()));
 		user.setSelectedChannels(chids);
-		
+
 		String key = String.format("%s:%s", "uid", user.getUid());
-		redisTemplate.opsForHash().put(key, UserFields.SELECTED_CHANNELS, ListSerializer.getInstance().serialize(chids));
+		redisTemplate.opsForHash().put(key, UserFields.SELECTED_CHANNELS,
+				ListSerializer.getInstance().serialize(chids));
 	}
-	
+
 	public static void updateUserCategories(User user, List<Category> selectedCategories) {
 		List<String> cids = new ArrayList<>();
 		for (Category c : selectedCategories)
 			cids.add(getCidForCategory(c.getName()));
 		user.setSelectedCategories(cids);
-		
+
 		String key = String.format("%s:%s", "uid", user.getUid());
-		redisTemplate.opsForHash().put(key, UserFields.SELECTED_CATEGORIES, ListSerializer.getInstance().serialize(cids));
+		redisTemplate.opsForHash().put(key, UserFields.SELECTED_CATEGORIES,
+				ListSerializer.getInstance().serialize(cids));
 	}
 }

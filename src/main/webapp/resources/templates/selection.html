@@ -71,7 +71,7 @@
 	<h2 id="selection-title">Сайты</h2>
 
 	<form action="#" th:action="@{/selection}"
-		th:object="${selectionModel}" method="post">
+		th:object="${selectionModel}" method="post" accept-charset="UTF-8">
 		<div th:each="channel : *{allChannels}" th:class="'checkbox'"
 			id="channel">
 			<input type="checkbox" th:field="*{selectedChannels}"
@@ -83,7 +83,7 @@
 	<h2 id="selection-title">Теги</h2>
 
 	<form action="#" th:action="@{/selection}"
-		th:object="${selectionModel}" method="post">
+		th:object="${selectionModel}" method="post" accept-charset="UTF-8">
 		<div th:each="category : *{allCategories}" th:class="'checkbox'"
 			id="category">
 			<input type="checkbox" th:field="*{selectedCategories}"

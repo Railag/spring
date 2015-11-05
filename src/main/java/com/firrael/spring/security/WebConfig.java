@@ -49,7 +49,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		resolver.setTemplateEngine(templateEngine());
 		resolver.setOrder(1);
 		resolver.setCharacterEncoding("UTF-8");
+		resolver.setContentType("text/html; charset=UTF-8");
 		return resolver;
 	}
-
 }

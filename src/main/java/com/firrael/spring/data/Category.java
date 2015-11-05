@@ -30,12 +30,14 @@ public class Category {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Category))
+		if (obj == null || !(obj instanceof Category))
 			return false;
 
 		Category secondCategory = (Category) obj;
 
-		return this.name.equals(secondCategory.getName()) && this.getChecked() == secondCategory.getChecked();
+		boolean equals = this.name.equals(secondCategory.getName()) && this.getChecked() == secondCategory.getChecked();
+		
+		return equals;
 	}
 	
 	public static List<Category> stringsToCategories(List<String> names) {
