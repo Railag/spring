@@ -29,7 +29,7 @@
 			});
 			$("#channel-submit").attr("disabled", false);
 		} else {
-			$("#channel-submit").off( "mouseenter mouseleave" );
+			$("#channel-submit").off("mouseenter mouseleave");
 			$("#channel-submit").attr("disabled", true);
 		}
 	}
@@ -40,7 +40,6 @@
 			isValid = $(this).is(':checked');
 			return !isValid;
 		});
-		// TODO: can finish after all the items and isValid would be unknown
 
 		if (isValid) {
 			$("#category-submit").hover(function() {
@@ -50,7 +49,7 @@
 			});
 			$("#category-submit").attr("disabled", false);
 		} else {
-			$("#category-submit").off( "mouseenter mouseleave" );
+			$("#category-submit").off("mouseenter mouseleave");
 			$("#category-submit").attr("disabled", true);
 		}
 	}

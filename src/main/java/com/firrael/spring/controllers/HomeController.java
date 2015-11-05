@@ -81,10 +81,10 @@ public class HomeController {
 		user.setFavoriteArticleHashes(favArticleHashes);
 		user.setLogin("user");
 		user.setPassword("test password");
-		List<String> selectedCategories = Redis.getAllCategories();
+		List<String> selectedCategories = Redis.getAllCids();
 		user.setSelectedCategories(selectedCategories);
 
-		List<String> selectedChannels = Redis.getAllChannels();
+		List<String> selectedChannels = Redis.getAllChids();
 		user.setSelectedChannels(selectedChannels);
 
 		Redis.saveUser(user);
@@ -100,31 +100,18 @@ public class HomeController {
 		UserStorage storage = new UserStorage();
 		User user = storage.findUserByLogin(login);
 
-		List<String> userChannels = Redis.getChannelsForUser(user);
-		List<String> userCategories = Redis.getCategoriesForUser(user);
-
-		model.addAttribute("userChannels", userChannels);
-		model.addAttribute("userCategories", userCategories);
-
-		List<String> allChannels = Redis.getAllChannels();
-		List<String> allCategories = Redis.getAllCategories();
+		List<Channel> userChannels = Channel.stringsToChannels(Redis.getChannelsForUser(user));
+		List<Category> userCategories = Category.stringsToCategories(Redis.getCategoriesForUser(user));
 		
-		ArrayList<Channel> channels = new ArrayList<>();
-		for (String channel : allChannels) {
-			channels.add(new Channel(channel));
-		}
-		
-		ArrayList<Category> categories = new ArrayList<>();
-		for (String category : allCategories) {
-			categories.add(new Category(category));
-		}
+		List<Channel> allChannels = Channel.stringsToChannels(Redis.getAllChannels());
+		List<Category> allCategories = Category.stringsToCategories(Redis.getAllCategories());
 		
 		SelectionModel selectionModel = new SelectionModel();
-		selectionModel.setAllCategories(categories);
-		selectionModel.setAllChannels(channels);
+		selectionModel.setAllCategories(allCategories);
+		selectionModel.setAllChannels(allChannels);
+		selectionModel.setSelectedCategories(userCategories);
+		selectionModel.setSelectedChannels(userChannels);
 
-	/*	model.addAttribute("allChannels", channels);
-		model.addAttribute("allCategories", categories);*/
 		model.addAttribute("selectionModel", selectionModel);
 
 		return "selection";
@@ -133,15 +120,27 @@ public class HomeController {
 	@RequestMapping(value = { "/selection" }, method = RequestMethod.POST, params = "selectedChannels")
 	public String selectionChannels(Locale locale, Model model, Principal principal,
 			@RequestParam List<Channel> selectedChannels) {
-		// update user selected channels
-		return "selection";
+		String login = principal.getName();
+
+		UserStorage storage = new UserStorage();
+		User user = storage.findUserByLogin(login);
+		
+		Redis.updateUserChannels(user, selectedChannels);
+
+		return selection(locale, model, principal);
 	}
 	
 	@RequestMapping(value = { "/selection" }, method = RequestMethod.POST, params = "selectedCategories")
 	public String selectionCategories(Locale locale, Model model, Principal principal,
 			@RequestParam List<Category> selectedCategories) {
-		// update user selected categories
-		return "selection";
+		String login = principal.getName();
+
+		UserStorage storage = new UserStorage();
+		User user = storage.findUserByLogin(login);
+		
+		Redis.updateUserCategories(user, selectedCategories);
+		
+		return selection(locale, model, principal);
 	}
 
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)

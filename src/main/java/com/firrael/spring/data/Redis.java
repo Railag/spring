@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
+import com.firrael.spring.utils.ListSerializer;
+
 public class Redis {
 
 	private final static String GLOBAL_ARTICLE_ID = "global:aid"; // article
@@ -309,6 +311,10 @@ public class Redis {
 		return filteredArticles;
 	}
 
+	public static String getChidForChannel(String channel) {
+		return redisTemplate.opsForValue().get(CHANNEL_PREFIX + channel + CHANNEL_POSTFIX);
+	}
+	
 	public static String getCidForCategory(String category) {
 		return redisTemplate.opsForValue().get(CATEGORY_PREFIX + category + CATEGORY_POSTFIX);
 	}
@@ -394,14 +400,40 @@ public class Redis {
 	}
 
 	public static List<String> getAllChannels() {
-		Set<String> chids = redisTemplate.opsForZSet().range(CHID_SET, 0, -1);
-		List<String> chidsList = new ArrayList<>(chids);
+		List<String> chidsList = getAllChids();
 		return getChannelsForChids(chidsList);
 	}
 
+	public static List<String> getAllChids() {
+		return new ArrayList<>(redisTemplate.opsForZSet().range(CHID_SET, 0, -1));
+	}
+
 	public static List<String> getAllCategories() {
-		Set<String> cids = redisTemplate.opsForZSet().range(CID_SET, 0, -1);
-		List<String> cidsList = new ArrayList<>(cids);
+		List<String> cidsList = getAllCids();
 		return getCategoriesForCids(cidsList);
+	}
+
+	public static List<String> getAllCids() {
+		return new ArrayList<>(redisTemplate.opsForZSet().range(CID_SET, 0, -1));
+	}
+
+	public static void updateUserChannels(User user, List<Channel> selectedChannels) {
+		List<String> chids = new ArrayList<>();
+		for (Channel c : selectedChannels)
+			chids.add(getChidForChannel(c.getName()));
+		user.setSelectedChannels(chids);
+		
+		String key = String.format("%s:%s", "uid", user.getUid());
+		redisTemplate.opsForHash().put(key, UserFields.SELECTED_CHANNELS, ListSerializer.getInstance().serialize(chids));
+	}
+	
+	public static void updateUserCategories(User user, List<Category> selectedCategories) {
+		List<String> cids = new ArrayList<>();
+		for (Category c : selectedCategories)
+			cids.add(getCidForCategory(c.getName()));
+		user.setSelectedCategories(cids);
+		
+		String key = String.format("%s:%s", "uid", user.getUid());
+		redisTemplate.opsForHash().put(key, UserFields.SELECTED_CATEGORIES, ListSerializer.getInstance().serialize(cids));
 	}
 }

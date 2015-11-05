@@ -1,41 +1,39 @@
 package com.firrael.spring.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SelectionModel {
-	private ArrayList<Channel> allChannels;
-	private ArrayList<Category> allCategories;
-	private ArrayList<Channel> selectedChannels;
-	private ArrayList<Category> selectedCategories;
+	private List<Channel> allChannels;
+	private List<Category> allCategories;
+	private List<Channel> selectedChannels;
+	private List<Category> selectedCategories;
 	
 	public SelectionModel() {
-		selectedChannels = new ArrayList<>();
-		selectedCategories = new ArrayList<>();
 	}
 	
-	public ArrayList<Channel> getAllChannels() {
+	public List<Channel> getAllChannels() {
 		return allChannels;
 	}
-	public void setAllChannels(ArrayList<Channel> allChannels) {
+	public void setAllChannels(List<Channel> allChannels) {
 		this.allChannels = allChannels;
 	}
-	public ArrayList<Category> getAllCategories() {
+	public List<Category> getAllCategories() {
 		return allCategories;
 	}
-	public void setAllCategories(ArrayList<Category> allCategories) {
-		this.allCategories = allCategories;
+	public void setAllCategories(List<Category> categories) {
+		this.allCategories = categories;
 	}
 	
-	public ArrayList<Channel> getSelectedChannels() {
+	public List<Channel> getSelectedChannels() {
 		return selectedChannels;
 	}
-	public void setSelectedChannels(ArrayList<Channel> selectedChannels) {
+	public void setSelectedChannels(List<Channel> selectedChannels) {
 		this.selectedChannels = selectedChannels;
 	}
-	public ArrayList<Category> getSelectedCategories() {
+	public List<Category> getSelectedCategories() {
 		return selectedCategories;
 	}
-	public void setSelectedCategories(ArrayList<Category> selectedCategories) {
+	public void setSelectedCategories(List<Category> selectedCategories) {
 		this.selectedCategories = selectedCategories;
 	}
 }

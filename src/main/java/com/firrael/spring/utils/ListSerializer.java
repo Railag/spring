@@ -2,7 +2,9 @@ package com.firrael.spring.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ListSerializer implements Serializer<List<String>, String> {
 	
@@ -25,7 +27,11 @@ public class ListSerializer implements Serializer<List<String>, String> {
 	@Override
 	public List<String> deserialize(String object) {
 		String items = object.toString();
-		List<String> list = new ArrayList<String>(Arrays.asList(items.split("|")));
+		if (items.equals(""))
+			return Collections.emptyList();
+		
+		String[] split = items.split(Pattern.quote("|"));
+		List<String> list = new ArrayList<String>(Arrays.asList(split));
 		return list;
 	}
 }
