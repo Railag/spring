@@ -2,6 +2,9 @@ package com.firrael.spring.controllers;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +45,7 @@ import com.firrael.spring.data.User.AUTH;
 import com.firrael.spring.data.UserStorage;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.parsing.HabrHandler;
+import com.firrael.spring.utils.Utf8Serializer;
 
 /**
  * Handles requests for the application home page.
@@ -134,6 +138,12 @@ public class HomeController {
 	public String selectionCategories(Locale locale, Model model, Principal principal,
 			@RequestParam List<Category> selectedCategories) {
 		String login = principal.getName();
+		
+		Utf8Serializer serializer = new Utf8Serializer();
+		
+		for (Category c : selectedCategories) {
+			c.setName(serializer.deserialize(c.getName()));
+		}
 
 		UserStorage storage = new UserStorage();
 		User user = storage.findUserByLogin(login);
@@ -142,7 +152,8 @@ public class HomeController {
 		
 		return selection(locale, model, principal);
 	}
-
+	
+    
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
