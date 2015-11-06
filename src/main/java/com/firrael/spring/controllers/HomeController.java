@@ -164,8 +164,6 @@ public class HomeController {
 		UserStorage storage = new UserStorage();
 		List<User> users = storage.getItems(100);
 
-		model.addAttribute("users", users);
-
 		List<UserPage> pages = (List<UserPage>) PageCreator.getPagingList(users, UserPage.class);
 
 		model.addAttribute("pages", pages);
@@ -176,6 +174,27 @@ public class HomeController {
 		model.addAttribute("currentPage", pages.get(page));
 
 		return "adminUsers";
+	}
+	
+	@RequestMapping(value = "/articles", method = RequestMethod.GET)
+	public String articles(Locale locale, Model model, Principal principal, @RequestParam(required = false) Integer page) {
+
+		// only for admin
+		String login = principal.getName();
+
+		ArticleStorage storage = new ArticleStorage();
+		List<Article> articles = storage.getItems(100);
+
+		List<ArticlePage> pages = (List<ArticlePage>) PageCreator.getPagingList(articles, ArticlePage.class);
+
+		model.addAttribute("pages", pages);
+
+		if (page == null || page >= pages.size() || page < 0)
+			page = 0;
+
+		model.addAttribute("currentPage", pages.get(page));
+
+		return "adminArticles";
 	}
 
 	/**

@@ -35,7 +35,11 @@ public class PageCreator {
 			if (i == 0)
 				page.setFirst(true);
 			
+			if (i + PAGE_SIZE == items.size())
+				page.setLast(true);
+
 			pages.add(page);
+				
 		}
 		
 		} catch(Exception e) {

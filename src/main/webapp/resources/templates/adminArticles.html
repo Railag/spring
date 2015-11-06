@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+<title>Articles</title>
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+	<!-- Show another page with detail info and article edition/removing after clicking on specific article. -->
+	<div th:each="article, articleStatus : ${currentPage.getItems()}"
+		th:if="${articleStatus.index &lt; 5}">
+		<span th:text="${article.title}">Title</span>
+		<span th:utext="${article.link}">http://habrahabr.ru</span>
+	</div>
+
+
+	<div class="pagination dark">
+		<a th:class="'page dark gradient'"
+			th:if="${not currentPage.isFirst()}"
+			th:href="@{${'/articles'}(page=${currentPage.number-1})}">Previous </a>
+		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
+			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
+			th:text="${pageNo + 1}" th:href="@{${'/articles'}(page=${pageNo})}">
+		</a> <a th:if="${not currentPage.isLast()}"
+			th:class="'page dark gradient'"
+			th:href="@{${'/articles'}(page=${currentPage.number+1})}">Next </a>
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+
+</body>
+</html>
