@@ -45,6 +45,7 @@ import com.firrael.spring.data.User.AUTH;
 import com.firrael.spring.data.UserStorage;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.pagination.PageCreator;
+import com.firrael.spring.pagination.UserPage;
 import com.firrael.spring.parsing.HabrHandler;
 import com.firrael.spring.utils.Utf8Serializer;
 
@@ -107,10 +108,10 @@ public class HomeController {
 
 		List<Channel> userChannels = Channel.stringsToChannels(Redis.getChannelsForUser(user));
 		List<Category> userCategories = Category.stringsToCategories(Redis.getCategoriesForUser(user));
-		
+
 		List<Channel> allChannels = Channel.stringsToChannels(Redis.getAllChannels());
 		List<Category> allCategories = Category.stringsToCategories(Redis.getAllCategories());
-		
+
 		SelectionModel selectionModel = new SelectionModel();
 		selectionModel.setAllCategories(allCategories);
 		selectionModel.setAllChannels(allChannels);
@@ -129,37 +130,59 @@ public class HomeController {
 
 		UserStorage storage = new UserStorage();
 		User user = storage.findUserByLogin(login);
-		
+
 		Redis.updateUserChannels(user, selectedChannels);
 
 		return selection(locale, model, principal);
 	}
-	
+
 	@RequestMapping(value = { "/selection" }, method = RequestMethod.POST, params = "selectedCategories")
 	public String selectionCategories(Locale locale, Model model, Principal principal,
 			@RequestParam List<Category> selectedCategories) {
 		String login = principal.getName();
-		
+
 		Utf8Serializer serializer = new Utf8Serializer();
-		
+
 		for (Category c : selectedCategories) {
 			c.setName(serializer.deserialize(c.getName()));
 		}
 
 		UserStorage storage = new UserStorage();
 		User user = storage.findUserByLogin(login);
-		
+
 		Redis.updateUserCategories(user, selectedCategories);
-		
+
 		return selection(locale, model, principal);
 	}
-	
-    
+
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	public String users(Locale locale, Model model, Principal principal, @RequestParam(required = false) Integer page) {
+
+		// only for admin
+		String login = principal.getName();
+
+		UserStorage storage = new UserStorage();
+		List<User> users = storage.getItems(100);
+
+		model.addAttribute("users", users);
+
+		List<UserPage> pages = (List<UserPage>) PageCreator.getPagingList(users, UserPage.class);
+
+		model.addAttribute("pages", pages);
+
+		if (page == null || page >= pages.size() || page < 0)
+			page = 0;
+
+		model.addAttribute("currentPage", pages.get(page));
+
+		return "adminUsers";
+	}
+
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
-	public String home(Locale locale, Model model, Principal principal, @RequestParam(required=false)Integer page) {
+	public String home(Locale locale, Model model, Principal principal, @RequestParam(required = false) Integer page) {
 
 		String login = principal != null ? principal.getName() : null;
 

@@ -104,7 +104,7 @@ public class User implements Entity<User> {
 		this.authType = authType;
 	}
 
-	public boolean isLoggedIn() {
+	public boolean getIsLoggedIn() {
 		return isLoggedIn;
 	}
 
@@ -130,7 +130,7 @@ public class User implements Entity<User> {
 		map.put(UserFields.SELECTED_CATEGORIES, ListSerializer.getInstance().serialize(getSelectedCategories()));
 		map.put(UserFields.SELECTED_CHANNELS, ListSerializer.getInstance().serialize(getSelectedChannels()));
 		map.put(UserFields.AUTH_TYPE, getAuthType().toString());
-		map.put(UserFields.IS_LOGGED_IN, String.valueOf(isLoggedIn()));
+		map.put(UserFields.IS_LOGGED_IN, String.valueOf(getIsLoggedIn()));
 		map.put(UserFields.AUTH_TOKEN, getAuthToken());
 		return map;
 	}
