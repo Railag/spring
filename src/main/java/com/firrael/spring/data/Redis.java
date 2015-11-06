@@ -247,12 +247,6 @@ public class Redis {
 			storage.add(user, uid);
 
 			redisTemplate.opsForZSet().add(UID_SET, uid, Double.parseDouble(uid));
-
-			// saveUserFavorites(user.getFavoriteArticleHashes(), uid);
-			//
-			// saveUserCategories(user.getSelectedCategories(), uid);
-			//
-			// saveUserChannels(user.getSelectedChannels(), uid);
 		}
 	}
 
@@ -339,39 +333,7 @@ public class Redis {
 	public static String getCategoryForCid(String cid) {
 		return redisTemplate.opsForValue().get(CATEGORY_PREFIX + cid + CATEGORY_NAME_POSTFIX);
 	}
-
-	// private static void saveUserFavorites(List<String> favoriteArticleHashes,
-	// String uid) {
-	//
-	// Set<TypedTuple<String>> set = new TreeSet<>();
-	//
-	// for (String hash : favoriteArticleHashes) {
-	// UserTyple typle = new UserTyple(hash, Double.parseDouble(hash));
-	// set.add(typle);
-	// }
-	//
-	// redisTemplate.opsForZSet().add(USER_ARTICLE_SET, set);
-	// }
-	//
-	// private static void saveUserCategories(List<String> selectedCategories,
-	// String uid) {
-	//
-	// Set<TypedTuple<String>> set = new TreeSet<>();
-	//
-	// for (String hash : selectedCategories) {
-	// UserTyple typle = new UserTyple(hash, Double.parseDouble(hash));
-	// set.add(typle);
-	// }
-	//
-	// redisTemplate.opsForZSet().add(USER_CATEGORY_SET, set);
-	// }
-	//
-	// private static void saveUserChannels(List<String> selectedChannels,
-	// String uid) {
-	// redisTemplate.opsForZSet().add(USER_CHANNEL_SET, uid,
-	// Double.parseDouble(uid));
-	// }
-
+	
 	public static RedisTemplate<String, String> redisTemplate;
 
 	public static void initialize(RedisTemplate<String, String> template) {

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Users</title>
+    </head>
+    <body>
+    <div th:replace="header :: header"></div>
+<!-- Show another page with detail info and user edition/removing after clicking on specific user. -->
+		<div th:each="user, userStatus : ${currentPage.getItems()}"
+		th:if="${userStatus.index &lt; 5}">
+		<span th:text="${article.uid}">Uid</span>
+		<span th:text="${article.login}">Login</span>
+		<div th:utext="${article.password}">Password</div>
+		<span th:text="${article.email}">Email</span>
+		<span th:text="${article.favoriteArticleHashes}">Favorite article hashes</span>
+		<span th:text="${article.selectedChannels}">Selected channels</span>
+		<span th:text="${article.selectedCategories}">Selected categories</span>
+		<span th:text="${article.authType}">Auth Type</span>
+		<span th:text="${article.isLoggedIn}">Is Logged in</span>
+		<span th:text="${article.selectedChannels}">Login</span>
+		<span th:text="${article.authToken}">Auth token</span>
+		
+	</div>
+		
+        	<div th:replace="footer :: footer"></div>
+        
+    </body>
+</html>

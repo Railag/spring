@@ -44,6 +44,7 @@ import com.firrael.spring.data.User;
 import com.firrael.spring.data.User.AUTH;
 import com.firrael.spring.data.UserStorage;
 import com.firrael.spring.pagination.ArticlePage;
+import com.firrael.spring.pagination.PageCreator;
 import com.firrael.spring.parsing.HabrHandler;
 import com.firrael.spring.utils.Utf8Serializer;
 
@@ -173,7 +174,7 @@ public class HomeController {
 			sortFeed();
 		}
 
-		List<ArticlePage> pages = ArticlePage.getPagingList(articles);
+		List<ArticlePage> pages = (List<ArticlePage>) PageCreator.getPagingList(articles, ArticlePage.class);
 
 		model.addAttribute("pages", pages);
 
