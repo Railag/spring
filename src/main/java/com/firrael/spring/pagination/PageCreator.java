@@ -16,7 +16,7 @@ public class PageCreator {
 		try {
 		
 		if (items.size() <= PAGE_SIZE) {
-			SimplePage<?> page = (SimplePage<?>) constructor.newInstance(items, 0);//new SimplePage<pageClass.>(articles, 0);
+			SimplePage<?> page = (SimplePage<?>) constructor.newInstance(items, 0);
 			page.setFirst(true);
 			page.setLast(true);
 			pages.add(page);
@@ -25,13 +25,13 @@ public class PageCreator {
 		
 		for (int i = 0; i < items.size(); i += PAGE_SIZE) {
 			if (items.size() - PAGE_SIZE < i) {
-				SimplePage<?> page = (SimplePage<?>) constructor.newInstance(items.subList(i, items.size()), i / 5);//new ArticlePage(items.subList(i, items.size()), i / 5);
+				SimplePage<?> page = (SimplePage<?>) constructor.newInstance(items.subList(i, items.size()), i / 5);
 				page.setLast(true);
 				pages.add(page);
 				return pages;
 			}
 				
-			SimplePage<?> page = (SimplePage<?>) constructor.newInstance(items.subList(i, i + PAGE_SIZE), i / 5);//new ArticlePage(articles.subList(i, i + PAGE_SIZE), i / 5);
+			SimplePage<?> page = (SimplePage<?>) constructor.newInstance(items.subList(i, i + PAGE_SIZE), i / 5);
 			if (i == 0)
 				page.setFirst(true);
 			
