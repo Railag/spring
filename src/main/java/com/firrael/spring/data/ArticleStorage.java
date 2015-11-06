@@ -22,12 +22,13 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 	}
 
 	@Override
-	public Article get(String hash, ArticleFields articleFields) {
+	public Article get(String aid, ArticleFields articleFields) {
+		String key = String.format("%s:%s", ARTICLE_KEY, aid);
 		List<Object> fields = articleFields.asArray();
 		RedisTemplate<String, String> template = Redis.getInstance();
-		List<Object> values = template.opsForHash().multiGet(hash, fields);
+		List<Object> values = template.opsForHash().multiGet(key, fields);
 		Article article = new Article().initialize(values);
-		article.setAid(hash);
+		article.setAid(key);
 		return article;
 	}
 
@@ -44,7 +45,7 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 		Set<TypedTuple<String>> set = template.opsForZSet().rangeByScoreWithScores("aids", counter - count, counter);
 		for (TypedTuple<String> tt : set) {
 			String aid = tt.getValue();
-			Article article = get("aid:" + aid, new ArticleFields());
+			Article article = get(aid, new ArticleFields());
 			cachedArticles.add(article);
 		}
 		return cachedArticles;

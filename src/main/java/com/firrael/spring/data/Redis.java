@@ -271,10 +271,10 @@ public class Redis {
 		// getting union of all selected categories aids and intersecting them
 		// with all selecting channels aids.
 
-		List<String> categoryKeys = user.getSelectedCategories(); // cids
-		for (String category : categoryKeys) {
-			category = CATEGORY + category;
-		}
+		List<String> categories = user.getSelectedCategories(); // cids
+		List<String> categoryKeys = new ArrayList<>();
+		for (String category : categories)
+			categoryKeys.add(CATEGORY + category);
 		
 		boolean isInTempCategories = false;
 		if (categoryKeys.size() > 1) {
@@ -284,9 +284,10 @@ public class Redis {
 			isInTempCategories = true;
 		}
 
-		List<String> channelKeys = user.getSelectedChannels(); // chids
-		for (String channel : channelKeys)
-			channel = CHANNEL + channel;
+		List<String> channels = user.getSelectedChannels(); // chids
+		List<String> channelKeys = new ArrayList<>();
+		for (String channel : channels)
+			channelKeys.add(CHANNEL + channel);
 		
 		
 		boolean isInTempChannels = false;
