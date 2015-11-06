@@ -15,10 +15,6 @@ import com.firrael.spring.data.ArticleFields;
 import com.firrael.spring.data.Host;
 
 public class ArticleHandler extends DefaultHandler2 {
-
-	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
-			Locale.ENGLISH);
-	// Thu, 01 Oct 2015 07:10:00 GMT
 	
 	private Article currentArticle;
 
@@ -95,12 +91,19 @@ public class ArticleHandler extends DefaultHandler2 {
 
 	private Date parseDate(String dateString) {
 		try {
-			return DATE_FORMAT.parse(dateString);
+			return getFormat().parse(dateString);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
+	
+
+	private SimpleDateFormat getFormat() {
+		return new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
+				Locale.ENGLISH);
+	}
+	// Thu, 01 Oct 2015 07:10:00 GMT
 
 	private boolean checkInsideElement(String itemName, String currentName) {
 		return currentName.equalsIgnoreCase(itemName);
