@@ -181,7 +181,7 @@ public class Redis {
 			for (String cid : cids) {
 				String existingCategory = redisTemplate.opsForValue()
 						.get(CATEGORY_PREFIX + cid + CATEGORY_NAME_POSTFIX);
-				if (existingCategory.equals(category)) {
+				if (existingCategory.equalsIgnoreCase(category)) {
 					exists = true;
 					currentCid = Integer.valueOf(cid);
 					break;
@@ -215,7 +215,7 @@ public class Redis {
 
 		for (String chid : chids) {
 			String existingChannel = redisTemplate.opsForValue().get(CHANNEL_PREFIX + chid + CHANNEL_NAME_POSTFIX);
-			if (existingChannel.equals(newChannel)) {
+			if (existingChannel.equalsIgnoreCase(newChannel)) {
 				exists = true;
 				currentChid = Integer.valueOf(chid);
 				break;

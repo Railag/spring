@@ -39,7 +39,6 @@ public class PageCreator {
 				page.setLast(true);
 
 			pages.add(page);
-				
 		}
 		
 		} catch(Exception e) {
