@@ -1,4 +1,4 @@
-package com.firrael.spring.security;
+package com.firrael.spring.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

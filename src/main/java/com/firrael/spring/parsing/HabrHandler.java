@@ -17,7 +17,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
-import com.firrael.spring.data.Article;
+import com.firrael.spring.data.models.Article;
 
 public class HabrHandler extends DefaultHandler2 {
 

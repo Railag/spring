@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
+import com.firrael.spring.data.models.Article;
+import com.firrael.spring.data.models.User;
 import com.firrael.spring.utils.ListSerializer;
 
 public class Redis {

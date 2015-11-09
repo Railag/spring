@@ -1,6 +1,9 @@
-package com.firrael.spring.data;
+package com.firrael.spring.data.models;
 
 import java.util.List;
+
+import com.firrael.spring.data.Category;
+import com.firrael.spring.data.Channel;
 
 public class SelectionModel {
 	private List<Channel> allChannels;

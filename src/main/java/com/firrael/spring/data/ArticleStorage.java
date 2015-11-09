@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import com.firrael.spring.data.base.Storage;
+import com.firrael.spring.data.models.Article;
 
 public class ArticleStorage implements Storage<Article, ArticleFields> {
 

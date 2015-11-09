@@ -9,10 +9,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
-import com.firrael.spring.data.Article;
 import com.firrael.spring.data.ArticleFields;
 
 import com.firrael.spring.data.Host;
+import com.firrael.spring.data.models.Article;
 
 public class ArticleHandler extends DefaultHandler2 {
 	

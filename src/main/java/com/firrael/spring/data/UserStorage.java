@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import com.firrael.spring.data.base.Storage;
+import com.firrael.spring.data.models.User;
 
 public class UserStorage implements Storage<User, UserFields> {
 

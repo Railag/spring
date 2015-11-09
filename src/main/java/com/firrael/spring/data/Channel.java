@@ -3,40 +3,12 @@ package com.firrael.spring.data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Channel {
-	private String name;
-	private boolean checked;
+import com.firrael.spring.data.base.SelectableData;
+
+public class Channel extends SelectableData {
 
 	public Channel(String name) {
-		setName(name);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
-	}
-
-	public boolean getChecked() {
-		return checked;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Channel))
-			return false;
-
-		Channel secondChannel = (Channel) obj;
-
-		boolean equals = this.name.equals(secondChannel.getName()) && this.getChecked() == secondChannel.getChecked();
-		
-		return equals;
+		super(name);
 	}
 	
 	public static List<Channel> stringsToChannels(List<String> names) {
@@ -55,12 +27,5 @@ public class Channel {
 		}
 		
 		return result;
-	}
-	
-	@Override
-	public String toString() {
-		return getName();
-	}
-	
-	
+	}	
 }

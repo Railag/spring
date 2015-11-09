@@ -1,10 +1,11 @@
-package com.firrael.spring.data;
+package com.firrael.spring.data.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.firrael.spring.data.UserFields;
 import com.firrael.spring.data.base.Entity;
 import com.firrael.spring.utils.ListSerializer;
 

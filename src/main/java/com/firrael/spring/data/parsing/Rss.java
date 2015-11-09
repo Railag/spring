@@ -1,4 +1,4 @@
-package com.firrael.spring.data;
+package com.firrael.spring.data.parsing;
 
 import com.firrael.spring.parsing.Channel;
 

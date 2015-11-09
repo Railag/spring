@@ -3,41 +3,12 @@ package com.firrael.spring.data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Category {
+import com.firrael.spring.data.base.SelectableData;
 
-	private String name;
-	private boolean checked;
+public class Category extends SelectableData {
 
 	public Category(String name) {
-		setName(name);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
-	}
-
-	public boolean getChecked() {
-		return checked;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Category))
-			return false;
-
-		Category secondCategory = (Category) obj;
-
-		boolean equals = this.name.equals(secondCategory.getName()) && this.getChecked() == secondCategory.getChecked();
-		
-		return equals;
+		super(name);
 	}
 	
 	public static List<Category> stringsToCategories(List<String> names) {
@@ -57,9 +28,5 @@ public class Category {
 		
 		return result;
 	}
-	
-	@Override
-	public String toString() {
-		return getName();
-	}
+
 }

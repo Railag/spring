@@ -2,8 +2,8 @@ package com.firrael.spring.parsing;
 
 import java.util.List;
 
-import com.firrael.spring.data.Article;
-import com.firrael.spring.data.Image;
+import com.firrael.spring.data.models.Article;
+import com.firrael.spring.data.parsing.Image;
 
 public class Channel {
 	private String title;

@@ -1,4 +1,4 @@
-package com.firrael.spring.data;
+package com.firrael.spring.data.models;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.firrael.spring.data.ArticleFields;
+import com.firrael.spring.data.Host;
 import com.firrael.spring.data.base.Entity;
 import com.firrael.spring.utils.ListSerializer;
 
