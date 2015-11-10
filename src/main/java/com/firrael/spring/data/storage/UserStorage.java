@@ -7,6 +7,12 @@ import java.util.logging.Logger;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.firrael.spring.data.ArticleFields;
 import com.firrael.spring.data.Category;
@@ -17,7 +23,8 @@ import com.firrael.spring.data.models.Article;
 import com.firrael.spring.data.models.User;
 import com.firrael.spring.utils.ListSerializer;
 
-public class UserStorage implements Storage<User, UserFields> {
+@Service("userDetailsService")
+public class UserStorage implements Storage<User, UserFields>, UserDetailsService {
 
 	private static Logger logger = Logger.getLogger(Redis.class.getName());
 
@@ -25,17 +32,17 @@ public class UserStorage implements Storage<User, UserFields> {
 	public void add(User user, String uid) {
 		String key = String.format("%s%s", RedisFields.USER, uid);
 		RedisTemplate<String, String> template = Redis.getInstance();
-		template.opsForHash().putAll(key, user.toHashMap());
+		template.opsForHash().putAll(key, user.toHashMap());		
 	}
 
 	@Override
-	public User get(String hash, UserFields userFields) {
-		String key = String.format("%s%s", RedisFields.USER, hash);
+	public User get(String uid, UserFields userFields) {
+		String key = String.format("%s%s", RedisFields.USER, uid);
 		List<Object> fields = userFields.asArray();
 		RedisTemplate<String, String> template = Redis.getInstance();
 		List<Object> values = template.opsForHash().multiGet(key, fields);
 		User user = new User().initialize(values);
-		user.setUid(hash);
+		user.setUid(uid);
 		return user;
 	}
 
@@ -183,5 +190,24 @@ public class UserStorage implements Storage<User, UserFields> {
 			filteredArticles.add(storage.get(aid, fields));
 
 		return filteredArticles;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+		String uid = getUidForLogin(login);
+		User user = get(uid, new UserFields());
+		
+		
+		boolean enabled = true;
+		boolean accountNonExpired = true;
+		boolean credentialsNonExpired = true;
+		boolean accountNonLocked = true;
+		org.springframework.security.core.userdetails.User securityUser = new org.springframework.security.core.userdetails.User(
+				user.getEmail(), user.getPassword(), enabled, accountNonExpired, credentialsNonExpired,
+				accountNonLocked, user.getRole().getAuthorities());
+		
+		logger.info("logged: " + user.getLogin());
+		
+		return securityUser;
 	}
 }

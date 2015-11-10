@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.firrael.spring.data.UserFields;
 import com.firrael.spring.data.base.Entity;
+import com.firrael.spring.security.Role;
 import com.firrael.spring.utils.ListSerializer;
 
 public class User implements Entity<User> {
@@ -19,12 +20,13 @@ public class User implements Entity<User> {
 	private List<String> selectedChannels;
 	private AUTH authType;
 	private boolean isLoggedIn;
-	private Object authToken;
-
+	private Role role;
+	
 	public User() {
 		favoriteArticleHashes = new ArrayList<>();
 		selectedCategories = new ArrayList<>();
 		authType = AUTH.NONE;
+		login = "";
 	}
 
 	public enum AUTH {
@@ -104,6 +106,14 @@ public class User implements Entity<User> {
 	public void setAuthType(AUTH authType) {
 		this.authType = authType;
 	}
+	
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 
 	public boolean getIsLoggedIn() {
 		return isLoggedIn;
@@ -111,14 +121,6 @@ public class User implements Entity<User> {
 
 	public void setLoggedIn(boolean isLoggedIn) {
 		this.isLoggedIn = isLoggedIn;
-	}
-
-	public Object getAuthToken() {
-		return authToken;
-	}
-
-	public void setAuthToken(Object authToken) {
-		this.authToken = authToken;
 	}
 
 	@Override
@@ -132,7 +134,7 @@ public class User implements Entity<User> {
 		map.put(UserFields.SELECTED_CHANNELS, ListSerializer.getInstance().serialize(getSelectedChannels()));
 		map.put(UserFields.AUTH_TYPE, getAuthType().toString());
 		map.put(UserFields.IS_LOGGED_IN, String.valueOf(getIsLoggedIn()));
-		map.put(UserFields.AUTH_TOKEN, getAuthToken());
+		map.put(UserFields.ROLE, getRole().toString());
 		return map;
 	}
 
@@ -147,7 +149,7 @@ public class User implements Entity<User> {
 		user.setSelectedChannels(ListSerializer.getInstance().deserialize(values.get(5).toString()));
 		user.setAuthType(AUTH.valueOf(values.get(6).toString()));
 		user.setLoggedIn(Boolean.parseBoolean(values.get(7).toString()));
-		user.setAuthToken(values.get(8));
+		user.setRole(Role.valueOf(values.get(8).toString()));
 		return user;
 	}
 }

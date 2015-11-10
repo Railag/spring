@@ -6,6 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.firrael.spring.data.storage.UserStorage;
 
 @Configuration
 @ComponentScan
@@ -20,7 +24,7 @@ public class RootConfiguration {
 		return factory;
 	}
 
-	@Bean()
+	@Bean
 	public RedisTemplate<String, String> redisTemplate() {
 		RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setKeySerializer(stringRedisSerializer());
@@ -35,4 +39,15 @@ public class RootConfiguration {
 	public StringRedisSerializer stringRedisSerializer() {
 		return new StringRedisSerializer();
 	}
+	
+	@Bean
+	public UserStorage userDetailsService() {
+		return new UserStorage();
+	}
+	
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder;
+    }
 }

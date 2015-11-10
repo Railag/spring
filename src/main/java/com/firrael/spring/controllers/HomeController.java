@@ -2,30 +2,28 @@ package com.firrael.spring.controllers;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.Resource;
-import javax.annotation.Resource.AuthenticationType;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ListOperations;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +37,6 @@ import com.firrael.spring.data.Host;
 import com.firrael.spring.data.models.Article;
 import com.firrael.spring.data.models.SelectionModel;
 import com.firrael.spring.data.models.User;
-import com.firrael.spring.data.models.User.AUTH;
 import com.firrael.spring.data.storage.ArticleStorage;
 import com.firrael.spring.data.storage.Redis;
 import com.firrael.spring.data.storage.UserStorage;
@@ -47,6 +44,7 @@ import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.pagination.PageCreator;
 import com.firrael.spring.pagination.UserPage;
 import com.firrael.spring.parsing.HabrHandler;
+import com.firrael.spring.security.Role;
 import com.firrael.spring.utils.Utf8Serializer;
 
 /**
@@ -58,14 +56,16 @@ public class HomeController {
 	private final static int PULL_DELAY = 1000 * 60 * 5; // 5 mins
 
 	private List<Article> articles = new ArrayList<>();
+	
+	@Autowired
+	@Qualifier("passwordEncoder")
+	private PasswordEncoder encoder;
 
 	private static Logger logger = Logger.getLogger(HomeController.class.getName());
 
 	@Autowired
-	private RedisTemplate<String, String> redisTemplate;
-
-	@Resource(name = "redisTemplate")
-	private ListOperations<String, String> listOps;
+	@Qualifier("redisTemplate")
+	private RedisTemplate<String, String> template;
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(Locale locale, Model model) {
@@ -80,13 +80,32 @@ public class HomeController {
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String register(Locale locale, Model model) {
 		User user = new User();
-		user.setEmail("test");
+		/*
+		 * user.setEmail("test"); user.setAuthToken("testToken");
+		 * user.setLogin("user"); user.setPassword("test password");
+		 */
+
+		model.addAttribute("user", user);
+
+		return "register";
+	}
+
+	@RequestMapping(value = "/saveUser", method = RequestMethod.POST)
+	public String saveUser(Locale locale, Model model, Principal principal, @ModelAttribute("user") User user) {
+
 		user.setLoggedIn(true);
-		user.setAuthToken("testToken");
+
+		Utf8Serializer serializer = new Utf8Serializer();
+
+		user.setLogin(serializer.deserialize(user.getLogin()));
+		
+		user.setPassword(encoder.encode(user.getPassword()));
+				
+		user.setRole(Role.USER);
+
 		List<String> favArticleHashes = new ArrayList<>();
 		user.setFavoriteArticleHashes(favArticleHashes);
-		user.setLogin("user");
-		user.setPassword("test password");
+
 		List<String> selectedCategories = Redis.getAllCids();
 		user.setSelectedCategories(selectedCategories);
 
@@ -95,7 +114,7 @@ public class HomeController {
 
 		Redis.saveUser(user);
 
-		return "register";
+		return home(locale, model, principal, 0);
 	}
 
 	@RequestMapping(value = "/selection", method = RequestMethod.GET)
@@ -175,9 +194,10 @@ public class HomeController {
 
 		return "adminUsers";
 	}
-	
+
 	@RequestMapping(value = "/articles", method = RequestMethod.GET)
-	public String articles(Locale locale, Model model, Principal principal, @RequestParam(required = false) Integer page) {
+	public String articles(Locale locale, Model model, Principal principal,
+			@RequestParam(required = false) Integer page) {
 
 		// only for admin
 		String login = principal.getName();
@@ -205,7 +225,7 @@ public class HomeController {
 
 		String login = principal != null ? principal.getName() : null;
 
-		Redis.initialize(redisTemplate);
+		Redis.initialize(template);
 
 		logger.info("/home controller");
 
@@ -229,7 +249,7 @@ public class HomeController {
 	}
 
 	private List<Article> loadFeed() {
-		Redis.initialize(redisTemplate);
+		Redis.initialize(template);
 
 		ArrayList<Article> articles = new ArrayList<>();
 		articles.addAll(getFeed(Host.HABR_HOST));
