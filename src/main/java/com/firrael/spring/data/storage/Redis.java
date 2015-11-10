@@ -26,11 +26,11 @@ public class Redis {
 		ArticleStorage.saveArticles(articles);
 	}
 
-	public static List<String> getChannelsForUser(User user) {
+	public static List<Channel> getChannelsForUser(User user) {
 		return UserStorage.getChannelsForUser(user);
 	}
 
-	public static List<String> getCategoriesForUser(User user) {
+	public static List<Category> getCategoriesForUser(User user) {
 		return UserStorage.getCategoriesForUser(user);
 	}
 
@@ -58,36 +58,40 @@ public class Redis {
 		return redisTemplate.opsForValue().get(RedisFields.CATEGORY_PREFIX + category + RedisFields.CATEGORY_POSTFIX);
 	}
 
-	public static String getChannelForChid(String chid) {
-		return redisTemplate.opsForValue().get(RedisFields.CHANNEL_PREFIX + chid + RedisFields.CHANNEL_NAME_POSTFIX);
+	public static Channel getChannelForChid(String chid) {
+		String name = redisTemplate.opsForValue().get(RedisFields.CHANNEL_PREFIX + chid + RedisFields.CHANNEL_NAME_POSTFIX);
+		Long count = redisTemplate.opsForZSet().size(RedisFields.CHANNEL + chid);
+		return new Channel(name, count);
 	}
 
-	public static String getCategoryForCid(String cid) {
-		return redisTemplate.opsForValue().get(RedisFields.CATEGORY_PREFIX + cid + RedisFields.CATEGORY_NAME_POSTFIX);
+	public static Category getCategoryForCid(String cid) {
+		String name = redisTemplate.opsForValue().get(RedisFields.CATEGORY_PREFIX + cid + RedisFields.CATEGORY_NAME_POSTFIX);
+		Long count = redisTemplate.opsForZSet().size(RedisFields.CATEGORY + cid);
+		return new Category(name, count);
 	}
 
-	public static List<String> getChannelsForChids(List<String> chids) {
-		List<String> channels = new ArrayList<>();
+	public static List<Channel> getChannelsForChids(List<String> chids) {
+		List<Channel> channels = new ArrayList<>();
 		for (String chid : chids)
 			channels.add(getChannelForChid(chid));
 
 		return channels;
 	}
 
-	public static List<String> getCategoriesForCids(List<String> cids) {
-		List<String> categories = new ArrayList<>();
+	public static List<Category> getCategoriesForCids(List<String> cids) {
+		List<Category> categories = new ArrayList<>();
 		for (String cid : cids)
 			categories.add(getCategoryForCid(cid));
 
 		return categories;
 	}
 
-	public static List<String> getAllCategories() {
+	public static List<Category> getAllCategories() {
 		List<String> cidsList = getAllCids();
 		return getCategoriesForCids(cidsList);
 	}
 
-	public static List<String> getAllChannels() {
+	public static List<Channel> getAllChannels() {
 		List<String> chidsList = getAllChids();
 		return getChannelsForChids(chidsList);
 	}

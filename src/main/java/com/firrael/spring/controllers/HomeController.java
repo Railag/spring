@@ -125,11 +125,16 @@ public class HomeController {
 		UserStorage storage = new UserStorage();
 		User user = storage.findUserByLogin(login);
 
-		List<Channel> userChannels = Channel.stringsToChannels(Redis.getChannelsForUser(user));
-		List<Category> userCategories = Category.stringsToCategories(Redis.getCategoriesForUser(user));
+		List<Channel> userChannels = Redis.getChannelsForUser(user);
+		List<Category> userCategories = Redis.getCategoriesForUser(user);
 
-		List<Channel> allChannels = Channel.stringsToChannels(Redis.getAllChannels());
-		List<Category> allCategories = Category.stringsToCategories(Redis.getAllCategories());
+		List<Channel> allChannels = Redis.getAllChannels();
+		List<Category> allCategories = Redis.getAllCategories();
+		
+		Collections.sort(userChannels);
+		Collections.sort(userCategories);
+		Collections.sort(allChannels);
+		Collections.sort(allCategories);
 
 		SelectionModel selectionModel = new SelectionModel();
 		selectionModel.setAllCategories(allCategories);

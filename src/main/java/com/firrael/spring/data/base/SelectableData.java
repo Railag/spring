@@ -1,11 +1,17 @@
 package com.firrael.spring.data.base;
 
-public class SelectableData {
+public class SelectableData implements Comparable<SelectableData> {
 	private String name;
 	private boolean checked;
+	private Long count;
 
 	public SelectableData(String name) {
 		setName(name);
+	}
+
+	public SelectableData(String name, Long count) {
+		setName(name);
+		setCount(count);
 	}
 
 	public String getName() {
@@ -23,6 +29,14 @@ public class SelectableData {
 	public boolean getChecked() {
 		return checked;
 	}
+	
+	public Long getCount() {
+		return count;
+	}
+
+	public void setCount(Long count) {
+		this.count = count;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -39,5 +53,10 @@ public class SelectableData {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public int compareTo(SelectableData obj2) {
+		return obj2.getCount().compareTo(getCount());
 	}
 }

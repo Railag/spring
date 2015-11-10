@@ -111,12 +111,12 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 		template.opsForHash().put(key, UserFields.SELECTED_CATEGORIES, ListSerializer.getInstance().serialize(cids));
 	}
 
-	public static List<String> getChannelsForUser(User user) {
+	public static List<Channel> getChannelsForUser(User user) {
 		List<String> chids = user.getSelectedChannels();
 		return Redis.getChannelsForChids(chids);
 	}
 
-	public static List<String> getCategoriesForUser(User user) {
+	public static List<Category> getCategoriesForUser(User user) {
 		List<String> cids = user.getSelectedCategories();
 		return Redis.getCategoriesForCids(cids);
 	}
