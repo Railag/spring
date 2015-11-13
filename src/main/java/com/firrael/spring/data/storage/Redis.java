@@ -22,8 +22,13 @@ public class Redis {
 		return redisTemplate;
 	}
 
-	public static void saveArticles(List<Article> articles) {
+	
+	public static synchronized void saveArticles(List<Article> articles) {
 		ArticleStorage.saveArticles(articles);
+	}
+	
+	public static List<Article> getArticlesForCategory(String category) {
+		return ArticleStorage.getArticlesForCategory(category);
 	}
 
 	public static List<Channel> getChannelsForUser(User user) {
@@ -102,5 +107,9 @@ public class Redis {
 
 	public static List<String> getAllCids() {
 		return new ArrayList<>(redisTemplate.opsForZSet().range(RedisFields.CID_SET, 0, -1));
+	}
+
+	public static List<String> getAidsForCid(String cid) {
+		return new ArrayList<>(redisTemplate.opsForZSet().range(RedisFields.CATEGORY + cid, 0, -1));
 	}
 }

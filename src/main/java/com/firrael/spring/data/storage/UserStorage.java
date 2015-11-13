@@ -10,8 +10,6 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.firrael.spring.data.ArticleFields;
@@ -26,7 +24,7 @@ import com.firrael.spring.utils.ListSerializer;
 @Service("userDetailsService")
 public class UserStorage implements Storage<User, UserFields>, UserDetailsService {
 
-	private static Logger logger = Logger.getLogger(Redis.class.getName());
+	private static Logger logger = Logger.getLogger(ArticleStorage.class.getName());
 
 	@Override
 	public void add(User user, String uid) {

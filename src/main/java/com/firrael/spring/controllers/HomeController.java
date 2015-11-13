@@ -19,10 +19,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,28 +28,18 @@ import org.springframework.web.client.RestTemplate;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.firrael.spring.data.Category;
-import com.firrael.spring.data.Channel;
 import com.firrael.spring.data.Host;
 import com.firrael.spring.data.models.Article;
-import com.firrael.spring.data.models.SelectionModel;
-import com.firrael.spring.data.models.User;
 import com.firrael.spring.data.storage.ArticleStorage;
 import com.firrael.spring.data.storage.Redis;
-import com.firrael.spring.data.storage.UserStorage;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.pagination.PageCreator;
-import com.firrael.spring.pagination.UserPage;
 import com.firrael.spring.parsing.HabrHandler;
-import com.firrael.spring.security.Role;
-import com.firrael.spring.utils.Utf8Serializer;
 
 @Controller
 public class HomeController {
 
 	private final static int PULL_DELAY = 1000 * 60 * 5; // 5 mins
-
-	private List<Article> articles = new ArrayList<>();
 	
 	private static Logger logger = Logger.getLogger(HomeController.class.getName());
 
@@ -59,10 +47,25 @@ public class HomeController {
 	@Qualifier("redisTemplate")
 	private RedisTemplate<String, String> template;
 
+	@RequestMapping(value = { "/category" }, method = RequestMethod.GET)
+	public String category(Locale locale, Model model, @RequestParam(required = true) String category, @RequestParam(required = false) Integer page) {
+		
+		List<Article> articles = Redis.getArticlesForCategory(category);
+		
+		List<ArticlePage> pages = (List<ArticlePage>) PageCreator.getPagingList(articles, ArticlePage.class);
+
+		model.addAttribute("pages", pages);
+
+		if (page == null || page >= pages.size() || page < 0)
+			page = 0;
+
+		model.addAttribute("currentPage", pages.get(page));
+		
+		model.addAttribute("category", category);
+		
+		return "category";
+	}
 	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
 	public String home(Locale locale, Model model, Principal principal, @RequestParam(required = false) Integer page) {
 
@@ -72,11 +75,11 @@ public class HomeController {
 
 		logger.info("/home controller");
 
-		articles = getCachedArticles(login);
+		List<Article> articles = getCachedArticles(login);
 
 		if (articles.isEmpty()) {
 			articles = loadFeed();
-			sortFeed();
+			Collections.sort(articles);
 		}
 
 		List<ArticlePage> pages = (List<ArticlePage>) PageCreator.getPagingList(articles, ArticlePage.class);
@@ -103,7 +106,7 @@ public class HomeController {
 
 	// request feed every 5 minutes
 	@Scheduled(fixedDelay = PULL_DELAY)
-	@Async
+
 	private void pullNewArticles() {
 		logger.info("feed updated");
 		loadFeed();
@@ -120,10 +123,6 @@ public class HomeController {
 			ArticleStorage storage = new ArticleStorage();
 			return new ArrayList<>(storage.getItems(100));
 		}
-	}
-
-	private void sortFeed() {
-		Collections.sort(articles);
 	}
 
 	private List<Article> getFeed(String host) {

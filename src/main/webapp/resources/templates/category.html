@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 
-<title>Home</title>
+<title>${category}</title>
 </head>
 <body>
 <div id="content">
@@ -16,16 +16,16 @@
 		<div class="pagination dark">
 		<a th:class="'page dark gradient'"
 			th:if="${not currentPage.isFirst()}"
-			th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous
+			th:href="@{${'/category'}(page=${currentPage.number-1})}">Previous
 		</a>
 		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
 			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-			th:text="${pageNo + 1}" th:href="@{${'/home'}(page=${pageNo})}">
+			th:text="${pageNo + 1}" th:href="@{${'/category'}(category=${category}, page=${pageNo})}">
 		</a>
 		
 		<a th:if="${not currentPage.isLast()}"
 			th:class="'page dark gradient'"
-			th:href="@{${'/home'}(page=${currentPage.number+1})}">Next
+			th:href="@{${'/category'}(category=${category}, page=${currentPage.number+1})}">Next
 		</a>
 	</div>
 
@@ -44,16 +44,16 @@
 	<div class="pagination dark">
 		<a th:class="'page dark gradient'"
 			th:if="${not currentPage.isFirst()}"
-			th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous
+			th:href="@{${'/category'}(category=${category}, page=${currentPage.number-1})}">Previous
 		</a>
 		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
 			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-			th:text="${pageNo + 1}" th:href="@{${'/home'}(page=${pageNo})}">
+			th:text="${pageNo + 1}" th:href="@{${'/category'}(category=${category}, page=${pageNo})}">
 		</a>
 		
 		<a th:if="${not currentPage.isLast()}"
 			th:class="'page dark gradient'"
-			th:href="@{${'/home'}(page=${currentPage.number+1})}">Next
+			th:href="@{${'/category'}(category=${category}, page=${currentPage.number+1})}">Next
 		</a>
 	</div>
 

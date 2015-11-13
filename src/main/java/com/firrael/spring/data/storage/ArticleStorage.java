@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import com.firrael.spring.data.ArticleFields;
 import com.firrael.spring.data.Host;
+import com.firrael.spring.data.StringTyple;
 import com.firrael.spring.data.base.Storage;
 import com.firrael.spring.data.models.Article;
 
 public class ArticleStorage implements Storage<Article, ArticleFields> {
 
+	private static Logger logger = Logger.getLogger(ArticleStorage.class.getName());
+	
 	@Override
 	public void add(Article article, String aid) {
 		String key = String.format("%s%s", RedisFields.ARTICLE, aid);
@@ -54,16 +59,24 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 
 	public static void saveArticles(List<Article> articles) {
 		RedisTemplate<String, String> template = Redis.getInstance();
+		
+		Set<String> cids = template.opsForZSet().range(RedisFields.CID_SET, 0, -1);
 
 		for (Article a : articles) {
 			String aid = template.opsForValue()
-					.get(RedisFields.ARTICLE_PREFIX + a.getTitle().hashCode() + RedisFields.ARTICLE_POSTFIX);
+					.get(RedisFields.ARTICLE_PREFIX + a.getTitle() + RedisFields.ARTICLE_POSTFIX);
 			if (aid == null) // new article
-				saveArticle(a);
+				saveArticle(a, cids);
 		}
+		
+		Set<TypedTuple<String>> cidsZSet = new TreeSet<>();
+		for (String cid : cids)
+			cidsZSet.add(new StringTyple(cid, Double.valueOf(cid)));
+		
+		template.opsForZSet().add(RedisFields.CID_SET, cidsZSet);
 	}
 
-	private static void saveArticle(Article article) {
+	private static void saveArticle(Article article, Set<String> cids) {
 		RedisTemplate<String, String> template = Redis.getInstance();
 
 		String aid = template.opsForValue().get(RedisFields.GLOBAL_ARTICLE_ID);
@@ -72,32 +85,31 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 			template.opsForValue().increment(RedisFields.GLOBAL_ARTICLE_ID, 1);
 		}
 		template.opsForValue()
-				.set(RedisFields.ARTICLE_PREFIX + article.getTitle().hashCode() + RedisFields.ARTICLE_POSTFIX, aid);
+				.set(RedisFields.ARTICLE_PREFIX + article.getTitle() + RedisFields.ARTICLE_POSTFIX, aid);
 		template.opsForValue().increment(RedisFields.GLOBAL_ARTICLE_ID, 1);
 		ArticleStorage storage = new ArticleStorage();
 		storage.add(article, aid);
 
 		template.opsForZSet().add(RedisFields.AID_SET, aid, Double.parseDouble(aid));
-
-		addCategories(article.getCategories(), aid);
+		
+		addCategories(article.getCategories(), aid, cids);
 
 		addChannel(article.getHost(), aid);
 	}
 
-	private static void addCategories(List<String> categories, String aid) {
+	private static void addCategories(List<String> categories, String aid, Set<String> cids) {
 		RedisTemplate<String, String> template = Redis.getInstance();
 
-		Set<String> cids = template.opsForZSet().range(RedisFields.CID_SET, 0, -1);
-
-		int currentCid = 0;
 
 		for (String category : categories) {
+			int currentCid = 0;
+
 			boolean exists = false;
 
 			for (String cid : cids) {
 				String existingCategory = template.opsForValue()
 						.get(RedisFields.CATEGORY_PREFIX + cid + RedisFields.CATEGORY_NAME_POSTFIX);
-				if (existingCategory.equalsIgnoreCase(category)) {
+				if (existingCategory.equals(category)) {
 					exists = true;
 					currentCid = Integer.valueOf(cid);
 					break;
@@ -105,16 +117,26 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 			}
 
 			if (!exists) {
-				currentCid = cids.size();
-				template.opsForZSet().add(RedisFields.CID_SET, String.valueOf(currentCid), currentCid);
+				currentCid = cids.size() + 1;
+				if (category.equals("Информационная безопасность")) {
+					logger.info(category + " | AID: " + aid + " " + currentCid);
+				}
+//				if (category.equalsIgnoreCase("fallout 4") || currentCid == 346) {
+//					logger.info(category + " | AID: " + aid + " " + currentCid);
+//				}
+				//template.opsForZSet().add(RedisFields.CID_SET, String.valueOf(currentCid), currentCid);
 				template.opsForValue().set(RedisFields.CATEGORY_PREFIX + category + RedisFields.CATEGORY_POSTFIX,
 						String.valueOf(currentCid));
+										
 				template.opsForValue().set(RedisFields.CATEGORY_PREFIX + currentCid + RedisFields.CATEGORY_NAME_POSTFIX,
 						category);
 				cids.add(String.valueOf(currentCid));
 			}
 
 			template.opsForZSet().add(RedisFields.CATEGORY + currentCid, String.valueOf(aid), Double.valueOf(aid)); // add
+			if (currentCid == 306) {
+				logger.info(category + " | AID: " + aid + " " + currentCid);
+			}
 			// aid
 			// to
 			// zset
@@ -143,15 +165,32 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 		}
 
 		if (!exists) {
-			currentChid = chids.size();
+			currentChid = chids.size() + 1;
 			template.opsForZSet().add(RedisFields.CHID_SET, String.valueOf(currentChid), currentChid);
-			template.opsForValue().set(RedisFields.CHANNEL_PREFIX + newChannel + RedisFields.CHANNEL_POSTFIX,
+			template.opsForValue().set(RedisFields.CHANNEL_PREFIX + newChannel.toLowerCase() + RedisFields.CHANNEL_POSTFIX,
 					String.valueOf(currentChid));
 			template.opsForValue().set(RedisFields.CHANNEL_PREFIX + currentChid + RedisFields.CHANNEL_NAME_POSTFIX,
-					newChannel);
+					newChannel.toLowerCase());
 		}
 
 		template.opsForZSet().add(RedisFields.CHANNEL + currentChid, String.valueOf(aid), Double.valueOf(aid));
+	}
+
+	public static List<Article> getArticlesForCategory(String category) {
+		
+		String cid = Redis.getCidForCategory(category);
+		
+		List<String> aids = Redis.getAidsForCid(cid);
+		
+		List<Article> articles = new ArrayList<>();
+		
+		ArticleStorage storage = new ArticleStorage();
+		ArticleFields articleFields = new ArticleFields();
+		
+		for (String aid : aids)
+			articles.add(storage.get(aid, articleFields));
+		
+		return articles;
 	}
 
 }

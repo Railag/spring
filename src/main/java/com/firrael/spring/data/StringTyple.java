@@ -2,12 +2,12 @@ package com.firrael.spring.data;
 
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
-public class UserTyple implements TypedTuple<String> {
+public class StringTyple implements TypedTuple<String> {
 	
 	private final String value;
 	private final Double score;
 	
-	public UserTyple(String value, Double score) {
+	public StringTyple(String value, Double score) {
 		this.value = value;
 		this.score = score;
 	}
