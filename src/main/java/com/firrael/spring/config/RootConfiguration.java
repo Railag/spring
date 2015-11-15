@@ -16,31 +16,6 @@ import com.firrael.spring.data.storage.UserStorage;
 public class RootConfiguration {
 	
 	@Bean
-	public JedisConnectionFactory jedisConnFactory() {
-		JedisConnectionFactory factory = new JedisConnectionFactory();
-		factory.setUsePool(true);
-		factory.setHostName("localhost");
-		factory.setPort(6379);
-		return factory;
-	}
-
-	@Bean
-	public RedisTemplate<String, String> redisTemplate() {
-		RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-		redisTemplate.setKeySerializer(stringRedisSerializer());
-		redisTemplate.setValueSerializer(stringRedisSerializer());
-		redisTemplate.setHashKeySerializer(stringRedisSerializer());
-		redisTemplate.setDefaultSerializer(stringRedisSerializer());
-		redisTemplate.setConnectionFactory(jedisConnFactory());
-		return redisTemplate;
-	}
-
-	@Bean
-	public StringRedisSerializer stringRedisSerializer() {
-		return new StringRedisSerializer();
-	}
-	
-	@Bean
 	public UserStorage userDetailsService() {
 		return new UserStorage();
 	}
