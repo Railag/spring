@@ -1,0 +1,23 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+
+<title>Home</title>
+</head>
+<body>
+	<form action="#" th:action="@{/saveImage}" th:object="${imageModel}"
+		method="post" enctype="multipart/form-data">
+		<input type="file" th:field="${imageModel.fileImage}" /> <input
+			type="text" th:field="${imageModel.title}" />
+
+		<textarea th:field="${imageModel.description}"> </textarea>
+
+		<input type="submit" />
+	</form>
+</body>
+</html>

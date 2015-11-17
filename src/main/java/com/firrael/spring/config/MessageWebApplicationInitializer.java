@@ -8,7 +8,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import com.firrael.spring.security.WebSecurityConfig;
 
 public class MessageWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
+	
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class[] { RootConfiguration.class, WebConfig.class, WebSecurityConfig.class };
