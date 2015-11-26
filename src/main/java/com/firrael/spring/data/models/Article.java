@@ -64,7 +64,7 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 	}
 	
 	public String getDateFormatted() {
-		return new SimpleDateFormat("dd/MMMM/yyyy hh:mm:ss",
+		return new SimpleDateFormat("dd/MMMM/yyyy HH:mm:ss",
 				Locale.getDefault()).format(date);
 	}
 
@@ -109,7 +109,7 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 
 	@Override
 	public int compareTo(Article secondArticle) {
-		return date.compareTo(secondArticle.getDate());
+		return secondArticle.getDate().compareTo(date);
 	}
 
 	public void addCategory(String category) {

@@ -107,8 +107,10 @@ public class HomeController {
 
 		if (articles.isEmpty()) {
 			articles = loadFeed();
-			Collections.sort(articles);
 		}
+		
+		Collections.sort(articles);
+
 
 		List<ArticlePage> pages = (List<ArticlePage>) PageCreator.getPagingList(articles, ArticlePage.class);
 
