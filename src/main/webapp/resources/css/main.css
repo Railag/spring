@@ -132,13 +132,13 @@ body {
 .article-item {
 	margin: 0 auto 100px auto;
 	min-height: 500px;
-	padding:15px;
+	padding: 15px;
 }
 
 .article-body {
 	width: 85%;
 	margin: 0 7.5%;
-	float:left;
+	float: left;
 }
 
 .article-description {
@@ -148,14 +148,14 @@ body {
 	padding: 15px;
 	margin: 0 auto;
 	word-wrap: break-word;
-	overflow:auto;
+	overflow: auto;
 }
 
 .article-description img {
 	width: 300px;
 	height: 300px;
-	float: left; 
-	border-radius : 150px;
+	float: left;
+	border-radius: 150px;
 	-webkit-border-radius: 150px;
 	-moz-border-radius: 150px;
 	box-shadow: 0 0 8px rgba(0, 0, 0, .8);
@@ -176,11 +176,11 @@ body {
 
 .article-tags {
 	padding: 3px 15px;
-	display:inline-block;
+	display: inline-block;
 	width: 85%;
 	margin: 50px 7.5%;
 	text-align: center;
-    background-color : black;
+	background-color: black;
 	border: solid 1px black;
 	background-color: black;
 }
@@ -203,4 +203,11 @@ body {
 	width: 23%;
 	text-align: right;
 	font-size: 18px;
+}
+
+.favorite, .unfavorite {
+	display: block;
+	margin-top: 20px;
+	margin-left:auto;
+	margin-right:auto;
 }

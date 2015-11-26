@@ -35,7 +35,7 @@ function ajaxFavoriteArticle(aid, uid, button) {
             'Content-Type': 'application/json' 
         },
         data: '{"aid":"' + aid + '","uid":"' + uid + '"}',
-        dataType:'application/json',
+        dataType:'json',
         beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token);
         },
@@ -48,7 +48,7 @@ function ajaxFavoriteArticle(aid, uid, button) {
         		$(button).attr("value", "Favorite");
         },
         error: function(e){
-        alert('Error: ' + e);
+        	console.log(e)
         }
         });
 }
@@ -88,7 +88,18 @@ function ajaxFavoriteArticle(aid, uid, button) {
 				<span  th:utext="${article.getDateFormatted()}">date</span>
 			</div>
 			
-			<div class="article-description" th:utext="${article.description}">text</div>
+			<div class="article-description">
+				<div th:utext="${article.description}">text</div>
+				
+				<div th:if="${user != null}">
+					<input type="button" th:value="${user.isFavoriteArticle(article.aid)? 'Unfavorite' : 'Favorite'}" 
+					th:onclick="' ajaxFavoriteArticle(\'' + ${article.aid}  + '\', \'' + ${user.uid} + '\' ,this) '"  
+					th:class="${user.isFavoriteArticle(article.aid)? 'unfavorite' : 'favorite'}" />
+				</div>
+			
+			</div>
+			
+		
 			
 		</div>
 		
@@ -96,12 +107,6 @@ function ajaxFavoriteArticle(aid, uid, button) {
 			<a th:each="category : ${article.categories}"
 				th:text="${category}" th:href="@{${'/category'}(category=${category})}">
 			</a>
-		</div>
-		
-		<div th:if="${user != null}">
-			<input type="button" th:value="${user.isFavoriteArticle(article.aid)? 'Favorite' : 'Unfavorite'}" 
-			th:onclick="' ajaxFavoriteArticle(\'' + ${article.aid}  + '\', \'' + ${user.uid} + '\' ,this) '"  
-			th:class="${user.isFavoriteArticle(article.aid)? 'favorite' : 'unfavorite'}" />			
 		</div>
 		
 	</div>
