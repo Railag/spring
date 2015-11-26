@@ -30,6 +30,10 @@ public class Redis {
 	public static List<Article> getArticlesForCategory(String category) {
 		return ArticleStorage.getArticlesForCategory(category);
 	}
+	
+	public static void updateArticle(Article article) {
+		ArticleStorage.updateArticle(article);
+	}
 
 	public static List<Channel> getChannelsForUser(User user) {
 		return UserStorage.getChannelsForUser(user);
@@ -49,6 +53,11 @@ public class Redis {
 
 	public static void updateUserCategories(User user, List<Category> selectedCategories) {
 		UserStorage.updateUserCategories(user, selectedCategories);
+	}
+	
+
+	public static boolean makeFavorite(User user, String aid) {
+		return UserStorage.makeFavorite(user, aid);
 	}
 
 	public static List<Article> getArticlesForUser(String login) {

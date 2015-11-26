@@ -152,7 +152,8 @@ public class User implements Entity<User> {
 		user.setRole(Role.valueOf(values.get(8).toString()));
 		return user;
 	}
+	
+	public boolean isFavoriteArticle(String aid) {
+		return favoriteArticleHashes.contains(aid);
+	}
 }
-
-// user:hash-from-login {favorites, categories, site preferences,
-// password}

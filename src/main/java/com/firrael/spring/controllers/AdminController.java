@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.firrael.spring.data.models.Article;
 import com.firrael.spring.data.models.User;
 import com.firrael.spring.data.storage.ArticleStorage;
+import com.firrael.spring.data.storage.Redis;
 import com.firrael.spring.data.storage.UserStorage;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.pagination.PageCreator;
@@ -24,7 +25,7 @@ public class AdminController {
 	public String admin(Locale locale, Model model) {
 		return "admin";
 	}
-	
+
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public String users(Locale locale, Model model, Principal principal, @RequestParam(required = false) Integer page) {
 
@@ -66,6 +67,50 @@ public class AdminController {
 		model.addAttribute("currentPage", pages.get(page));
 
 		return "adminArticles";
+	}
+
+	@RequestMapping(value = "/detailArticle", method = RequestMethod.GET)
+	public String detailArticle(Locale locale, Model model, Principal principal,
+			@RequestParam("article") Article article) {
+
+		// only for admin
+		String login = principal.getName();
+
+		model.addAttribute("article", article);
+
+		return "detailArticle";
+	}
+
+	@RequestMapping(value = "/removeArticle", method = RequestMethod.GET)
+	public String removeArticle(Locale locale, Model model, Principal principal,
+			@RequestParam("article") Article article) {
+
+		// only for admin
+		String login = principal.getName();
+
+		return "redirect:/articles";
+	}
+
+	@RequestMapping(value = "/editArticle", method = RequestMethod.GET)
+	public String editArticle(Locale locale, Model model, Principal principal,
+			@RequestParam("article") Article article) {
+
+		// only for admin
+		String login = principal.getName();
+
+		return "editArticle";
+	}
+
+	@RequestMapping(value = "/updateArticle", method = RequestMethod.GET)
+	public String updateArticle(Locale locale, Model model, Principal principal,
+			@RequestParam("article") Article article) {
+
+		// only for admin
+		String login = principal.getName();
+
+		Redis.updateArticle(article);
+
+		return "redirect:/articles";
 	}
 
 }

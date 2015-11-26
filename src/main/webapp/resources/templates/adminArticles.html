@@ -14,6 +14,7 @@
 		th:if="${articleStatus.index &lt; 5}">
 		<span th:text="${article.title}">Title</span>
 		<span th:utext="${article.link}">http://habrahabr.ru</span>
+		<a th:class="'page dark gradient'" th:href="@{${'/detailArticle'}(article=${article})}">Detail</a>
 	</div>
 
 

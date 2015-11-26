@@ -30,7 +30,7 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 	public void add(User user, String uid) {
 		String key = String.format("%s%s", RedisFields.USER, uid);
 		RedisTemplate<String, String> template = Redis.getInstance();
-		template.opsForHash().putAll(key, user.toHashMap());		
+		template.opsForHash().putAll(key, user.toHashMap());
 	}
 
 	@Override
@@ -194,8 +194,7 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		String uid = getUidForLogin(login);
 		User user = get(uid, new UserFields());
-		
-		
+
 		boolean enabled = true;
 		boolean accountNonExpired = true;
 		boolean credentialsNonExpired = true;
@@ -203,9 +202,30 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 		org.springframework.security.core.userdetails.User securityUser = new org.springframework.security.core.userdetails.User(
 				user.getEmail(), user.getPassword(), enabled, accountNonExpired, credentialsNonExpired,
 				accountNonLocked, user.getRole().getAuthorities());
-		
+
 		logger.info("logged: " + user.getLogin());
-		
+
 		return securityUser;
+	}
+
+	public static boolean makeFavorite(User user, String aid) {
+		RedisTemplate<String, String> template = Redis.getInstance();
+
+		List<String> favoriteHashes = user.getFavoriteArticleHashes();
+		
+		boolean nowFavorite;
+		
+		if (favoriteHashes.contains(aid)) {
+			favoriteHashes.remove(aid);
+			nowFavorite = false;
+		} else {
+			favoriteHashes.add(aid);
+			nowFavorite = true;
+		}
+		
+		String key = String.format("%s:%s", "uid", user.getUid());
+		template.opsForHash().put(key, UserFields.FAVORITE_ARTICLES, ListSerializer.getInstance().serialize(user.getFavoriteArticleHashes()));
+	
+		return nowFavorite;
 	}
 }

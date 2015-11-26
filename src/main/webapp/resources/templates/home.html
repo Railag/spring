@@ -6,6 +6,53 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}" />
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+	  $(".article-description a").each(function() {
+		  var text = $(this).text();
+		  if (text.indexOf("Читать дальше") >= 0)
+		  	$(this).addClass("read-forward");
+	  });
+	});
+
+
+function ajaxFavoriteArticle(aid, uid, button) {
+	
+	
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
+				
+        $.ajax({
+        type: "POST",
+        url: "/spring/favoriteArticle",
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        data: '{"aid":"' + aid + '","uid":"' + uid + '"}',
+        dataType:'application/json',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(response){
+        	var isFavorite = response["nowFavorite"];
+        	$(button).toggleClass("favorite unfavorite");
+        	if (isFavorite == "true")
+        		$(button).attr("value", "Unfavorite");
+        	else
+        		$(button).attr("value", "Favorite");
+        },
+        error: function(e){
+        alert('Error: ' + e);
+        }
+        });
+}
+</script>
 
 <title>Home</title>
 </head>
@@ -30,14 +77,33 @@
 	</div>
 
 	<div th:each="article, articleStatus : ${currentPage.getItems()}"
-		th:if="${articleStatus.index &lt; 5}">
-		<span th:text="${article.title}">Title</span>
-		<div th:utext="${article.description}">2.41</div>
-		<span th:utext="${article.link}">http://habrahabr.ru</span>
-		<span th:utext="${article.date}">http://habrahabr.ru</span>
-		<a th:each="category : ${article.categories}"
-			th:text="${category}" th:href="@{${'/category'}(category=${category})}">
-		</a>
+		th:if="${articleStatus.index &lt; 5}" class="article-item">
+		
+		<div class="article-body">
+			<div class="article-title">
+				<span  th:text="${article.title}">Title</span>
+			</div>
+			
+			<div class="article-date">
+				<span  th:utext="${article.getDateFormatted()}">date</span>
+			</div>
+			
+			<div class="article-description" th:utext="${article.description}">text</div>
+			
+		</div>
+		
+		<div class="article-tags">
+			<a th:each="category : ${article.categories}"
+				th:text="${category}" th:href="@{${'/category'}(category=${category})}">
+			</a>
+		</div>
+		
+		<div th:if="${user != null}">
+			<input type="button" th:value="${user.isFavoriteArticle(article.aid)? 'Favorite' : 'Unfavorite'}" 
+			th:onclick="' ajaxFavoriteArticle(\'' + ${article.aid}  + '\', \'' + ${user.uid} + '\' ,this) '"  
+			th:class="${user.isFavoriteArticle(article.aid)? 'favorite' : 'unfavorite'}" />			
+		</div>
+		
 	</div>
 
 

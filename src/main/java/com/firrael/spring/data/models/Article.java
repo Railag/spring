@@ -1,9 +1,11 @@
 package com.firrael.spring.data.models;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.firrael.spring.data.ArticleFields;
@@ -59,6 +61,11 @@ public class Article implements Cloneable, Comparable<Article>, Entity<Article> 
 
 	public Date getDate() {
 		return date;
+	}
+	
+	public String getDateFormatted() {
+		return new SimpleDateFormat("dd/MMMM/yyyy hh:mm:ss",
+				Locale.getDefault()).format(date);
 	}
 
 	public void setDate(Date date) {

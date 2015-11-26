@@ -17,7 +17,7 @@ import com.firrael.spring.data.models.Article;
 public class ArticleHandler extends DefaultHandler2 {
 	
 	private Article currentArticle;
-
+	
 	// inside item
 	private boolean isTitle;
 	private boolean isLink;

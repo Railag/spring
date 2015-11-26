@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+<title th:text="${article.title}">Article</title>
+
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+	
+	<div>
+		<span th:text="${article.title}">Title</span>
+		<span th:utext="${article.link}">http://habrahabr.ru</span>
+		<span th:utext="${article.description}">Description</span>
+		<span th:utext="${article.author}">Author</span>
+		<span th:utext="${article.date}">Date</span>
+		<a th:each="category : ${article.categories}"
+			th:text="${category}" th:href="@{${'/category'}(category=${category})}">
+		</a>
+		<a th:class="'page dark gradient'" th:href="@{${'/removeArticle'}(article=${article})}">Remove</a>
+		<a th:class="'page dark gradient'" th:href="@{${'/editArticle'}(article=${article})}">Edit</a>
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+
+</body>
+</html>

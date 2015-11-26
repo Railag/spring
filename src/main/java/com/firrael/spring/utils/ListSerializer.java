@@ -28,7 +28,7 @@ public class ListSerializer implements Serializer<List<String>, String> {
 	public List<String> deserialize(String object) {
 		String items = object.toString();
 		if (items.equals(""))
-			return Collections.emptyList();
+			return new ArrayList<String>();
 		
 		String[] split = items.split(Pattern.quote("|"));
 		List<String> list = new ArrayList<String>(Arrays.asList(split));
