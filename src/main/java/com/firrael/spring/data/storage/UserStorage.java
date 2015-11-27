@@ -208,7 +208,7 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 		return securityUser;
 	}
 
-	public static boolean makeFavorite(User user, String aid) {
+	public static boolean toggleFavorite(User user, String aid) {
 		RedisTemplate<String, String> template = Redis.getInstance();
 
 		List<String> favoriteHashes = user.getFavoriteArticleHashes();
@@ -227,5 +227,17 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 		template.opsForHash().put(key, UserFields.FAVORITE_ARTICLES, ListSerializer.getInstance().serialize(user.getFavoriteArticleHashes()));
 	
 		return nowFavorite;
+	}
+
+	public void removeFavorite(User user, String aid) {
+		RedisTemplate<String, String> template = Redis.getInstance();
+		
+		List<String> favoriteHashes = user.getFavoriteArticleHashes();
+		
+		if (favoriteHashes.contains(aid)) {
+			favoriteHashes.remove(aid);
+			String key = String.format("%s:%s", "uid", user.getUid());
+			template.opsForHash().put(key, UserFields.FAVORITE_ARTICLES, ListSerializer.getInstance().serialize(user.getFavoriteArticleHashes()));
+		} 
 	}
 }

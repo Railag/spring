@@ -240,6 +240,16 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 		
 		// remove aid from all aids set
 		template.opsForZSet().remove(RedisFields.AID_SET, aid);
+		
+		// remove aid from all users favorites lists
+		List<String> allUids = Redis.getAllUids();
+		
+		UserStorage userStorage = new UserStorage();
+		
+		for (String uid : allUids) {
+			User user = userStorage.get(uid, new UserFields());
+			userStorage.removeFavorite(user, aid);
+		}
 	}
 
 }

@@ -61,7 +61,7 @@ public class Redis {
 	
 
 	public static boolean makeFavorite(User user, String aid) {
-		return UserStorage.makeFavorite(user, aid);
+		return UserStorage.toggleFavorite(user, aid);
 	}
 
 	public static List<Article> getArticlesForUser(String login) {
@@ -120,6 +120,10 @@ public class Redis {
 
 	public static List<String> getAllCids() {
 		return new ArrayList<>(redisTemplate.opsForZSet().range(RedisFields.CID_SET, 0, -1));
+	}
+	
+	public static List<String> getAllUids() {
+		return new ArrayList<> (redisTemplate.opsForZSet().range(RedisFields.UID_SET, 0, -1));
 	}
 
 	public static List<String> getAidsForCid(String cid) {
