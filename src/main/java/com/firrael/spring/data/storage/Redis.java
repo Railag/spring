@@ -34,6 +34,10 @@ public class Redis {
 	public static void updateArticle(Article article) {
 		ArticleStorage.updateArticle(article);
 	}
+	
+	public static void removeArticle(String aid) {
+		ArticleStorage.removeArticle(aid);
+	}
 
 	public static List<Channel> getChannelsForUser(User user) {
 		return UserStorage.getChannelsForUser(user);

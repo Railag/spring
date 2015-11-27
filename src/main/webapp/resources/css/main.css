@@ -208,6 +208,35 @@ body {
 .favorite, .unfavorite {
 	display: block;
 	margin-top: 20px;
-	margin-left:auto;
-	margin-right:auto;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.detail-article-button {
+	width: 10%;
+	text-align: center;
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+}
+
+.article-edit input {
+	display: block;
+	margin: 10px auto;
+	width: 95%;
+}
+
+.article-edit textarea {
+	display: block; margin : 10px auto;
+	width: 95%;
+	min-height: 300px;
+	margin: 10px auto;
+}
+
+.article-edit-button {
+	display: block;
+	width: 10%;
+	text-align: center;
+	margin: 20px auto;
 }

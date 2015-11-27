@@ -6,10 +6,14 @@ import java.util.Locale;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.firrael.spring.data.ArticleFields;
+import com.firrael.spring.data.Category;
 import com.firrael.spring.data.models.Article;
 import com.firrael.spring.data.models.User;
 import com.firrael.spring.data.storage.ArticleStorage;
@@ -18,6 +22,7 @@ import com.firrael.spring.data.storage.UserStorage;
 import com.firrael.spring.pagination.ArticlePage;
 import com.firrael.spring.pagination.PageCreator;
 import com.firrael.spring.pagination.UserPage;
+import com.firrael.spring.utils.Utf8Serializer;
 
 @Controller
 public class AdminController {
@@ -71,10 +76,13 @@ public class AdminController {
 
 	@RequestMapping(value = "/detailArticle", method = RequestMethod.GET)
 	public String detailArticle(Locale locale, Model model, Principal principal,
-			@RequestParam("article") Article article) {
+			@RequestParam("articleAid") String aid) {
 
 		// only for admin
 		String login = principal.getName();
+		
+		ArticleStorage storage = new ArticleStorage();
+		Article article = storage.get(aid, new ArticleFields());
 
 		model.addAttribute("article", article);
 
@@ -83,30 +91,52 @@ public class AdminController {
 
 	@RequestMapping(value = "/removeArticle", method = RequestMethod.GET)
 	public String removeArticle(Locale locale, Model model, Principal principal,
-			@RequestParam("article") Article article) {
+			@RequestParam("articleAid") String aid) {
 
 		// only for admin
 		String login = principal.getName();
-
+		
+		Redis.removeArticle(aid);
+		
 		return "redirect:/articles";
 	}
 
 	@RequestMapping(value = "/editArticle", method = RequestMethod.GET)
 	public String editArticle(Locale locale, Model model, Principal principal,
-			@RequestParam("article") Article article) {
+			@RequestParam("articleAid") String aid) {
 
 		// only for admin
 		String login = principal.getName();
+		
+		ArticleStorage storage = new ArticleStorage();
+		Article article = storage.get(aid, new ArticleFields());
+		
+		model.addAttribute("article", article);
 
 		return "editArticle";
 	}
 
-	@RequestMapping(value = "/updateArticle", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateArticle", method = RequestMethod.POST)
 	public String updateArticle(Locale locale, Model model, Principal principal,
-			@RequestParam("article") Article article) {
+			@ModelAttribute("article") Article article, BindingResult result) {
 
 		// only for admin
 		String login = principal.getName();
+		
+		Utf8Serializer serializer = new Utf8Serializer();
+
+		article.setAuthor(serializer.deserialize(article.getAuthor()));
+		
+		article.setDescription(serializer.deserialize(article.getDescription()));
+		
+		article.setLink(serializer.deserialize(article.getLink()));
+		
+		article.setTitle(serializer.deserialize(article.getTitle()));
+		
+		for (int i = 0; i < article.getCategories().size(); i++) {
+			String s = article.getCategories().get(i);
+			article.getCategories().set(i, serializer.deserialize(s));
+		}
 
 		Redis.updateArticle(article);
 

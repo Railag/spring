@@ -12,16 +12,47 @@
 	<div th:replace="header :: header"></div>
 	
 	<div>
-		<span th:text="${article.title}">Title</span>
+		<!-- <span th:text="${article.title}">Title</span>
 		<span th:utext="${article.link}">http://habrahabr.ru</span>
 		<span th:utext="${article.description}">Description</span>
 		<span th:utext="${article.author}">Author</span>
 		<span th:utext="${article.date}">Date</span>
 		<a th:each="category : ${article.categories}"
 			th:text="${category}" th:href="@{${'/category'}(category=${category})}">
-		</a>
-		<a th:class="'page dark gradient'" th:href="@{${'/removeArticle'}(article=${article})}">Remove</a>
-		<a th:class="'page dark gradient'" th:href="@{${'/editArticle'}(article=${article})}">Edit</a>
+		</a> -->
+		
+		<div class="article-item">
+		
+		<div class="article-body">
+			<div class="article-title">
+				<span  th:text="${article.title}">Title</span>
+			</div>
+			
+			<div class="article-date">
+				<span  th:utext="${article.getDateFormatted()}">date</span>
+			</div>
+			
+			<div class="article-description">
+				<div th:utext="${article.description}">text</div>
+				
+				<a th:class="'page dark gradient detail-article-button'" th:href="@{${'/removeArticle'}(articleAid=${article.aid})}">Remove</a>
+				<a th:class="'page dark gradient detail-article-button'" th:href="@{${'/editArticle'}(articleAid=${article.aid})}">Edit</a>
+			
+			</div>
+			
+		
+			
+		</div>
+		
+		<div class="article-tags">
+			<a th:each="category : ${article.categories}"
+				th:text="${category}" th:href="@{${'/category'}(category=${category})}">
+			</a>
+		</div>
+		
+	</div>
+		
+		
 	</div>
 
 	<div th:replace="footer :: footer"></div>

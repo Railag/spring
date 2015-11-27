@@ -205,11 +205,41 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 		template.opsForHash().put(key, ArticleFields.AUTHOR, article.getAuthor());
 		template.opsForHash().put(key, ArticleFields.CATEGORY,
 				ListSerializer.getInstance().serialize(article.getCategories()));
-		template.opsForHash().put(key, ArticleFields.DATE, String.valueOf(article.getDate().getTime()));
 		template.opsForHash().put(key, ArticleFields.DESCRIPTION, article.getDescription());
 		template.opsForHash().put(key, ArticleFields.LINK, article.getLink());
 		template.opsForHash().put(key, ArticleFields.TITLE, article.getTitle());
 
+	}
+
+	public static void removeArticle(String aid) {
+		RedisTemplate<String, String> template = Redis.getInstance();
+
+		ArticleStorage storage = new ArticleStorage();
+		Article article = storage.get(aid, new ArticleFields());
+		
+		// remove aid from its channels sets
+		String host = article.getHost().getChannelName();
+		String chid = Redis.getChidForChannel(host);
+		template.opsForZSet().remove(RedisFields.CHANNEL + chid, aid);
+
+		
+		// remove aid from its categories sets
+		for (String category : article.getCategories()) {
+			String cid = Redis.getCidForCategory(category);
+			
+			template.opsForZSet().remove(RedisFields.CATEGORY + cid, aid);
+		}
+		
+		// remove article:<title>:aid
+		template.delete(RedisFields.ARTICLE_PREFIX + article.getTitle() + RedisFields.ARTICLE_POSTFIX);
+		
+		// remove aid:<aid> hash
+		String key = String.format("%s:%s", "aid", aid);
+		
+		template.opsForHash().delete(key, new ArticleFields().asArray());
+		
+		// remove aid from all aids set
+		template.opsForZSet().remove(RedisFields.AID_SET, aid);
 	}
 
 }
