@@ -67,6 +67,10 @@ public class Redis {
 	public static List<Article> getArticlesForUser(String login) {
 		return UserStorage.getArticlesForUser(login);
 	}
+	
+	public static void removeUser(String uid) {
+		UserStorage.removeUser(uid);
+	}
 
 	public static String getChidForChannel(String channel) {
 		return redisTemplate.opsForValue().get(RedisFields.CHANNEL_PREFIX + channel + RedisFields.CHANNEL_POSTFIX);

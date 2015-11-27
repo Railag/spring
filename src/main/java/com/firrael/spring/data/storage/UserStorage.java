@@ -240,4 +240,24 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 			template.opsForHash().put(key, UserFields.FAVORITE_ARTICLES, ListSerializer.getInstance().serialize(user.getFavoriteArticleHashes()));
 		} 
 	}
+
+	public static void removeUser(String uid) {
+		RedisTemplate<String, String> template = Redis.getInstance();
+		
+		UserStorage storage = new UserStorage();
+		User user = storage.get(uid, new UserFields());
+		
+		// remove user:<login>:uid
+		template.delete(RedisFields.USER_PREFIX + user.getLogin() + RedisFields.USER_POSTFIX);
+		
+		// remove uid:<uid> hash
+		String key = String.format("%s:%s", "uid", uid);
+		
+		template.opsForHash().delete(key, new UserFields().asArray());
+		
+		// remove aid from all uids set
+		template.opsForZSet().remove(RedisFields.UID_SET, uid);
+	}
+	
+	
 }
