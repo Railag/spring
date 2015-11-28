@@ -1,9 +1,18 @@
 package com.firrael.spring.data.storage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.ScanOptions.ScanOptionsBuilder;
+import org.thymeleaf.Template;
 
 import com.firrael.spring.data.Category;
 import com.firrael.spring.data.Channel;
@@ -11,6 +20,8 @@ import com.firrael.spring.data.models.Article;
 import com.firrael.spring.data.models.User;
 
 public class Redis {
+	
+	public static Logger logger = Logger.getLogger(Redis.class);
 
 	public static RedisTemplate<String, String> redisTemplate;
 
@@ -74,6 +85,45 @@ public class Redis {
 	
 	public static void updateUser(User user) {
 		UserStorage.updateUser(user);
+	}
+	
+	// returns list with related CIDs
+	public static List<String> searchForCategoryCids(final String search) {
+		Iterable<byte[]> result = redisTemplate.execute(new RedisCallback<Iterable<byte[]>>() {
+
+			  @Override
+			  public Iterable<byte[]> doInRedis(RedisConnection connection) throws DataAccessException {
+
+			    List<byte[]> binaryKeys = new ArrayList<byte[]>();
+
+			    ScanOptionsBuilder builder = new ScanOptionsBuilder();
+			    builder.count(1000000);
+			    builder.match(RedisFields.CATEGORY_PREFIX + "*" + search + "*" + RedisFields.CATEGORY_POSTFIX);
+			    
+			    Cursor<byte[]> cursor = connection.scan(builder.build());
+			    while (cursor.hasNext()) {
+			      binaryKeys.add(cursor.next());
+			    }
+
+			    try {
+			      cursor.close();
+			    } catch (IOException e) {
+			    }
+
+			    return binaryKeys;
+			  }
+			});
+		
+		List<String> cids = new ArrayList<>();
+		
+		for (byte[] value : result) {
+			String key = redisTemplate.getStringSerializer().deserialize(value);
+			String cid = redisTemplate.opsForValue().get(key);
+			cids.add(cid);
+			logger.info(key);
+		}
+		
+		return cids;
 	}
 
 	public static String getChidForChannel(String channel) {

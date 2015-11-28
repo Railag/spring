@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.firrael.spring.data.Category;
 import com.firrael.spring.data.Host;
 import com.firrael.spring.data.UserFields;
 import com.firrael.spring.data.models.Article;
@@ -71,6 +72,18 @@ public class HomeController {
 		model.addAttribute("category", category);
 
 		return "category";
+	}
+	
+	@RequestMapping(value = { "/search" }, method = RequestMethod.GET)
+	public String search(Locale locale, Model model, @RequestParam(required = true) String search) {
+
+		List<String> matchedCids = Redis.searchForCategoryCids(search);
+		List<Category> matchedCategories = Redis.getCategoriesForCids(matchedCids);
+		
+		model.addAttribute("categories", matchedCategories);
+		model.addAttribute("search", search);
+
+		return "search";
 	}
 
 	@RequestMapping(value = { "/favoriteArticle" }, method = RequestMethod.POST)

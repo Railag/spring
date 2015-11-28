@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+<title th:text="${search}">Search</title>
+
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+	
+	<div>
+			<div class="search-content">
+				<a class="page dark gradient search-category" th:each="category : ${categories}"
+					th:text="${category}" th:href="@{${'/category'}(category=${category})}">
+				</a>
+			</div>
+		
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+
+</body>
+</html>

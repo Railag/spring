@@ -6,17 +6,17 @@
   <body>
   
     <div th:fragment="header">
-      <a th:href="test">test</a>
-            <a th:href="test">test</a>
-            <p>Click <a th:href="@{/admin}">here</a> to see a greeting.</p>
-      
-            <a th:href="test">test</a>
-      
-            <a th:href="test" th:class="'header-link'">test</a>
-            <a th:href="test">test</a>
-            <a th:href="test">test</a>
-            <a th:href="test">test</a>
-            <a th:href="test">test</a>
+            
+          <div class="header-content"> 
+          
+	          <form th:action="@{/search}" method="get" accept-charset="UTF-8">
+	 			<input type="text" th:name="search" class="header-search" />
+				<input th:class="'page dark gradient'" type="submit" value="Search" />
+			  </form>
+		  
+		  </div>
+		  
+		  <hr></hr>
       
     </div>
   

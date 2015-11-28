@@ -228,7 +228,8 @@ body {
 }
 
 .article-edit textarea {
-	display: block; margin : 10px auto;
+	display: block;
+	margin: 10px auto;
 	width: 95%;
 	min-height: 300px;
 	margin: 10px auto;
@@ -242,7 +243,26 @@ body {
 }
 
 .detail-user {
-	display:inline-block;
-	padding:15px;
-	margin-bottom:50px;
+	display: inline-block;
+	padding: 15px;
+	margin-bottom: 50px;
+}
+
+.header-content {
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.search-content {
+	width:80%;
+	margin: 0 auto;
+	padding:20px;
+}
+
+.search-category {
+	min-height:30px;
+	display:flex;
+	 display: flex;
+    align-items: center;
+    justify-content: center;
 }
