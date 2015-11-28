@@ -8,23 +8,15 @@
     </head>
     <body>
     <div th:replace="header :: header"></div>
-<!-- Show another page with detail info and user edition/removing after clicking on specific user. -->
+    
 		<div th:each="user, userStatus : ${currentPage.getItems()}"
-		th:if="${userStatus.index &lt; 5}">
-		<span th:text="${user.uid}">Uid</span>
-		<span th:text="${user.login}">Login</span>
-		<div th:utext="${user.password}">Password</div>
-		<span th:text="${user.email}">Email</span>
-		<span th:text="${user.favoriteArticleHashes}">Favorite article hashes</span>
-		<span th:text="${user.selectedChannels}">Selected channels</span>
-		<span th:text="${user.selectedCategories}">Selected categories</span>
-		<span th:text="${user.authType}">Auth Type</span>
-		<span th:text="${user.isLoggedIn}">Is Logged in</span>
-		<span th:text="${user.selectedChannels}">Login</span>
-		<span th:text="${user.role}">Role</span>		
-	</div>
-
-	
+		th:if="${userStatus.index &lt; 5}" class="detail-user">
+		<div th:text="${user.uid}">Uid</div>
+		<div th:text="${user.login}">Login</div>
+		<div th:text="${user.email}">Email</div>
+		<div th:text="${user.role}">Role</div>	
+		<a th:class="'page dark gradient'" th:href="@{${'/detailUser'}(userUid=${user.uid})}">Detail</a>	
+	</div>	
 	
 	<div class="pagination dark">
 		<a th:class="'page dark gradient'"

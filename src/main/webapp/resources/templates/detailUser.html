@@ -1,10 +1,32 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-
-</body>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+        <title th:text="${user.login}">User</title>
+    </head>
+    <body>
+    <div th:replace="header :: header"></div>
+    
+		<div th:object="${user}" class="detail-user">
+		<div th:text="*{uid}">Uid</div>
+		<div th:text="*{login}">Login</div>
+		<div th:text="*{password}">Password</div>
+		<div th:text="*{email}">Email</div>
+		<div th:text="*{role}">Role</div>	
+		
+		<div class="user-favs">
+				<a th:each="fav : ${user.favoriteArticleHashes}"
+					th:text="${fav}" th:href="@{${'/detailArticle'}(articleAid=${fav})}">
+				</a>
+		</div>
+		
+		
+		<a th:class="'page dark gradient detail-article-button'" th:href="@{${'/removeUser'}(userUid=${user.uid})}">Remove</a>
+		<a th:class="'page dark gradient detail-article-button'" th:href="@{${'/editUser'}(userUid=${user.uid})}">Edit</a>
+	</div>	
+        	<div th:replace="footer :: footer"></div>
+        
+    </body>
 </html>

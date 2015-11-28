@@ -253,11 +253,20 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 		// remove uid:<uid> hash
 		String key = String.format("%s:%s", "uid", uid);
 		
-		template.opsForHash().delete(key, new UserFields().asArray());
+		template.delete(key);
 		
 		// remove aid from all uids set
 		template.opsForZSet().remove(RedisFields.UID_SET, uid);
 	}
-	
-	
+
+	public static void updateUser(User user) {
+		RedisTemplate<String, String> template = Redis.getInstance();
+
+		String key = String.format("%s:%s", "uid", user.getUid());
+		template.opsForHash().put(key, UserFields.EMAIL, user.getEmail());
+		template.opsForHash().put(key, UserFields.LOGIN, user.getLogin());
+		template.opsForHash().put(key, UserFields.PASSWORD, user.getPassword());
+		template.opsForHash().put(key, UserFields.FAVORITE_ARTICLES, ListSerializer.getInstance().serialize(user.getFavoriteArticleHashes()));
+		template.opsForHash().put(key, UserFields.ROLE, user.getRole().toString());
+	}
 }

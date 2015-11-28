@@ -208,7 +208,6 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 		template.opsForHash().put(key, ArticleFields.DESCRIPTION, article.getDescription());
 		template.opsForHash().put(key, ArticleFields.LINK, article.getLink());
 		template.opsForHash().put(key, ArticleFields.TITLE, article.getTitle());
-
 	}
 
 	public static void removeArticle(String aid) {
@@ -236,7 +235,7 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 		// remove aid:<aid> hash
 		String key = String.format("%s:%s", "aid", aid);
 		
-		template.opsForHash().delete(key, new ArticleFields().asArray());
+		template.delete(key);
 		
 		// remove aid from all aids set
 		template.opsForZSet().remove(RedisFields.AID_SET, aid);
