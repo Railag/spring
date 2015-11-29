@@ -68,6 +68,6 @@ public class LoginController {
 
 		Redis.saveUser(user);
 
-		return "redirect:/";
+		return "redirect:/login";
 	}
 }
