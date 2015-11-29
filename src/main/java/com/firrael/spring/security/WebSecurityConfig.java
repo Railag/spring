@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/", "/home", "/resources/**", "/register", "/saveUser", "/category", "/favoriteArticle", "/search").permitAll()
+                .antMatchers("/admin", "/articles", "/detailArticle", "/editArticle", "/removeArticle", "/updateArticle", "/users", "/detailUser", "/editUser", "/removeUser", "/updateUser").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
@@ -46,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         
     	auth
             .inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER");
+                .withUser("u").password("u").roles(Role.ADMIN.toString());
         
         auth.userDetailsService(userDetailsService).passwordEncoder(encoder);
     }

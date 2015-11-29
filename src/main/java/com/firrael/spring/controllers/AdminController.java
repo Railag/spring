@@ -45,9 +45,6 @@ public class AdminController {
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public String users(Locale locale, Model model, Principal principal, @RequestParam(required = false) Integer page) {
 
-		// only for admin
-		String login = principal.getName();
-
 		UserStorage storage = new UserStorage();
 		List<User> users = storage.getItems(100);
 
@@ -66,9 +63,6 @@ public class AdminController {
 	@RequestMapping(value = "/articles", method = RequestMethod.GET)
 	public String articles(Locale locale, Model model, Principal principal,
 			@RequestParam(required = false) Integer page) {
-
-		// only for admin
-		String login = principal.getName();
 
 		ArticleStorage storage = new ArticleStorage();
 		List<Article> articles = storage.getItems(100);
@@ -89,9 +83,6 @@ public class AdminController {
 	public String detailArticle(Locale locale, Model model, Principal principal,
 			@RequestParam("articleAid") String aid) {
 
-		// only for admin
-		String login = principal.getName();
-		
 		ArticleStorage storage = new ArticleStorage();
 		Article article = storage.get(aid, new ArticleFields());
 
@@ -104,9 +95,6 @@ public class AdminController {
 	public String removeArticle(Locale locale, Model model, Principal principal,
 			@RequestParam("articleAid") String aid) {
 
-		// only for admin
-		String login = principal.getName();
-		
 		Redis.removeArticle(aid);
 		
 		return "redirect:/articles";
@@ -116,9 +104,6 @@ public class AdminController {
 	public String editArticle(Locale locale, Model model, Principal principal,
 			@RequestParam("articleAid") String aid) {
 
-		// only for admin
-		String login = principal.getName();
-		
 		ArticleStorage storage = new ArticleStorage();
 		Article article = storage.get(aid, new ArticleFields());
 		
@@ -131,9 +116,6 @@ public class AdminController {
 	public String updateArticle(Locale locale, Model model, Principal principal,
 			@ModelAttribute("article") Article article, BindingResult result) {
 
-		// only for admin
-		String login = principal.getName();
-		
 		Utf8Serializer serializer = new Utf8Serializer();
 
 		article.setAuthor(serializer.deserialize(article.getAuthor()));
@@ -158,9 +140,6 @@ public class AdminController {
 	public String detailUser(Locale locale, Model model, Principal principal,
 			@RequestParam("userUid") String uid) {
 
-		// only for admin
-		String login = principal.getName();
-		
 		UserStorage storage = new UserStorage();
 		User user = storage.get(uid, new UserFields());
 
@@ -172,9 +151,6 @@ public class AdminController {
 	@RequestMapping(value = "/removeUser", method = RequestMethod.GET)
 	public String removeUser(Locale locale, Model model, Principal principal,
 			@RequestParam("userUid") String uid) {
-
-		// only for admin
-		String login = principal.getName();
 		
 		Redis.removeUser(uid);
 		
@@ -185,9 +161,6 @@ public class AdminController {
 	public String editUser(Locale locale, Model model, Principal principal,
 			@RequestParam("userUid") String uid) {
 
-		// only for admin
-		String login = principal.getName();
-		
 		UserStorage storage = new UserStorage();
 		User user = storage.get(uid, new UserFields());
 		
@@ -200,9 +173,6 @@ public class AdminController {
 	public String updateArticle(Locale locale, Model model, Principal principal,
 			@ModelAttribute("user") User user, BindingResult result) {
 
-		// only for admin
-		String login = principal.getName();
-		
 		Utf8Serializer serializer = new Utf8Serializer();
 		
 		user.setEmail(serializer.deserialize(user.getEmail()));
