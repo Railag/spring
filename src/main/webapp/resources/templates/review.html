@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Add review</title>
+<link rel="stylesheet" th:href="@{/resources/css/register.css}" />
+
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+
+	<div th:class='login'>
+		<h2>Add review</h2>
+		<form th:action="@{/addReview}" method="post" th:object="${review}">
+			<input th:field="*{author}" placeholder='Author' type='text' /> 
+			<textarea th:field="*{message}" placeholder='Message'> </textarea> 
+			<input th:field="*{contact}" placeholder='Contact' type='text' />
+			
+			<input class='animated' type='submit' value='Register' /> 
+		</form>
+	</div>
+	<div th:replace="footer :: footer"></div>
+</body>
+</html>

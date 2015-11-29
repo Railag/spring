@@ -8,9 +8,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.firrael.spring.pagination.Review;
+import com.firrael.spring.pagination.ReviewFactory;
 import com.firrael.spring.upload.ImageModel;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.DBCursor;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
@@ -56,30 +59,12 @@ public class MongoDB {
 
 		BasicDBObject inQuery = new BasicDBObject();
 
-		// List<File> fileList = new ArrayList<File>();
-
 		List<GridFSDBFile> files = gfsPhoto.find(inQuery);
 		for (GridFSDBFile file : files) {
-			// File f = new File("c://images/placeholder" + file.getFilename() +
-			// ".jpg");
 			logger.info(file.getFilename());
-			// try {
-			// file.writeTo(f);
-			// file.getInputStream()
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-
-			// fileList.add(f);
 		}
 
 		return files;
-		// return fileList;
-
-		// DBCursor cursor = gfsPhoto.getFileList();
-		// while (cursor.hasNext()) {
-		// logger.info(cursor.next());
-		// }
 	}
 
 	public static GridFSDBFile getImageByName(String name) {
@@ -91,5 +76,25 @@ public class MongoDB {
 		// List<File> fileList = new ArrayList<File>();
 
 		return gfsPhoto.findOne(inQuery);
+	}
+
+	public static void saveReview(Review review) {
+		mongo.save(review);
+	}
+	
+	public static List<Review> getAllReviews() {
+		List<Review> reviews = new ArrayList<>();
+		DBCursor cursor = mongo.getCollection(Review.COLLECTION_NAME).find();
+		try {
+		   while(cursor.hasNext()) {
+			   Review review = ReviewFactory.buildReview(cursor.next());
+		       logger.info(review);
+		       reviews.add(review);
+		   }
+		} finally {
+		   cursor.close();
+		}
+		
+		return reviews;
 	}
 }

@@ -1,0 +1,61 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+
+<title>Reviews</title>
+</head>
+<body>
+<div id="content">
+	<div th:replace="header :: header"></div>
+	
+		<div class="pagination dark">
+		<a th:class="'page dark gradient'"
+			th:if="${not currentPage.isFirst()}"
+			th:href="@{${'/reviews'}(page=${currentPage.number-1})}">Previous
+		</a>
+		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
+			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
+			th:text="${pageNo + 1}" th:href="@{${'/reviews'}(page=${pageNo})}">
+		</a>
+		
+		<a th:if="${not currentPage.isLast()}"
+			th:class="'page dark gradient'"
+			th:href="@{${'/reviews'}(page=${currentPage.number+1})}">Next
+		</a>
+	</div>
+
+	<div th:each="review, status : ${currentPage.getItems()}"
+		th:if="${status.index &lt; 5}" class="review-item">
+		<div th:text="${review.author}">Author</div>
+		<div th:utext="${review.message}">Message</div>
+		<div th:utext="${review.contact}">http://myUrl.com</div>
+		<div th:utext="${review.date}">Date</div>
+	</div>
+
+
+	<div class="pagination dark">
+		<a th:class="'page dark gradient'"
+			th:if="${not currentPage.isFirst()}"
+			th:href="@{${'/reviews'}(page=${currentPage.number-1})}">Previous
+		</a>
+		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
+			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
+			th:text="${pageNo + 1}" th:href="@{${'/reviews'}(page=${pageNo})}">
+		</a>
+		
+		<a th:if="${not currentPage.isLast()}"
+			th:class="'page dark gradient'"
+			th:href="@{${'/reviews'}(page=${currentPage.number+1})}">Next
+		</a>
+	</div>
+
+</div>
+	<div th:replace="footer :: footer"></div>
+
+</body>
+</html>

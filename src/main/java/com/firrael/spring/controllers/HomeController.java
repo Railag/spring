@@ -5,9 +5,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+
+import javax.annotation.Generated;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -16,6 +25,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.firrael.spring.data.storage.MongoDB;
+import com.firrael.spring.pagination.PageCreator;
+import com.firrael.spring.pagination.Review;
+import com.firrael.spring.pagination.ReviewPage;
 import com.firrael.spring.upload.ImageModel;
 import com.mongodb.gridfs.GridFSDBFile;
 
@@ -97,5 +110,49 @@ public class HomeController {
 		model.addAttribute("imageNames", imageNames);
 
 		return "showImages";
+	}
+	
+	@RequestMapping(value = { "/review" }, method = RequestMethod.GET)
+	public String review(Locale locale, Model model, Principal principal) {
+		Review review = new Review();
+		
+		model.addAttribute("review", review);
+		
+		return "review";
+	}
+	
+	@RequestMapping(value = { "/addReview" }, method = RequestMethod.POST)
+	public String addReview(Locale locale, Model model, Principal principal, @ModelAttribute ("review") Review review, BindingResult result) {
+
+		MongoDB.initialize(mongoTemplate);
+		
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Minsk"));
+		
+		review.setFormattedDate(calendar.getTime());
+		
+		MongoDB.saveReview(review);
+		
+		return "redirect:/reviews";
+	}
+	
+	@RequestMapping(value = { "/reviews" }, method = RequestMethod.GET)
+	public String reviews(Locale locale, Model model, Principal principal, @RequestParam (required = false) Integer page) {
+
+		MongoDB.initialize(mongoTemplate);
+		
+		List<Review> reviews = MongoDB.getAllReviews();
+		
+		Collections.sort(reviews);
+
+		List<ReviewPage> pages = (List<ReviewPage>) PageCreator.getPagingList(reviews, ReviewPage.class);
+
+		model.addAttribute("pages", pages);
+
+		if (page == null || page >= pages.size() || page < 0)
+			page = 0;
+
+		model.addAttribute("currentPage", pages.get(page));
+
+		return "reviews";
 	}
 }
