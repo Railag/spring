@@ -34,10 +34,6 @@ public class LoginController {
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String register(Locale locale, Model model) {
 		User user = new User();
-		/*
-		 * user.setEmail("test"); user.setAuthToken("testToken");
-		 * user.setLogin("user"); user.setPassword("test password");
-		 */
 
 		model.addAttribute("user", user);
 
