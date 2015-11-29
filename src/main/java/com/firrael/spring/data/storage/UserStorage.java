@@ -269,4 +269,19 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 		template.opsForHash().put(key, UserFields.FAVORITE_ARTICLES, ListSerializer.getInstance().serialize(user.getFavoriteArticleHashes()));
 		template.opsForHash().put(key, UserFields.ROLE, user.getRole().toString());
 	}
+
+	public static List<Article> getFavArticlesForUser(User user) {
+		List<String> favoriteHashes = user.getFavoriteArticleHashes();
+		
+		List<Article> favArticles = new ArrayList<>();
+		
+		ArticleStorage storage = new ArticleStorage();
+		
+		for (String aid : favoriteHashes) {
+			Article article = storage.get(aid, new ArticleFields());
+			favArticles.add(article);
+		}
+		
+		return favArticles;
+	}
 }

@@ -87,6 +87,10 @@ public class Redis {
 		UserStorage.updateUser(user);
 	}
 	
+	public static List<Article> getFavArticlesForUser(User user) {
+		return UserStorage.getFavArticlesForUser(user);
+	}
+	
 	// returns list with related CIDs
 	public static List<String> searchForCategoryCids(final String search) {
 		Iterable<byte[]> result = redisTemplate.execute(new RedisCallback<Iterable<byte[]>>() {

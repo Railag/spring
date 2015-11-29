@@ -13,6 +13,7 @@ public class ArticleFields implements Fields {
 	public final static String AUTHOR = "author";
 	public final static String CATEGORY = "category";
 
+	@Override
 	public List<Object> asArray() {
 		List<Object> fields = new ArrayList<>();
 		fields.add(TITLE);

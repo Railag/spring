@@ -16,6 +16,7 @@ public class UserFields implements Fields {
 	public final static String IS_LOGGED_IN = "is_logged_in";
 	public final static String ROLE = "role";
 
+	@Override
 	public List<Object> asArray() {
 		List<Object> fields = new ArrayList<>();
 		fields.add(LOGIN);
