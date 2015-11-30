@@ -24,10 +24,6 @@
 					<input type="text" th:field="*{link}"/>
 		 			<textarea th:field="*{description}"></textarea>
 		 			<input type="text" th:field="*{author}"/>
-					<div th:field="*{categories}" th:each="category, stat : *{categories}">
-						<input type="text"  th:field="*{categories[__${stat.index}__]}" />
-					</div> 
-						
 							
 				 </div>
 			

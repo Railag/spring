@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.firrael.spring.data.ArticleFields;
-import com.firrael.spring.data.Category;
 import com.firrael.spring.data.UserFields;
 import com.firrael.spring.data.models.Article;
 import com.firrael.spring.data.models.User;
@@ -125,11 +124,6 @@ public class AdminController {
 		article.setLink(serializer.deserialize(article.getLink()));
 		
 		article.setTitle(serializer.deserialize(article.getTitle()));
-		
-		for (int i = 0; i < article.getCategories().size(); i++) {
-			String s = article.getCategories().get(i);
-			article.getCategories().set(i, serializer.deserialize(s));
-		}
 
 		Redis.updateArticle(article);
 

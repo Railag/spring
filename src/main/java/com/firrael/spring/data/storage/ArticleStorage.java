@@ -123,12 +123,7 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 				if (category.equals("Информационная безопасность")) {
 					logger.info(category + " | AID: " + aid + " " + currentCid);
 				}
-				// if (category.equalsIgnoreCase("fallout 4") || currentCid ==
-				// 346) {
-				// logger.info(category + " | AID: " + aid + " " + currentCid);
-				// }
-				// template.opsForZSet().add(RedisFields.CID_SET,
-				// String.valueOf(currentCid), currentCid);
+				
 				template.opsForValue().set(RedisFields.CATEGORY_PREFIX + category + RedisFields.CATEGORY_POSTFIX,
 						String.valueOf(currentCid));
 
@@ -203,11 +198,11 @@ public class ArticleStorage implements Storage<Article, ArticleFields> {
 
 		String key = String.format("%s:%s", "aid", article.getAid());
 		template.opsForHash().put(key, ArticleFields.AUTHOR, article.getAuthor());
-		template.opsForHash().put(key, ArticleFields.CATEGORY,
-				ListSerializer.getInstance().serialize(article.getCategories()));
 		template.opsForHash().put(key, ArticleFields.DESCRIPTION, article.getDescription());
 		template.opsForHash().put(key, ArticleFields.LINK, article.getLink());
 		template.opsForHash().put(key, ArticleFields.TITLE, article.getTitle());
+		
+		
 	}
 
 	public static void removeArticle(String aid) {
