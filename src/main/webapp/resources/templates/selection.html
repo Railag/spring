@@ -66,33 +66,42 @@
 </script>
 
 <body>
-	<div th:replace="header :: header"></div>
 
-	<h2 id="selection-title">Сайты</h2>
+	<div class="wrapper">
 
-	<form action="#" th:action="@{/selection}"
-		th:object="${selectionModel}" method="post" accept-charset="UTF-8">
-		<div th:each="channel : *{allChannels}" th:class="'checkbox'"
-			id="channel">
-			<input type="checkbox" th:field="*{selectedChannels}"
-				th:value="${channel}" /> <label th:text="${channel.name + ': ' + channel.count}">Channel</label>
-		</div>
-		<input type="submit" id="channel-submit" class="selection-submit" />
-	</form>
-
-	<h2 id="selection-title">Теги</h2>
-
-	<form action="#" th:action="@{/selection}"
-		th:object="${selectionModel}" method="post" accept-charset="UTF-8">
-		<div th:each="category : *{allCategories}" th:class="'checkbox'"
-			id="category">
-			<input type="checkbox" th:field="*{selectedCategories}"
-				th:value="${category}" /> <label th:text="${category.name + ': ' + category.count}">Category</label>
-		</div>
-		<input type="submit" id="category-submit" class="selection-submit" />
-	</form>
-
-	<div th:replace="footer :: footer"></div>
+		<div th:replace="header :: header"></div>
+	
+	    <div class="content">
+	
+			<h2 id="selection-title">Сайты</h2>
+		
+			<form action="#" th:action="@{/selection}"
+				th:object="${selectionModel}" method="post" accept-charset="UTF-8">
+				<div th:each="channel : *{allChannels}" th:class="'checkbox'"
+					id="channel">
+					<input type="checkbox" th:field="*{selectedChannels}"
+						th:value="${channel}" /> <label th:text="${channel.name + ': ' + channel.count}">Channel</label>
+				</div>
+				<input type="submit" id="channel-submit" class="selection-submit" />
+			</form>
+		
+			<h2 id="selection-title">Теги</h2>
+		
+			<form action="#" th:action="@{/selection}"
+				th:object="${selectionModel}" method="post" accept-charset="UTF-8">
+				<div th:each="category : *{allCategories}" th:class="'checkbox'"
+					id="category">
+					<input type="checkbox" th:field="*{selectedCategories}"
+						th:value="${category}" /> <label th:text="${category.name + ': ' + category.count}">Category</label>
+				</div>
+				<input type="submit" id="category-submit" class="selection-submit" />
+			</form>
+	
+	    </div>
+	
+		<div th:replace="footer :: footer"></div>
+		
+	</div>
 
 </body>
 </html>

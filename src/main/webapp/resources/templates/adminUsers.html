@@ -7,34 +7,42 @@
         <title>Users</title>
     </head>
     <body>
-    <div th:replace="header :: header"></div>
     
-		<div th:each="user, userStatus : ${currentPage.getItems()}"
-		th:if="${userStatus.index &lt; 5}" class="detail-user">
-		<div th:text="${user.uid}">Uid</div>
-		<div th:text="${user.login}">Login</div>
-		<div th:text="${user.email}">Email</div>
-		<div th:text="${user.role}">Role</div>	
-		<a th:class="'page dark gradient'" th:href="@{${'/detailUser'}(userUid=${user.uid})}">Detail</a>	
-	</div>	
-	
-	<div class="pagination dark">
-		<a th:class="'page dark gradient'"
-			th:if="${not currentPage.isFirst()}"
-			th:href="@{${'/users'}(page=${currentPage.number-1})}">Previous
-		</a>
-		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
-			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-			th:text="${pageNo + 1}" th:href="@{${'/users'}(page=${pageNo})}">
-		</a>
-		
-		<a th:if="${not currentPage.isLast()}"
-			th:class="'page dark gradient'"
-			th:href="@{${'/users'}(page=${currentPage.number+1})}">Next
-		</a>
-	</div>
-		
-        	<div th:replace="footer :: footer"></div>
-        
+    	<div class="wrapper">
+	    
+		    <div th:replace="header :: header"></div>
+		    
+		    <div class="content">
+		    
+				<div th:each="user, userStatus : ${currentPage.getItems()}"
+					th:if="${userStatus.index &lt; 5}" class="detail-user">
+					<div th:text="${user.uid}">Uid</div>
+					<div th:text="${user.login}">Login</div>
+					<div th:text="${user.email}">Email</div>
+					<div th:text="${user.role}">Role</div>	
+					<a th:class="'page dark gradient'" th:href="@{${'/detailUser'}(userUid=${user.uid})}">Detail</a>	
+				</div>	
+				
+				<div class="pagination dark">
+					<a th:class="'page dark gradient'"
+						th:if="${not currentPage.isFirst()}"
+						th:href="@{${'/users'}(page=${currentPage.number-1})}">Previous
+					</a>
+					<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
+						th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
+						th:text="${pageNo + 1}" th:href="@{${'/users'}(page=${pageNo})}">
+					</a>
+					
+					<a th:if="${not currentPage.isLast()}"
+						th:class="'page dark gradient'"
+						th:href="@{${'/users'}(page=${currentPage.number+1})}">Next
+					</a>
+				</div>
+					
+			</div>	
+		    
+		    <div th:replace="footer :: footer"></div>
+		    
+        </div>
     </body>
 </html>

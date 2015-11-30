@@ -7,26 +7,36 @@
         <title th:text="${user.login}">User</title>
     </head>
     <body>
-    <div th:replace="header :: header"></div>
     
-		<div th:object="${user}" class="detail-user">
-		<div th:text="*{uid}">Uid</div>
-		<div th:text="*{login}">Login</div>
-		<div th:text="*{password}">Password</div>
-		<div th:text="*{email}">Email</div>
-		<div th:text="*{role}">Role</div>	
-		
-		<div class="user-favs">
-				<a th:each="fav : ${user.favoriteArticleHashes}"
-					th:text="${fav}" th:href="@{${'/detailArticle'}(articleAid=${fav})}">
-				</a>
+	    <div class="wrapper">
+	    
+		    <div th:replace="header :: header"></div>
+		    
+		   	<div class="content">
+		    
+				<div th:object="${user}" class="detail-user">
+					<div th:text="*{uid}">Uid</div>
+					<div th:text="*{login}">Login</div>
+					<div th:text="*{password}">Password</div>
+					<div th:text="*{email}">Email</div>
+					<div th:text="*{role}">Role</div>	
+					
+					<div class="user-favs">
+							<a th:each="fav : ${user.favoriteArticleHashes}"
+								th:text="${fav}" th:href="@{${'/detailArticle'}(articleAid=${fav})}">
+							</a>
+					</div>
+					
+					
+					<a th:class="'page dark gradient detail-article-button'" th:href="@{${'/removeUser'}(userUid=${user.uid})}">Remove</a>
+					<a th:class="'page dark gradient detail-article-button'" th:href="@{${'/editUser'}(userUid=${user.uid})}">Edit</a>
+				</div>	
+			
+			</div>
+		    
+		    <div th:replace="footer :: footer"></div>
+		        
 		</div>
 		
-		
-		<a th:class="'page dark gradient detail-article-button'" th:href="@{${'/removeUser'}(userUid=${user.uid})}">Remove</a>
-		<a th:class="'page dark gradient detail-article-button'" th:href="@{${'/editUser'}(userUid=${user.uid})}">Edit</a>
-	</div>	
-        	<div th:replace="footer :: footer"></div>
-        
     </body>
 </html>

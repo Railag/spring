@@ -6,25 +6,35 @@
         <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
     </head>
     <body>
-    <div th:replace="header :: header"></div>
-    <div class="profile-content">
-        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
-        
-        <form th:action="@{/selection}" method="get">
-            <input type="submit" value="To selection"/>
-        </form>
-        
-        <form th:action="@{/favorites}" method="get">
-        	<input type="submit" value="To favorites"/>
-        </form>
-        
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form>
-        
-    </div>
-        
-        	<div th:replace="footer :: footer"></div>
-        
+    
+		<div class="wrapper">
+		    
+		    <div th:replace="header :: header"></div>
+		    
+		    <div class="content">
+		    
+			    <div class="profile-content">
+			        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+			        
+			        <form th:action="@{/selection}" method="get">
+			            <input type="submit" value="To selection"/>
+			        </form>
+			        
+			        <form th:action="@{/favorites}" method="get">
+			        	<input type="submit" value="To favorites"/>
+			        </form>
+			        
+			        <form th:action="@{/logout}" method="post">
+			            <input type="submit" value="Sign Out"/>
+			        </form>
+			        
+			    </div>
+		    
+		    </div>
+		        
+		    <div th:replace="footer :: footer"></div>
+		    
+		</div>
+		  
     </body>
 </html>

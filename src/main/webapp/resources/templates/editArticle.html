@@ -9,28 +9,38 @@
 
 </head>
 <body>
-	<div th:replace="header :: header"></div>
-	
-	<form th:action="@{/updateArticle}" method="post" th:object="${article}" accept-charset="UTF-8">
-		 <div class="article-edit"  > 
-		 	<input type="hidden" th:field="*{aid}"/>
-			<input type="text" th:field ="*{title}" />
-			<input type="text" th:field="*{link}"/>
- 			<textarea th:field="*{description}"></textarea>
- 			<input type="text" th:field="*{author}"/>
-			<div th:field="*{categories}" th:each="category, stat : *{categories}">
-				<input type="text"  th:field="*{categories[__${stat.index}__]}" />
-			</div> 
-				
-					
-		 </div>
-	
-		<input th:class="'page dark gradient article-edit-button'" type="submit" value="Update article" />
-	</form>
-	
-	<a th:class="'page dark gradient article-edit-button'" th:href="@{${'/removeArticle'}(articleAid=${article.aid})}">Remove</a>
-	
-	<div th:replace="footer :: footer"></div>
+
+	<div class="wrapper">
+
+		<div th:replace="header :: header"></div>
+		
+		<div class="content">
+		
+		
+			<form th:action="@{/updateArticle}" method="post" th:object="${article}" accept-charset="UTF-8">
+				 <div class="article-edit"  > 
+				 	<input type="hidden" th:field="*{aid}"/>
+					<input type="text" th:field ="*{title}" />
+					<input type="text" th:field="*{link}"/>
+		 			<textarea th:field="*{description}"></textarea>
+		 			<input type="text" th:field="*{author}"/>
+					<div th:field="*{categories}" th:each="category, stat : *{categories}">
+						<input type="text"  th:field="*{categories[__${stat.index}__]}" />
+					</div> 
+						
+							
+				 </div>
+			
+				<input th:class="'page dark gradient article-edit-button'" type="submit" value="Update article" />
+			</form>
+			
+			<a th:class="'page dark gradient article-edit-button'" th:href="@{${'/removeArticle'}(articleAid=${article.aid})}">Remove</a>
+			
+		</div>
+		
+		<div th:replace="footer :: footer"></div>
+
+	</div>
 
 </body>
 </html>

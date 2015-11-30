@@ -57,79 +57,87 @@ function ajaxFavoriteArticle(aid, uid, button) {
 <title>Favorites</title>
 </head>
 <body>
-<div id="content">
-	<div th:replace="header :: header"></div>
-	
-		<div class="pagination dark">
-		<a th:class="'page dark gradient'"
-			th:if="${not currentPage.isFirst()}"
-			th:href="@{${'/favorites'}(page=${currentPage.number-1})}">Previous
-		</a>
-		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
-			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-			th:text="${pageNo + 1}" th:href="@{${'/favorites'}(page=${pageNo})}">
-		</a>
-		
-		<a th:if="${not currentPage.isLast()}"
-			th:class="'page dark gradient'"
-			th:href="@{${'/favorites'}(page=${currentPage.number+1})}">Next
-		</a>
-	</div>
 
-	<div th:each="article, articleStatus : ${currentPage.getItems()}"
-		th:if="${articleStatus.index &lt; 5}" class="article-item">
+	<div class="wrapper">
+
+		<div th:replace="header :: header"></div>
 		
-		<div class="article-body">
-			<div class="article-title">
-				<span  th:text="${article.title}">Title</span>
-			</div>
-			
-			<div class="article-date">
-				<span  th:utext="${article.getDateFormatted()}">date</span>
-			</div>
-			
-			<div class="article-description">
-				<div th:utext="${article.description}">text</div>
+		<div class="content">
+		
+		
+			<div class="pagination dark">
+				<a th:class="'page dark gradient'"
+					th:if="${not currentPage.isFirst()}"
+					th:href="@{${'/favorites'}(page=${currentPage.number-1})}">Previous
+				</a>
+				<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
+					th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
+					th:text="${pageNo + 1}" th:href="@{${'/favorites'}(page=${pageNo})}">
+				</a>
 				
-				<div th:if="${user != null}">
-					<input type="button" th:value="${user.isFavoriteArticle(article.aid)? 'Unfavorite' : 'Favorite'}" 
-					th:onclick="' ajaxFavoriteArticle(\'' + ${article.aid}  + '\', \'' + ${user.uid} + '\' ,this) '"  
-					th:class="${user.isFavoriteArticle(article.aid)? 'unfavorite' : 'favorite'}" />
-				</div>
-			
+				<a th:if="${not currentPage.isLast()}"
+					th:class="'page dark gradient'"
+					th:href="@{${'/favorites'}(page=${currentPage.number+1})}">Next
+				</a>
 			</div>
-			
 		
-			
-		</div>
+			<div th:each="article, articleStatus : ${currentPage.getItems()}"
+				th:if="${articleStatus.index &lt; 5}" class="article-item">
+				
+				<div class="article-body">
+					<div class="article-title">
+						<span  th:text="${article.title}">Title</span>
+					</div>
+					
+					<div class="article-date">
+						<span  th:utext="${article.getDateFormatted()}">date</span>
+					</div>
+					
+					<div class="article-description">
+						<div th:utext="${article.description}">text</div>
+						
+						<div th:if="${user != null}">
+							<input type="button" th:value="${user.isFavoriteArticle(article.aid)? 'Unfavorite' : 'Favorite'}" 
+							th:onclick="' ajaxFavoriteArticle(\'' + ${article.aid}  + '\', \'' + ${user.uid} + '\' ,this) '"  
+							th:class="${user.isFavoriteArticle(article.aid)? 'unfavorite' : 'favorite'}" />
+						</div>
+					
+					</div>
+					
+				
+					
+				</div>
+				
+				<div class="article-tags">
+						<a th:each="category : ${article.categories}"
+							th:text="${category}" th:href="@{${'/category'}(category=${category})}">
+						</a>
+				</div>
+				
+			</div>
 		
-		<div class="article-tags">
-			<a th:each="category : ${article.categories}"
-				th:text="${category}" th:href="@{${'/category'}(category=${category})}">
-			</a>
+		
+			<div class="pagination dark">
+				<a th:class="'page dark gradient'"
+					th:if="${not currentPage.isFirst()}"
+					th:href="@{${'/favorites'}(page=${currentPage.number-1})}">Previous
+				</a>
+				<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
+					th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
+					th:text="${pageNo + 1}" th:href="@{${'/favorites'}(page=${pageNo})}">
+				</a>
+				
+				<a th:if="${not currentPage.isLast()}"
+					th:class="'page dark gradient'"
+					th:href="@{${'/favorites'}(page=${currentPage.number+1})}">Next
+				</a>
+			</div>
+	
 		</div>
+	
+		<div th:replace="footer :: footer"></div>
 		
 	</div>
-
-
-	<div class="pagination dark">
-		<a th:class="'page dark gradient'"
-			th:if="${not currentPage.isFirst()}"
-			th:href="@{${'/favorites'}(page=${currentPage.number-1})}">Previous
-		</a>
-		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
-			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-			th:text="${pageNo + 1}" th:href="@{${'/favorites'}(page=${pageNo})}">
-		</a>
-		
-		<a th:if="${not currentPage.isLast()}"
-			th:class="'page dark gradient'"
-			th:href="@{${'/favorites'}(page=${currentPage.number+1})}">Next
-		</a>
-	</div>
-
-</div>
-	<div th:replace="footer :: footer"></div>
 
 </body>
 </html>

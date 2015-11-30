@@ -9,35 +9,44 @@
 
 </head>
 <body>
-	<div th:replace="header :: header"></div>
+
+	<div class="wrapper">
 	
-	<form th:action="@{/updateUser}" method="post" th:object="${user}" accept-charset="UTF-8">
-		 <div class="user-edit"  > 
-		 	<input type="hidden" th:field="*{uid}"/>
-			<input type="text" th:field ="*{login}" />
-			<input type="text" th:field="*{password}"/>
- 			<input type="text" th:field="*{email}"/>
- 			<input type="text" th:field="*{role}"/> <!-- Replace with list selection for roles -->
-			<div th:field="*{favoriteArticleHashes}" th:each="fav, stat : *{favoriteArticleHashes}">
-				<input type="text"  th:field="*{favoriteArticleHashes[__${stat.index}__]}" />
-			</div> 
+		<div th:replace="header :: header"></div>
+		
+		<div class="content">
+		
+			<form th:action="@{/updateUser}" method="post" th:object="${user}" accept-charset="UTF-8">
+				 <div class="user-edit"  > 
+				 	<input type="hidden" th:field="*{uid}"/>
+					<input type="text" th:field ="*{login}" />
+					<input type="text" th:field="*{password}"/>
+		 			<input type="text" th:field="*{email}"/>
+		 			<input type="text" th:field="*{role}"/> <!-- Replace with list selection for roles -->
+					<div th:field="*{favoriteArticleHashes}" th:each="fav, stat : *{favoriteArticleHashes}">
+						<input type="text"  th:field="*{favoriteArticleHashes[__${stat.index}__]}" />
+					</div> 
+					
+					<div th:field="*{selectedCategories}" th:each="category, stat : *{selectedCategories}">
+						<input type="text"  th:field="*{selectedCategories[__${stat.index}__]}" />
+					</div> 
+					
+					<div th:field="*{selectedChannels}" th:each="channel, stat : *{selectedChannels}">
+						<input type="text"  th:field="*{selectedChannels[__${stat.index}__]}" />
+					</div> 
+						
+				 </div>
 			
-			<div th:field="*{selectedCategories}" th:each="category, stat : *{selectedCategories}">
-				<input type="text"  th:field="*{selectedCategories[__${stat.index}__]}" />
-			</div> 
+				<input th:class="'page dark gradient article-edit-button'" type="submit" value="Update user" />
+			</form>
 			
-			<div th:field="*{selectedChannels}" th:each="channel, stat : *{selectedChannels}">
-				<input type="text"  th:field="*{selectedChannels[__${stat.index}__]}" />
-			</div> 
-				
-		 </div>
-	
-		<input th:class="'page dark gradient article-edit-button'" type="submit" value="Update user" />
-	</form>
-	
-	<a th:class="'page dark gradient article-edit-button'" th:href="@{${'/removeUser'}(userUid=${user.uid})}">Remove</a>
-	
-	<div th:replace="footer :: footer"></div>
+			<a th:class="'page dark gradient article-edit-button'" th:href="@{${'/removeUser'}(userUid=${user.uid})}">Remove</a>
+			
+		</div>
+		
+		<div th:replace="footer :: footer"></div>
+		
+	</div>
 
 </body>
 </html>
