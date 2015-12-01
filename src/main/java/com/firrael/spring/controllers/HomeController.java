@@ -1,22 +1,14 @@
 package com.firrael.spring.controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import javax.annotation.Generated;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -49,6 +41,14 @@ public class HomeController {
 
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
 	public String home(Locale locale, Model model, Principal principal) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		return "home";
+	}
+	
+	@RequestMapping(value = { "/uploadImage" }, method = RequestMethod.GET)
+	public String uploadImage(Locale locale, Model model, Principal principal) {
 
 		MongoDB.initialize(mongoTemplate);
 

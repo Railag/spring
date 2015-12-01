@@ -10,55 +10,17 @@
 <title>Home</title>
 </head>
 <body>
-<div id="content">
-	<div th:replace="header :: header"></div>
-	
-		<div class="pagination dark">
-		<a th:class="'page dark gradient'"
-			th:if="${not currentPage.isFirst()}"
-			th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous
-		</a>
-		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
-			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-			th:text="${pageNo + 1}" th:href="@{${'/home'}(page=${pageNo})}">
-		</a>
+	<div class="wrapper">
+		<div th:replace="header :: header"></div>
+
+		<div class="content">
 		
-		<a th:if="${not currentPage.isLast()}"
-			th:class="'page dark gradient'"
-			th:href="@{${'/home'}(page=${currentPage.number+1})}">Next
-		</a>
+			
+		</div>
+
+		<div th:replace="footer :: footer"></div>
+
 	</div>
-
-	<div th:each="article, articleStatus : ${currentPage.getItems()}"
-		th:if="${articleStatus.index &lt; 5}">
-		<span th:text="${article.title}">Title</span>
-		<div th:utext="${article.description}">2.41</div>
-		<span th:utext="${article.link}">http://habrahabr.ru</span>
-		<span th:utext="${article.date}">http://habrahabr.ru</span>
-		<a th:each="category : ${article.categories}"
-			th:text="${category}" th:href="@{${'/category'}(category=${category})}">
-		</a>
-	</div>
-
-
-	<div class="pagination dark">
-		<a th:class="'page dark gradient'"
-			th:if="${not currentPage.isFirst()}"
-			th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous
-		</a>
-		<a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
-			th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-			th:text="${pageNo + 1}" th:href="@{${'/home'}(page=${pageNo})}">
-		</a>
-		
-		<a th:if="${not currentPage.isLast()}"
-			th:class="'page dark gradient'"
-			th:href="@{${'/home'}(page=${currentPage.number+1})}">Next
-		</a>
-	</div>
-
-</div>
-	<div th:replace="footer :: footer"></div>
 
 </body>
 </html>
