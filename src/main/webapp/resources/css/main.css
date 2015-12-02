@@ -84,7 +84,7 @@ html {
 
 body {
 	margin: 0px;
-	background: #fff;
+	background: #FFCC99;
 	height: 100%;
 }
 
@@ -93,15 +93,9 @@ body {
 	position: relative;
 }
 
-.header {
-	height: 50px;
-	background: #F0F0F0;
-	border: 1px solid #CCC;
-	margin: 0px auto;
-}
-
 .content {
 	padding-bottom: 40px;
+	background: #989898;
 }
 
 .header-link {
@@ -135,27 +129,85 @@ body {
 	font-weight: bold;
 }
 
-.review-item {
+.review-container {
+	width: 60%;
+	margin: 0 auto;
+}
+
+/* Review form */
+.review-form {
 	display: inline-block;
-	padding: 20px;
-	margin-bottom: 50px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.review {
+	width: 100%;
+	margin-top: 20px;
+	margin-bottom: 100px;
+	background: #FFFFFF;
 	padding: 20px;
 }
 
-.review textarea {
-	min-height: 150px;
+.review-container textarea {
+	display: block;
+	min-height: 50px;
+	width: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.name-line {
+	margin-left: 15px;
+}
+
+.review-container input {
+	width: 100%;
+}
+
+.review-container label {
+	float: left;
+	display: inline-block;
+	margin-right: 5px;
 }
 
 .review-field {
 	display: block;
-	margin-bottom: 15px;
-	width: 30%;
+	margin-bottom: 10px;
 }
+
+.span-wrapping {
+	display: block;
+	overflow: hidden; padding-right : 5px;
+	padding-left: 10px;
+	padding-right: 5px;
+}
+
+
+/* Review item */
+.review-item {
+	display: inline-block;
+	width: 100%; 
+	margin-bottom: 100px;
+	background: #FFFFFF;
+	padding: 20px;
+}
+
+.message {
+	display: block;
+	float: left;
+	width: 100%;
+	margin-bottom: 20px;
+	word-wrap: break-word;
+}
+
+.author {
+	float: right;
+	display: block;
+	font-size: 26px;
+}
+
+.date {
+	display: block;
+	float: left;
+}
+
 
 .footer-content {
 	display: block;
@@ -168,6 +220,7 @@ body {
 	width: 100%;
 	height: 40px;
 	position: absolute;
+	background: #FFCC99;
 	bottom: 0;
 	left: 0;
 }
@@ -176,7 +229,8 @@ body {
 	width: 100%;
 	display: inline-block;
 	text-align: center;
-	padding: 20px;
+	padding-top: 20px;
+	padding-bottom: 10px;
 }
 
 /* .header-left-block {
@@ -194,34 +248,61 @@ body {
 	width: 100%;
 	display: inline-block;
 	text-align: center;
+	margin-top: 5px;
 }
 
 .header-line a {
-	font-size: 24px;
+	font-size: 30px;
+	text-decoration: none;
+}
+
+.header-line a:hover {
+	color: #00A0C6;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.header-home-link {
+	color: #383838;
+	text-decoration: none;
+}
+
+.header-home-link:hover {
+	color: #00A0C6;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.header-line span {
+	font-size: 30px;
 }
 
 #photographer {
-	display: block;
+	display: inline-block;
+	position: relative;
 	width: 50%;
 	float: left;
 	text-align: right;
 	font-size: 22px;
+	width: 50%;
 }
 
 #title {
-	display: block;
+	display: inline-block;
 	width: 50%;
 	float: left;
-	font-size: 50px;
-	text-align: right; font-family : 'Times New Roman';
-	line-height: 20px;
-	font-size: 50px;
+	position: relative;
+	text-align: right;
 	font-family: 'Times New Roman';
+	line-height: 40px;
+	margin-top: -10px;
+	font-size: 50px;
 }
 
 #phone {
-	display: block;
+	display: inline-block;
 	float: right;
+	position: relative;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	width: 40%;
@@ -230,10 +311,19 @@ body {
 }
 
 #skype {
-	display: block;
+	display: inline-block;
+	position: relative;
 	width: 40%;
 	float: right;
-	font-size: 18px;
 	font-size: 22px;
 	text-align: left;
+	float: right;
+}
+
+.selected {
+	color: black;
+}
+
+.unselected{
+	color: #383838;
 }

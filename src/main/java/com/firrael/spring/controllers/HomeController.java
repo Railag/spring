@@ -113,10 +113,25 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = { "/review" }, method = RequestMethod.GET)
-	public String review(Locale locale, Model model, Principal principal) {
+	public String review(Locale locale, Model model, Principal principal, @RequestParam (required = false) Integer page) {
 		Review review = new Review();
 		
 		model.addAttribute("review", review);
+		
+		MongoDB.initialize(mongoTemplate);
+		
+		List<Review> reviews = MongoDB.getAllReviews();
+		
+		Collections.sort(reviews);
+
+		List<ReviewPage> pages = (List<ReviewPage>) PageCreator.getPagingList(reviews, ReviewPage.class);
+
+		model.addAttribute("pages", pages);
+
+		if (page == null || page >= pages.size() || page < 0)
+			page = 0;
+
+		model.addAttribute("currentPage", pages.get(page));
 		
 		return "review";
 	}

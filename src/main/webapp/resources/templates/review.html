@@ -6,23 +6,107 @@
 <title>Add review</title>
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 
-</head>
-<body>
-	<div th:replace="header :: header"></div>
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}" />
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-		<div class="review">
-			<h2>Add review</h2>
-			<form th:action="@{/addReview}" method="post" th:object="${review}">
-				<input th:field="*{author}" placeholder='Author' type='text' class="review-field" /> 
-				<textarea th:field="*{message}" placeholder='Message' class="review-field" > </textarea> 
-				<input th:field="*{contact}" placeholder='Contact' type='text' class="review-field"  />
-				
-				<input class='review-field' type='submit' value='Add review' /> 
-			</form>
-			
-		</div>
-		
-	<div th:replace="footer :: footer"></div>
+</head>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+	  $(".menu a").each(function() {
+		  var id = $(this).attr('id');
+		  if (id == 'header-review') {
+			  $(this).addClass('selected');
+			  $(this).removeClass('unselected');
+		  } else {
+			  $(this).addClass('unselected');
+			  $(this).removeClass('selected');
+		  }
+	  });
 	
+	
+	  $(".article-description a").each(function() {
+		  var text = $(this).text();
+		  if (text.indexOf("Читать дальше") >= 0)
+		  	$(this).addClass("read-forward");
+	  });
+	});
+function ajaxFavoriteArticle(aid, uid, button) {
+	
+	
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
+				
+        $.ajax({
+        type: "POST",
+        url: "/spring/favoriteArticle",
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        data: '{"aid":"' + aid + '","uid":"' + uid + '"}',
+        dataType:'json',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(response){
+        	var isFavorite = response["nowFavorite"];
+        	$(button).toggleClass("favorite unfavorite");
+        	if (isFavorite == "true")
+        		$(button).attr("value", "Unfavorite");
+        	else
+        		$(button).attr("value", "Favorite");
+        },
+        error: function(e){
+        	console.log(e)
+        }
+        });
+}
+</script>
+
+
+<body>
+	<div class="wrapper">
+
+		<div th:replace="header :: header"></div>
+
+		<div class="content">
+
+			<div class="review-container">
+				<form th:action="@{/addReview}" method="post" th:object="${review}"
+					class="review-form">
+					<div class="review-line name-line">
+						<label th:for="author" class="review-field">Имя:</label> <span
+							class="span-wrapping"><input th:field="*{author}"
+							type='text' class="review-field" /> </span>
+					</div>
+					<div class="review-line">
+						<label>E-mail:</label> <span class="span-wrapping"><input
+							th:field="*{contact}" type='text' class="review-field" /></span>
+					</div>
+
+					<textarea th:field="*{message}" placeholder='Текст сообщения'
+						class="review-field"> </textarea>
+
+					<input class='review-field' type='submit' />
+				</form>
+
+			</div>
+			<div class="review-container">
+				<div th:each="review, status : ${currentPage.getItems()}"
+					th:if="${status.index &lt; 5}" class="review-item">
+					<div class="message" th:utext="${review.message}">Message</div>
+					<div class="author" th:text="${review.author}">Author</div>
+					<div class="date" th:utext="${review.date}">Date</div>
+				</div>
+			</div>
+
+
+		</div>
+
+		<div th:replace="footer :: footer"></div>
+	</div>
 </body>
 </html>

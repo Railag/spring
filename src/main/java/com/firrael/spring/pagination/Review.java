@@ -1,5 +1,6 @@
 package com.firrael.spring.pagination;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -73,6 +74,15 @@ public class Review implements Comparable<Review> {
 		return new SimpleDateFormat(FORMAT, Locale.getDefault()).format(date);
 	}
 	
+	public Date getComparingDate() {
+		try {
+			return new SimpleDateFormat(FORMAT, Locale.getDefault()).parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public void setFormattedDate(Date date) {
 		this.date = new SimpleDateFormat(FORMAT, Locale.getDefault()).format(date);
 	}
@@ -83,6 +93,6 @@ public class Review implements Comparable<Review> {
 
 	@Override
 	public int compareTo(Review secondReview) {
-		return secondReview.getDate().compareTo(date);
+		return secondReview.getComparingDate().compareTo(getComparingDate());
 	}
 }
