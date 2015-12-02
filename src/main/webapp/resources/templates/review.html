@@ -25,13 +25,8 @@ $( document ).ready(function() {
 		  }
 	  });
 	
-	
-	  $(".article-description a").each(function() {
-		  var text = $(this).text();
-		  if (text.indexOf("Читать дальше") >= 0)
-		  	$(this).addClass("read-forward");
-	  });
 	});
+	
 function submitForm() {
 	
 	var token = $("meta[name='_csrf']").attr("content");
@@ -48,16 +43,15 @@ function submitForm() {
 	            xhr.setRequestHeader(header, token);
 	      },
 	      success: function(response) {
-	        if ($(response).find('.has-error').length) {
-	        	$form.find("input[type=text], textarea").val("");
-	        } else {
-	        }
+	        $form.find("input[type=text], textarea").val("");
+	        //$(".review-form").append(response);
 	      },
 	      error: function(e){
 	        	console.log(e)
 	      }
 	  });
-}
+})
+};
 </script>
 
 
@@ -69,7 +63,7 @@ function submitForm() {
 		<div class="content">
 
 			<div class="review-container">
-				<form th:action="@{/addReview}" method="post" th:object="${review}"
+				<form th:action="@{/addReviewAsync}" method="post" th:object="${review}"
 					class="review-form">
 					<div class="review-line name-line">
 						<label th:for="author" class="review-field">Имя:</label> <span
@@ -88,7 +82,7 @@ function submitForm() {
 				</form>
 
 			</div>
-			<div class="review-container">
+			<div class="review-container" th:fragment="review">
 				<div th:each="review, status : ${currentPage.getItems()}"
 					th:if="${status.index &lt; 5}" class="review-item">
 					<div class="message" th:utext="${review.message}">Message</div>

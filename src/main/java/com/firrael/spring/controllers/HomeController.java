@@ -6,6 +6,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -136,14 +137,40 @@ public class HomeController {
 		return "review";
 	}
 	
+	@RequestMapping(value = "/addReviewAsync", method = RequestMethod.POST)
+	  public String addReviewAsync(@ModelAttribute("review") Review review,
+	                             BindingResult result,
+	                             Model model)  {
+		MongoDB.initialize(mongoTemplate);
+		
+		review.setFormattedDate(new Date());
+		
+		MongoDB.saveReview(review);
+		
+		Integer page = 0;
+		
+		List<Review> reviews = MongoDB.getAllReviews();
+		
+		Collections.sort(reviews);
+
+		List<ReviewPage> pages = (List<ReviewPage>) PageCreator.getPagingList(reviews, ReviewPage.class);
+
+		model.addAttribute("pages", pages);
+
+		if (page == null || page >= pages.size() || page < 0)
+			page = 0;
+
+		model.addAttribute("currentPage", pages.get(page));
+		
+	    return "review :: review";
+	  }
+	
 	@RequestMapping(value = { "/addReview" }, method = RequestMethod.POST)
 	public String addReview(Locale locale, Model model, Principal principal, @ModelAttribute ("review") Review review, BindingResult result) {
 
 		MongoDB.initialize(mongoTemplate);
-		
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Minsk"));
-		
-		review.setFormattedDate(calendar.getTime());
+				
+		review.setFormattedDate(new Date());
 		
 		MongoDB.saveReview(review);
 		
