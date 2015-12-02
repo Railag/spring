@@ -174,16 +174,16 @@ body {
 
 .span-wrapping {
 	display: block;
-	overflow: hidden; padding-right : 5px;
+	overflow: hidden;
+	padding-right: 5px;
 	padding-left: 10px;
 	padding-right: 5px;
 }
 
-
 /* Review item */
 .review-item {
 	display: inline-block;
-	width: 100%; 
+	width: 100%;
 	margin-bottom: 100px;
 	background: #FFFFFF;
 	padding: 20px;
@@ -207,7 +207,6 @@ body {
 	display: block;
 	float: left;
 }
-
 
 .footer-content {
 	display: block;
@@ -294,9 +293,9 @@ body {
 	position: relative;
 	text-align: right;
 	font-family: 'Times New Roman';
-	line-height: 40px;
-	margin-top: -10px;
+	line-height: 40px; margin-top : -10px;
 	font-size: 50px;
+	margin-top: -10px;
 }
 
 #phone {
@@ -306,8 +305,10 @@ body {
 	margin-top: 5px;
 	margin-bottom: 5px;
 	width: 40%;
+	word-wrap: break-word;
 	text-align: left;
 	font-size: 22px;
+	font-size: 2.3vh;
 }
 
 #skype {
@@ -324,6 +325,6 @@ body {
 	color: black;
 }
 
-.unselected{
+.unselected {
 	color: #383838;
 }

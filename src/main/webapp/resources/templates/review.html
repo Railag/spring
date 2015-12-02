@@ -32,37 +32,31 @@ $( document ).ready(function() {
 		  	$(this).addClass("read-forward");
 	  });
 	});
-function ajaxFavoriteArticle(aid, uid, button) {
-	
+function submitForm() {
 	
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
 	
-				
-        $.ajax({
-        type: "POST",
-        url: "/spring/favoriteArticle",
-        headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json' 
-        },
-        data: '{"aid":"' + aid + '","uid":"' + uid + '"}',
-        dataType:'json',
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(response){
-        	var isFavorite = response["nowFavorite"];
-        	$(button).toggleClass("favorite unfavorite");
-        	if (isFavorite == "true")
-        		$(button).attr("value", "Unfavorite");
-        	else
-        		$(button).attr("value", "Favorite");
-        },
-        error: function(e){
-        	console.log(e)
-        }
-        });
+	var $form = $('.review-form');
+	  $form.on('submit', function(e) {
+	    e.preventDefault();
+	    $.ajax({
+	      url: $form.attr('action'),
+	      type: 'post',
+	      data: $form.serialize(),
+	      beforeSend: function(xhr) {
+	            xhr.setRequestHeader(header, token);
+	      },
+	      success: function(response) {
+	        if ($(response).find('.has-error').length) {
+	        	$form.find("input[type=text], textarea").val("");
+	        } else {
+	        }
+	      },
+	      error: function(e){
+	        	console.log(e)
+	      }
+	  });
 }
 </script>
 
@@ -90,7 +84,7 @@ function ajaxFavoriteArticle(aid, uid, button) {
 					<textarea th:field="*{message}" placeholder='Текст сообщения'
 						class="review-field"> </textarea>
 
-					<input class='review-field' type='submit' />
+					<input class='review-field' type='submit' onclick="submitForm()" />
 				</form>
 
 			</div>
