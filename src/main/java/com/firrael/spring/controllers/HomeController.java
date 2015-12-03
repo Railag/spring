@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -47,7 +45,7 @@ public class HomeController {
 
 		return "home";
 	}
-	
+
 	@RequestMapping(value = { "/uploadImage" }, method = RequestMethod.GET)
 	public String uploadImage(Locale locale, Model model, Principal principal) {
 
@@ -97,7 +95,7 @@ public class HomeController {
 	public String images(Locale locale, Model model, Principal principal) {
 
 		MongoDB.initialize(mongoTemplate);
-		
+
 		List<GridFSDBFile> images = MongoDB.getAllImages();
 
 		List<String> imageNames = new ArrayList<String>();
@@ -112,17 +110,18 @@ public class HomeController {
 
 		return "showImages";
 	}
-	
+
 	@RequestMapping(value = { "/review" }, method = RequestMethod.GET)
-	public String review(Locale locale, Model model, Principal principal, @RequestParam (required = false) Integer page) {
+	public String review(Locale locale, Model model, Principal principal,
+			@RequestParam(required = false) Integer page) {
 		Review review = new Review();
-		
+
 		model.addAttribute("review", review);
-		
+
 		MongoDB.initialize(mongoTemplate);
-		
+
 		List<Review> reviews = MongoDB.getAllReviews();
-		
+
 		Collections.sort(reviews);
 
 		List<ReviewPage> pages = (List<ReviewPage>) PageCreator.getPagingList(reviews, ReviewPage.class);
@@ -133,44 +132,44 @@ public class HomeController {
 			page = 0;
 
 		model.addAttribute("currentPage", pages.get(page));
-		
+
 		return "review";
 	}
-	
+
 	@RequestMapping(value = "/addReviewAsync", method = RequestMethod.POST)
-	  public String addReviewAsync(@ModelAttribute("review") Review review,
-	                             BindingResult result,
-	                             Model model)  {
+	public String addReviewAsync(@ModelAttribute("review") Review review, BindingResult result, Model model) {
 		MongoDB.initialize(mongoTemplate);
-		
+
 		review.setFormattedDate(new Date());
-		
+
 		MongoDB.saveReview(review);
-		
+
 		model.addAttribute("review", review);
 
-	    return "review :: review";
-	  }
-	
+		return "review :: review";
+	}
+
 	@RequestMapping(value = { "/addReview" }, method = RequestMethod.POST)
-	public String addReview(Locale locale, Model model, Principal principal, @ModelAttribute ("review") Review review, BindingResult result) {
+	public String addReview(Locale locale, Model model, Principal principal, @ModelAttribute("review") Review review,
+			BindingResult result) {
 
 		MongoDB.initialize(mongoTemplate);
-				
+
 		review.setFormattedDate(new Date());
-		
+
 		MongoDB.saveReview(review);
-		
+
 		return "redirect:/reviews";
 	}
-	
+
 	@RequestMapping(value = { "/reviews" }, method = RequestMethod.GET)
-	public String reviews(Locale locale, Model model, Principal principal, @RequestParam (required = false) Integer page) {
+	public String reviews(Locale locale, Model model, Principal principal,
+			@RequestParam(required = false) Integer page) {
 
 		MongoDB.initialize(mongoTemplate);
-		
+
 		List<Review> reviews = MongoDB.getAllReviews();
-		
+
 		Collections.sort(reviews);
 
 		List<ReviewPage> pages = (List<ReviewPage>) PageCreator.getPagingList(reviews, ReviewPage.class);
