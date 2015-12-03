@@ -102,6 +102,7 @@ body {
 
 .page-content {
 	display: inline-block;
+	width:100%;
 	background: #989898;
 }
 
@@ -150,6 +151,7 @@ body {
 .review-item-wrapper {
 	display:inline-block;
 	width:100%;
+	text-align:center;
 }
 
 .review-field {
@@ -169,6 +171,7 @@ body {
 .review-item {
 	display: inline-block;
 	width: 60%;
+	min-width:60%;
 	margin-bottom: 100px;
 	background: #FFFFFF;
 	padding: 20px;
@@ -186,6 +189,7 @@ body {
 	float: right;
 	display: block;
 	font-size: 26px;
+	word-wrap: break-word;
 }
 
 .date {

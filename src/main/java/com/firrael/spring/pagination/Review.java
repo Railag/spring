@@ -14,7 +14,7 @@ import com.mongodb.DBObject;
 public class Review implements Comparable<Review> {
 	public static final String COLLECTION_NAME = "reviews";
 	
-	public static final String FORMAT = "dd/MMMM/yyyy HH:mm:ss";
+	public static final String FORMAT = "dd/MM/yyyy HH:mm";
 	
 	@Id
     private String id;
