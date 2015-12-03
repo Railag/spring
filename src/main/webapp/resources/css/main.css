@@ -78,23 +78,30 @@
 
 html {
 	margin: 0px;
-	background: #fff;
 	height: 100%;
 }
 
 body {
 	margin: 0px;
-	background: #FFCC99;
 	height: 100%;
+	background: #FFCC99;
 }
 
 .wrapper {
 	min-height: 100%;
 	position: relative;
+	background:#989898;
+	min-width:250px;
+	width:60%;
+	margin: 2% auto;
 }
 
 .content {
 	padding-bottom: 40px;
+}
+
+.page-content {
+	display:inline-block;
 	background: #989898;
 }
 
@@ -103,41 +110,14 @@ body {
 	background: black;
 }
 
-/* Selection */
-.checkbox {
-	display: inline-block;
-	margin-top: 5px;
-	margin-left: 10px;
-	width: 30%;
-}
-
-#selection-title {
-	margin: 0 auto;
-	text-align: center;
-	margin-top: 40px;
-}
-
-.selection-submit {
-	display: block;
-	margin: 20px auto;
-	width: 200px;
-	height: 100px;
-	border-radius: 50%;
-	border: 5px solid black;
-	font-family: Verdana;
-	font-size: 1.5em;
-	font-weight: bold;
-}
-
 .review-container {
-	width: 60%;
-	margin: 0 auto;
+	text-align: center;
 }
 
 /* Review form */
 .review-form {
 	display: inline-block;
-	width: 100%;
+	width: 60%;
 	margin-top: 20px;
 	margin-bottom: 100px;
 	background: #FFFFFF;
@@ -183,7 +163,7 @@ body {
 /* Review item */
 .review-item {
 	display: inline-block;
-	width: 100%;
+	width: 60%;
 	margin-bottom: 100px;
 	background: #FFFFFF;
 	padding: 20px;
@@ -208,41 +188,34 @@ body {
 	float: left;
 }
 
+
 .footer-content {
-	display: block;
-	width: 100%;
 	text-align: center;
-	width: 100%;
+	width:100%;
 }
 
 .footer {
 	width: 100%;
-	height: 40px;
+	height: 50px;
 	position: absolute;
-	background: #FFCC99;
-	bottom: 0;
-	left: 0;
+	text-align:center;
+	bottom: 0px;
+	left: 0px;
+	margin-bottom:5px;
 }
 
 .header-content {
-	width: 100%;
-	display: inline-block;
-	text-align: center;
+	display:inline-block;
+	min-width:200px;
 	padding-top: 20px;
 	padding-bottom: 10px;
+	margin-top:20px;
 }
 
-/* .header-left-block {
-	width: 50%;
-	display: inline-block;
-	text-align: right;
+.header {
+	text-align: center;
 }
 
-.header-right-block {
-	width: 50%;
-	display: inline-block;
-	text-align: left;
-} */
 .header-line {
 	width: 100%;
 	display: inline-block;
@@ -283,17 +256,16 @@ body {
 	float: left;
 	text-align: right;
 	font-size: 22px;
-	width: 50%;
 }
 
 #title {
 	display: inline-block;
 	width: 50%;
 	float: left;
-	position: relative;
+	position: relative;	
 	text-align: right;
 	font-family: 'Times New Roman';
-	line-height: 40px; margin-top : -10px;
+	line-height: 40px;
 	font-size: 50px;
 	margin-top: -10px;
 }
@@ -315,10 +287,10 @@ body {
 	display: inline-block;
 	position: relative;
 	width: 40%;
+	min-width:50px;
 	float: right;
 	font-size: 22px;
 	text-align: left;
-	float: right;
 }
 
 .selected {

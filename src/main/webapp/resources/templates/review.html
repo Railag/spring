@@ -7,51 +7,51 @@
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 
 <script th:src="@{/resources/js/jquery-2.1.4.min.js}" />
-<meta name="_csrf" th:content="${_csrf.token}"/>
-<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
 </head>
 
 <script type="text/javascript">
-$( document ).ready(function() {
-	  $(".menu a").each(function() {
-		  var id = $(this).attr('id');
-		  if (id == 'header-review') {
-			  $(this).addClass('selected');
-			  $(this).removeClass('unselected');
-		  } else {
-			  $(this).addClass('unselected');
-			  $(this).removeClass('selected');
-		  }
-	  });
-	
+	$(document).ready(function() {
+		$(".menu a").each(function() {
+			var id = $(this).attr('id');
+			if (id == 'header-review') {
+				$(this).addClass('selected');
+				$(this).removeClass('unselected');
+			} else {
+				$(this).addClass('unselected');
+				$(this).removeClass('selected');
+			}
+		});
+
 	});
-	
-function submitForm() {
-	
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
-	
-	var $form = $('.review-form');
-	  $form.on('submit', function(e) {
-	    e.preventDefault();
-	    $.ajax({
-	      url: $form.attr('action'),
-	      type: 'post',
-	      data: $form.serialize(),
-	      beforeSend: function(xhr) {
-	            xhr.setRequestHeader(header, token);
-	      },
-	      success: function(response) {
-	        $form.find("input[type=text], textarea").val("");
-	        //$(".review-form").append(response);
-	      },
-	      error: function(e){
-	        	console.log(e)
-	      }
-	  });
-})
-};
+
+	function submitForm() {
+
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+
+		var $form = $('.review-form');
+		$form.on('submit', function(e) {
+			e.preventDefault();
+			$.ajax({
+				url : $form.attr('action'),
+				type : 'post',
+				data : $form.serialize(),
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				success : function(response) {
+					$form.find("input[type=text], textarea").val("");
+					//$(".review-form").append(response);
+				},
+				error : function(e) {
+					console.log(e)
+				}
+			});
+		})
+	};
 </script>
 
 
@@ -62,36 +62,38 @@ function submitForm() {
 
 		<div class="content">
 
-			<div class="review-container">
-				<form th:action="@{/addReviewAsync}" method="post" th:object="${review}"
-					class="review-form">
-					<div class="review-line name-line">
-						<label th:for="author" class="review-field">Имя:</label> <span
-							class="span-wrapping"><input th:field="*{author}"
-							type='text' class="review-field" /> </span>
-					</div>
-					<div class="review-line">
-						<label>E-mail:</label> <span class="span-wrapping"><input
-							th:field="*{contact}" type='text' class="review-field" /></span>
-					</div>
+			<div class="page-content">
 
-					<textarea th:field="*{message}" placeholder='Текст сообщения'
-						class="review-field"> </textarea>
+				<div class="review-container">
+					<form th:action="@{/addReviewAsync}" method="post"
+						th:object="${review}" class="review-form page-content">
+						<div class="review-line name-line">
+							<label th:for="author" class="review-field">Имя:</label> <span
+								class="span-wrapping"><input th:field="*{author}"
+								type='text' class="review-field" /> </span>
+						</div>
+						<div class="review-line">
+							<label>E-mail:</label> <span class="span-wrapping"><input
+								th:field="*{contact}" type='text' class="review-field" /></span>
+						</div>
 
-					<input class='review-field' type='submit' onclick="submitForm()" />
-				</form>
+						<textarea th:field="*{message}" placeholder='Текст сообщения'
+							class="review-field"> </textarea>
 
-			</div>
-			<div class="review-container" th:fragment="review">
-				<div th:each="review, status : ${currentPage.getItems()}"
-					th:if="${status.index &lt; 5}" class="review-item">
-					<div class="message" th:utext="${review.message}">Message</div>
-					<div class="author" th:text="${review.author}">Author</div>
-					<div class="date" th:utext="${review.date}">Date</div>
+						<input class='review-field' type='submit' onclick="submitForm()" />
+					</form>
+
 				</div>
+				<div class="review-container" th:fragment="review">
+					<div th:each="review, status : ${currentPage.getItems()}"
+						th:if="${status.index &lt; 5}" class="review-item page-content">
+						<div class="message" th:utext="${review.message}">Message</div>
+						<div class="author" th:text="${review.author}">Author</div>
+						<div class="date" th:utext="${review.date}">Date</div>
+					</div>
+				</div>
+
 			</div>
-
-
 		</div>
 
 		<div th:replace="footer :: footer"></div>
