@@ -159,7 +159,7 @@ body {
 	overflow: auto;
 }
 
-.article-description img {
+.article-description img{
 	width: 300px;
 	height: 300px;
 	float: left;
@@ -170,6 +170,15 @@ body {
 	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
 	-moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
 	border-radius: 150px;
+}
+
+.article-description iframe {
+	width: 300px;
+	height: 300px;
+	float: left;
+	box-shadow: 0 0 12px rgba(0, 0, 0, .8);
+	-webkit-box-shadow: 0 0 12px rgba(0, 0, 0, .8);
+	-moz-box-shadow: 0 0 12px rgba(0, 0, 0, .8);
 }
 
 .article-description ul {
