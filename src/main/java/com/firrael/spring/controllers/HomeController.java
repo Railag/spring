@@ -147,21 +147,8 @@ public class HomeController {
 		
 		MongoDB.saveReview(review);
 		
-		Integer page = 0;
-		
-		List<Review> reviews = MongoDB.getAllReviews();
-		
-		Collections.sort(reviews);
+		model.addAttribute("review", review);
 
-		List<ReviewPage> pages = (List<ReviewPage>) PageCreator.getPagingList(reviews, ReviewPage.class);
-
-		model.addAttribute("pages", pages);
-
-		if (page == null || page >= pages.size() || page < 0)
-			page = 0;
-
-		model.addAttribute("currentPage", pages.get(page));
-		
 	    return "review :: review";
 	  }
 	

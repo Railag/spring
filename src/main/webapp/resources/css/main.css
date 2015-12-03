@@ -147,6 +147,11 @@ body {
 	margin-right: 5px;
 }
 
+.review-item-wrapper {
+	display:inline-block;
+	width:100%;
+}
+
 .review-field {
 	display: block;
 	margin-bottom: 10px;

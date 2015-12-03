@@ -44,7 +44,7 @@
 				},
 				success : function(response) {
 					$form.find("input[type=text], textarea").val("");
-					//$(".review-form").append(response);
+					$(".review-container").eq(1).prepend(response);
 				},
 				error : function(e) {
 					console.log(e)
@@ -84,12 +84,14 @@
 					</form>
 
 				</div>
-				<div class="review-container" th:fragment="review">
+				<div class="review-container">
 					<div th:each="review, status : ${currentPage.getItems()}"
-						th:if="${status.index &lt; 5}" class="review-item page-content">
-						<div class="message" th:utext="${review.message}">Message</div>
-						<div class="author" th:text="${review.author}">Author</div>
-						<div class="date" th:utext="${review.date}">Date</div>
+						th:if="${status.index &lt; 5}" class="review-item-wrapper" >
+						<div th:fragment="review" th:object="${review}" class="review-item page-content">
+							<div class="message" th:utext="${review.message}">Message</div>
+							<div class="author" th:text="${review.author}">Author</div>
+							<div class="date" th:utext="${review.date}">Date</div>
+						</div>
 					</div>
 				</div>
 
