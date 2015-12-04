@@ -17,27 +17,29 @@
 
 	<div th:fragment="header" class="header">
 
-		<div class="header-content page-content">
-			<div id="photographer">фотограф</div>
-			<div id="phone">+375(29)7095777</div>
-			<div id="title">
-				<a onclick="updateHeader()" class="header-home-link"
-					th:href="@{'/'}">Мария Пашкина</a>
-			</div>
-			<div id="skype">Skype: Amashilda</div>
+		<div class="header-container">
+			<div class="header-content page-content">
+				<div id="photographer">фотограф</div>
+				<div id="phone">+375(29)7095777</div>
+				<div id="title">
+					<a onclick="updateHeader()" class="header-home-link"
+						th:href="@{'/'}">Мария Пашкина</a>
+				</div>
+				<div id="skype">Skype: Amashilda</div>
 
-			<div class="header-line">
-				<div class="menu">
+				<div class="header-line">
+					<div class="menu">
 
-					<a id="header-about" class="unselected" th:href="@{'/about'}">Обо
-						мне</a> <span>/</span> <a id="header-works" class="unselected"
-						th:href="@{'/works'}">Портфолио</a> <span>/</span> <a
-						id="header-gallery" class="unselected" th:href="@{'/gallery'}">Галерея</a>
+						<a id="header-about" class="unselected" th:href="@{'/about'}">Обо
+							мне</a> <span>/</span> <a id="header-works" class="unselected"
+							th:href="@{'/works'}">Портфолио</a> <span>/</span> <a
+							id="header-gallery" class="unselected" th:href="@{'/gallery'}">Галерея</a>
 
-					<span>/</span> <a id="header-review" class="unselected"
-						th:href="@{'/review'}">Отзывы</a> <span>/</span> <a
-						id="header-contacts" class="unselected" th:href="@{'/contacts'}">Контакты</a>
+						<span>/</span> <a id="header-review" class="unselected"
+							th:href="@{'/review'}">Отзывы</a> <span>/</span> <a
+							id="header-contacts" class="unselected" th:href="@{'/contacts'}">Контакты</a>
 
+					</div>
 				</div>
 			</div>
 		</div>
