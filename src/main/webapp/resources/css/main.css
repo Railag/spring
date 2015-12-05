@@ -174,11 +174,14 @@ body {
 
 .review-container textarea {
 	display: block;
-	min-height: 50px;
 	width: 100%;
+	overflow : hidden;
+	height: 54px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	overflow: hidden;
 }
 
 .name-line {

@@ -26,6 +26,12 @@
 		});
 		
 		setupFormSubmit();
+		
+		$(".review-form textarea").keyup(function(e) {
+		    $(this).height(42);
+		    $(this).height(this.scrollHeight + parseFloat($(this).css("borderTopWidth")) + parseFloat($(this).css("borderBottomWidth")));
+		});
+		
 	});
 
 	function setupFormSubmit() {
