@@ -14,8 +14,10 @@ body {
 	position: relative;
 	background: #989898;
 	min-width: 460px;
-	width: 60%;
+	width: 75%;
 	margin: 25px auto;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 .content {
@@ -43,16 +45,16 @@ body {
 }
 
 .header {
-	width: 70%;
+	width: 60%;
 	min-width: 420px;
 	margin: 0 auto;
 }
 
 .header-line {
-	width: 100%;
-	display: inline-block;
+	display: block;
+	clear: both;
+	padding-top: 50px;
 	text-align: center;
-	margin-top: 50px;
 }
 
 .header-link {
@@ -61,7 +63,7 @@ body {
 }
 
 .header-line a {
-	font-size: 30px;
+	font-size: 39px;
 	text-decoration: none;
 }
 
@@ -83,7 +85,7 @@ body {
 }
 
 .header-line span {
-	font-size: 30px;
+	font-size: 39px;
 }
 
 .selected {
@@ -96,23 +98,24 @@ body {
 
 #photographer {
 	display: inline-block;
+	width: 55%;
+	min-width: 300px;
 	position: relative;
 	float: left;
-	text-align: right;
-	font-size: 22px;
+	font-size: 28px;
 	margin-bottom: 3px;
+	text-align: right;
 }
 
 #title {
 	display: inline-block;
 	float: left;
+	width: 55%;
+	min-width: 300px;
 	position: relative;
-	text-align: left;
-	font-family: 'Times New Roman';
-	line-height: 35px;
-	font-size: 50px;
-	margin-top: -5px;
+	margin-top: -20px;
 	clear: left;
+	position: relative;
 }
 
 #phone {
@@ -123,18 +126,18 @@ body {
 	margin-bottom: 5px;
 	text-align: right;
 	word-wrap: break-word;
-	font-size: 22px;
+	font-size: 28px;
 }
 
 #skype {
 	display: inline-block;
 	position: relative;
 	clear: right;
-	min-width: 180px;
 	float: right;
-	font-size: 22px;
+	font-size: 28px;
+	word-wrap: break-word;
 	text-align: right;
-	float: right;
+	font-size: 28px;
 }
 
 /* Footer */
@@ -161,12 +164,12 @@ body {
 /* Review form */
 .review-form {
 	display: inline-block;
-	width: 70%;
+	width: 60%;
 	min-width: 400px;
 	margin-top: 40px;
 	margin-bottom: 50px;
 	background: #FFFFFF;
-	padding: 20px;
+	padding: 25px;
 }
 
 .review-container textarea {
@@ -214,11 +217,11 @@ body {
 /* Review item */
 .review-item {
 	display: inline-block;
-	width: 70%;
+	width: 60%;
 	min-width: 400px;
 	margin-bottom: 50px;
 	background: #FFFFFF;
-	padding: 20px;
+	padding: 25px;
 }
 
 .message {

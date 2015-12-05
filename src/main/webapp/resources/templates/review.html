@@ -6,13 +6,13 @@
 <title>Add review</title>
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 
-<script th:src="@{/resources/js/jquery-2.1.4.min.js}" />
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}"></script>
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
 </head>
 
-<script type="text/javascript">
+<script th:inlinetype="text/javascript">
 	$(document).ready(function() {
 		$(".menu a").each(function() {
 			var id = $(this).attr('id');
@@ -24,7 +24,6 @@
 				$(this).removeClass('selected');
 			}
 		});
-
 	});
 
 	function submitForm() {
