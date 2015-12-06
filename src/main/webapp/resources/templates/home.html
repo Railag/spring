@@ -6,7 +6,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
-<script th:src="@{/resources/js/jquery-2.1.4.min.js}" />
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}"></script>
+
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
@@ -17,7 +18,29 @@
 			if (text.indexOf("Читать дальше") >= 0)
 				$(this).addClass("read-forward");
 		});
+		
+		$(".article-item").each(function() {
+			var item = $(this);
+			var zIndex = 25;
+			var margin = 25;
+			item.find(".article-description div").first().addClass("article-html");
+			item.find(".article-description img").each(function() {
+				var img = $(this);
+				img.css({"z-index": zIndex});
+				img.css({"margin-left": margin});
+				zIndex += 25;
+				margin += 25;
+				
+				var holder = item.find(".article-image-holder");
+				img.prependTo(holder);
+			});
+			
+			var description = item.find(".article-html");
+			$(description).html($(description).find('img').remove().end().html());
+		});
 
+
+		
 	  /*   but i've tried
 	  		
 	  		$('iframe').each(function(){
@@ -105,6 +128,7 @@
 
 					<div class="article-description">
 						<div th:utext="${article.description}">text</div>
+						<div class="article-image-holder"> </div>
 
 						<div th:if="${user != null}">
 							<input type="button"

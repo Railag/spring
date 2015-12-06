@@ -159,10 +159,32 @@ body {
 	overflow: auto;
 }
 
-.article-description img{
+.article-html img {
 	width: 300px;
 	height: 300px;
 	float: left;
+	border-radius: 150px;
+	-webkit-border-radius: 150px;
+	-moz-border-radius: 150px;
+	box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+	-moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+	border-radius: 150px;
+}
+
+.article-image-holder {
+	width: 300px;
+	height: 300px;
+	position: relative;
+	text-align:left;
+	float: left;	
+}
+
+.article-image-holder img {
+	width: 300px;
+	height: 300px;
+	float: left;
+	position:absolute;
 	border-radius: 150px;
 	-webkit-border-radius: 150px;
 	-moz-border-radius: 150px;
