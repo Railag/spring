@@ -7,6 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 <script th:src="@{/resources/js/jquery-2.1.4.min.js}"></script>
+<script th:src="@{/resources/js/jquery.zoomooz.min.js}"></script>
 
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -22,25 +23,103 @@
 				$(this).addClass("read-forward");
 		});
 		
+		
+		
 		$(".article-item").each(function() {
+			var imagesNumber = 0;
+			
 			var item = $(this);
 			var zIndex = 25;
 			var margin = 25;
 			item.find(".article-description div").first().addClass("article-html");
-			item.find(".article-description img").each(function() {
+			item.find(".article-html img").each(function() {
+				imagesNumber++;
 				var img = $(this);
 				img.css({"z-index": zIndex});
 				img.css({"margin-left": margin});
+				img.addClass(".image");
 				zIndex += 25;
 				margin += 25;
 				
 				var holder = item.find(".article-image-holder");
-				img.prependTo(holder);
+				img.insertBefore(holder.find(".controls"));
+				
+				settings = {
+					    targetsize: 0.80,
+					    closeclick: true
+				};
+				
+				img.zoomTarget(settings);
+				
 			});
 			
 			var description = item.find(".article-html");
 			$(description).html($(description).find('img').remove().end().html());
+			
+			if (1 >= imagesNumber) {
+				item.find(".controls").hide();
+			} else {
+				item.find(".left-arrow").on("click", function(e) {
+					e.stopPropagation();
+					var images = item.find(".article-image-holder>img");
+					swapImagesLeft(images);
+				});
+				
+				item.find(".right-arrow").on("click", function(e) {
+					e.stopPropagation();
+					var images = item.find(".article-image-holder>img");
+					swapImagesRight(images);
+				});
+				
+				
+				/* item.find(".zoom-image").on("click", function() {
+					// TODO
+				}); */
+			}
+			
+			/* if (imagesNumber > 0) {
+				item.find(".article-image-holder").click(function(evt) {
+			        $(this).zoomTo({targetsize:0.75, duration:600});
+			        evt.stopPropagation();
+			    });
+			} */
+			
+			//	item.find(".article-image-holder").zoomTarget();
+
+			
+			
+			
 		});
+		
+		function swapImagesLeft(images) {
+				var img1 = images.first();
+		    	img1.insertAfter(images.last());
+		    	
+		    	images.each(function(i) {
+		    		var img = $(this);
+		    		
+		    		var zIndex = 25 * (i + 1);
+			    	var margin = 25 * (i + 1);
+			    	
+			    	img.css({"z-index" : zIndex});
+					img.css({"margin-left" : margin});
+		    	});
+		}
+		
+		function swapImagesRight(images) {
+			var img1 = images.last();
+	    	img1.insertBefore(images.first());
+	    	
+	    	images.each(function(i) {
+	    		var img = $(this);
+	    		
+	    		var zIndex = 25 * (i + 1);
+		    	var margin = 25 * (i + 1);
+		    	
+		    	img.css({"z-index" : zIndex});
+				img.css({"margin-left" : margin});
+	    	});
+	}
 
 
 		
@@ -119,7 +198,7 @@
 			</div>
 		
 			<div th:each="article, articleStatus : ${currentPage.getItems()}"
-				th:if="${articleStatus.index &lt; 5}" class="article-item">
+				th:if="${articleStatus.index &lt; 5}" class="article-item zoomViewport">
 				
 				<div class="article-body">
 					<div class="article-title">
@@ -132,7 +211,16 @@
 					
 					<div class="article-description">
 						<div th:utext="${article.description}">text</div>
-						<div class="article-image-holder"> </div>
+						<div class="article-image-holder zoomContainer" >
+						
+							 
+						 <div class="controls">
+								<img class="left-arrow"  th:src="@{/resources/images/left.png}"/>
+								<img class="right-arrow"  th:src="@{/resources/images/right.png}"/>
+							</div>
+						
+						 </div>
+						
 						
 						<div th:if="${user != null}">
 							<input type="button" th:value="${user.isFavoriteArticle(article.aid)? 'Unfavorite' : 'Favorite'}" 
