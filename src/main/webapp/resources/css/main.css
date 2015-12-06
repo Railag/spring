@@ -140,6 +140,7 @@ body {
 .article-item {
 	margin: 0 auto 100px auto;
 	min-height: 500px;
+	min-width: 1200px;
 	padding: 15px;
 }
 
@@ -167,6 +168,15 @@ body {
 	padding: 15px;
 	word-wrap: break-word;
 	overflow: auto;
+}
+
+.article-zoom-holder {
+	width: 600px;
+	height: 600px;
+	position: relative;
+	float: left;	
+	display:inline-block;
+	text-align:left;
 }
 
 .article-image-holder {

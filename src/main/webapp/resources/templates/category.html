@@ -45,11 +45,11 @@
 				img.insertBefore(holder.find(".controls"));
 				
 				settings = {
-					    targetsize: 0.80,
+					    targetsize: 1.0,
 					    closeclick: true
 				};
 				
-				img.zoomTarget(settings);
+				holder.zoomTarget(settings);
 				
 			});
 			
@@ -198,9 +198,9 @@
 			</div>
 		
 			<div th:each="article, articleStatus : ${currentPage.getItems()}"
-				th:if="${articleStatus.index &lt; 5}" class="article-item zoomViewport">
+				th:if="${articleStatus.index &lt; 5}" class="article-item">
 				
-				<div class="article-body">
+				<div class="article-body  zoomViewport">
 					<div class="article-title">
 						<span  th:text="${article.title}">Title</span>
 					</div>
@@ -211,7 +211,8 @@
 					
 					<div class="article-description">
 						<div th:utext="${article.description}">text</div>
-						<div class="article-image-holder zoomContainer" >
+						<div class="article-zoom-holder zoomContainer">
+						<div class="article-image-holder">
 						
 							 
 						 <div class="controls">
@@ -220,7 +221,8 @@
 							</div>
 						
 						 </div>
-						
+						 
+						</div>
 						
 						<div th:if="${user != null}">
 							<input type="button" th:value="${user.isFavoriteArticle(article.aid)? 'Unfavorite' : 'Favorite'}" 
