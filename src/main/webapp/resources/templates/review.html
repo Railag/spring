@@ -50,10 +50,16 @@
 					xhr.setRequestHeader(header, token);
 				},
 				success : function(response) {
-					$form.find("input[type=text], textarea").val("");
-					$(".review-container").eq(1).prepend(response);
-					$(".review-container").eq(1).children().first().hide();
-					$(".review-container").eq(1).children().first().slideDown(2000);
+					if ($(response).hasClass("review-item")) { // validation success
+						$form.find("input[type=text], textarea").val(""); // clear fields
+						$form.find("input[type=text], textarea").removeClass("error-field"); // clear error classes
+						$form.find("div").eq(2).remove(); // remove error messages
+						$(".review-container").eq(1).prepend(response); // inject new review
+						$(".review-container").eq(1).children().first().hide(); // animate it
+						$(".review-container").eq(1).children().first().slideDown(2000);
+					} else { // validation error
+						$('body').html(response); // refresh page with errors
+					}
 				},
 				error : function(e) {
 					console.log(e)
@@ -79,17 +85,21 @@
 						<div class="review-line name-line">
 							<label th:for="author" class="review-field">Имя:</label> <span
 								class="span-wrapping"><input th:field="*{author}"
-								type='text' class="review-field" /> </span>
+								type='text' class="review-field" th:errorclass="error-field"/> </span>
 						</div>
 						<div class="review-line">
 							<label>E-mail:</label> <span class="span-wrapping"><input
-								th:field="*{contact}" type='text' class="review-field" /></span>
+								th:field="*{contact}" type='text' class="review-field" th:errorclass="error-field" /></span>
 						</div>
 
 						<textarea th:field="*{message}" placeholder='Текст сообщения'
-							class="review-field"> </textarea>
+							class="review-field" th:errorclass="error-field"> </textarea>
 
 						<input class='review-field' type='submit' />
+						
+						<div th:if="${#fields.hasAnyErrors()}">
+  							<p th:each="err : ${#fields.allErrors()}" th:text="${err}">...</p>
+						</div>
 					</form>
 
 				</div>

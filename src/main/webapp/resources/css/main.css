@@ -172,6 +172,10 @@ body {
 	padding: 25px;
 }
 
+.error-field {
+	background:rgba(255, 0, 0, 0.1);
+}
+
 .review-container textarea {
 	display: block;
 	width: 100%;

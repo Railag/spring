@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.validation.Valid;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,16 +139,41 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/addReviewAsync", method = RequestMethod.POST)
-	public String addReviewAsync(@ModelAttribute("review") Review review, BindingResult result, Model model) {
-		MongoDB.initialize(mongoTemplate);
+	public String addReviewAsync(@Valid @ModelAttribute("review") Review review, BindingResult result, Model model) {
 
-		review.setFormattedDate(new Date());
+		if (result.hasErrors()) {
+			logger.info("validation error");
 
-		MongoDB.saveReview(review);
+			Integer page = 0;
+			model.addAttribute("review", review);
 
-		model.addAttribute("review", review);
+			MongoDB.initialize(mongoTemplate);
 
-		return "review :: review";
+			List<Review> reviews = MongoDB.getAllReviews();
+
+			Collections.sort(reviews);
+
+			List<ReviewPage> pages = (List<ReviewPage>) PageCreator.getPagingList(reviews, ReviewPage.class);
+
+			model.addAttribute("pages", pages);
+
+			if (page == null || page >= pages.size() || page < 0)
+				page = 0;
+
+			model.addAttribute("currentPage", pages.get(page));
+
+			return "review";
+		} else {
+			MongoDB.initialize(mongoTemplate);
+
+			review.setFormattedDate(new Date());
+
+			MongoDB.saveReview(review);
+
+			model.addAttribute("review", review);
+
+			return "review :: review";
+		}
 	}
 
 	@RequestMapping(value = { "/addReview" }, method = RequestMethod.POST)

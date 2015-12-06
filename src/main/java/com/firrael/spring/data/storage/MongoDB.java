@@ -88,7 +88,6 @@ public class MongoDB {
 		try {
 		   while(cursor.hasNext()) {
 			   Review review = ReviewFactory.buildReview(cursor.next());
-		       logger.info(review);
 		       reviews.add(review);
 		   }
 		} finally {

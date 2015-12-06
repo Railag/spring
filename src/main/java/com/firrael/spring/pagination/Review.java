@@ -5,10 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.mongodb.DBObject;
 
 @Document(collection = Review.COLLECTION_NAME)
 public class Review implements Comparable<Review> {
@@ -19,9 +21,19 @@ public class Review implements Comparable<Review> {
 	@Id
     private String id;
 	
+	@Size(min = 1, message = "Пустое поле 'Автор'")
+	@NotNull(message = "Пустое поле 'Автор'")
 	private String author;
+	
+	@Size(min = 1, max = 5000, message = "Пустое поле 'Сообщение'")
+	@NotNull(message = "Пустое поле с сообщением.")
 	private String message;
+	
+	@Email(message = "Неверный формат email-адреса.")
+	@NotNull(message = "Пустое поле с Email-адресом")
+	@Size(min = 1, message = "Пустое поле 'Email'")
 	private String contact;
+	
 	private String date;
 
 	public Review(String author, String message, String contact, String date) {
