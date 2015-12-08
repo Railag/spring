@@ -159,6 +159,7 @@ body {
 	margin: 0 auto;
 	word-wrap: break-word;
 	overflow: auto;
+	cursor: default !important;
 }
 
 .article-html {
@@ -177,6 +178,7 @@ body {
 	float: left;	
 	display:inline-block;
 	text-align:left;
+	cursor: default !important;
 }
 
 .article-image-holder {
