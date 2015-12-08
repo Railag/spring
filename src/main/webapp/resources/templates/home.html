@@ -7,9 +7,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 <script th:src="@{/resources/js/jquery-2.1.4.min.js}"></script>
+<script th:src="@{/resources/js/jquery.zoomooz.min.js}"></script>
 
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Home</title>
+
+</head>
 
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -19,25 +23,138 @@
 				$(this).addClass("read-forward");
 		});
 		
+		
+		
 		$(".article-item").each(function() {
+			var imagesNumber = 0;
+			
 			var item = $(this);
 			var zIndex = 25;
 			var margin = 25;
 			item.find(".article-description div").first().addClass("article-html");
-			item.find(".article-description img").each(function() {
+			item.find(".article-html img").each(function() {
+				imagesNumber++;
 				var img = $(this);
 				img.css({"z-index": zIndex});
 				img.css({"margin-left": margin});
+				img.addClass(".image");
 				zIndex += 25;
 				margin += 25;
 				
 				var holder = item.find(".article-image-holder");
-				img.prependTo(holder);
+				img.insertBefore(holder.find(".controls"));
+				
+				settings = {
+					    targetsize: 1.0,
+					    closeclick: true
+				};
+				
+				
+				holder.zoomTarget(settings);
+				
 			});
 			
 			var description = item.find(".article-html");
 			$(description).html($(description).find('img').remove().end().html());
+			
+			if (1 >= imagesNumber) {
+				item.find(".controls").hide();
+			} else {
+				item.find(".left-arrow").on("click", function(e) {
+					e.stopPropagation();
+					var images = item.find(".article-image-holder>img");
+					swapImagesLeft(images);
+				});
+				
+				item.find(".right-arrow").on("click", function(e) {
+					e.stopPropagation();
+					var images = item.find(".article-image-holder>img");
+					swapImagesRight(images);
+				});
+				
+				
+				/* item.find(".zoom-image").on("click", function() {
+					// TODO
+				}); */
+			}
+			
+			/* if (imagesNumber > 0) {
+				item.find(".article-image-holder").click(function(evt) {
+			        $(this).zoomTo({targetsize:0.75, duration:600});
+			        evt.stopPropagation();
+			    });
+			} */
+			
+			//	item.find(".article-image-holder").zoomTarget();
+
+			
+			
+			
 		});
+		
+		function swapImagesLeft(images) {	
+		    	var image = images.first();
+				
+		    	$(image).animate( {
+		    				"z-index": images.length * 25,
+		    				"margin-left": images.length * 25
+		    	}, 1000, function() {			    		
+
+							images.first().hide();
+							
+				    		images.first().insertAfter(images.last());
+				    		
+				    		var images2 = images.parent().find(">img");
+						
+				    		images2.each(function(i) {
+					    		var img = $(this);
+					    		
+					    		img.animate( {
+					    			"z-index": 25 * (i+1),
+					    			"margin-left" : 25 * (i+1)
+					    		}, 1000);
+			    			});
+				    		
+				    		$(images2).last().delay(200).fadeIn(200, function() {
+				    			
+				    			
+				    			
+				    		});
+				});  	
+		}
+		
+		function swapImagesRight(images) {
+			
+			var image = images.last();
+			
+	    	$(image).animate( {
+	    				"z-index": 25,
+	    				"margin-left": 25
+	    	}, 1000, function() {			    		
+
+						images.last().fadeOut(200);
+						
+			    		images.last().insertBefore(images.first());
+			    		
+			    		var images2 = images.parent().find(">img");
+					
+			    		$(images2).first().delay(200).fadeIn(200, function() {
+			    			
+			    			images2.each(function(i) {
+					    		var img = $(this);
+					    		
+					    		img.animate( {
+					    			"z-index": 25 * (i+1),
+					    			"margin-left" : 25 * (i+1)
+					    		}, 1000);
+			    			});
+			    			
+			    		});
+
+		    	
+			});  	
+	    	
+	};
 
 
 		
@@ -92,12 +209,9 @@
 		});
 	}
 </script>
-
-<title>Home</title>
-</head>
 <body>
-	<div class="wrapper">
 
+	<div class="wrapper">
 		<div th:replace="header :: header"></div>
 
 		<div class="content">
@@ -108,16 +222,18 @@
 					th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous
 				</a> <a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
 					th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-					th:text="${pageNo + 1}" th:href="@{${'/home'}(page=${pageNo})}">
+					th:text="${pageNo + 1}"
+					th:href="@{${'/home'}(page=${pageNo})}">
 				</a> <a th:if="${not currentPage.isLast()}"
 					th:class="'page dark gradient'"
-					th:href="@{${'/home'}(page=${currentPage.number+1})}">Next </a>
+					th:href="@{${'/home'}(page=${currentPage.number+1})}">Next
+				</a>
 			</div>
 
 			<div th:each="article, articleStatus : ${currentPage.getItems()}"
 				th:if="${articleStatus.index &lt; 5}" class="article-item">
 
-				<div class="article-body">
+				<div class="article-body  zoomViewport">
 					<div class="article-title">
 						<span th:text="${article.title}">Title</span>
 					</div>
@@ -126,9 +242,21 @@
 						<span th:utext="${article.getDateFormatted()}">date</span>
 					</div>
 
-					<div class="article-description">
+					<div class="article-description zoomNotClickable">
 						<div th:utext="${article.description}">text</div>
-						<div class="article-image-holder"> </div>
+						<div class="article-zoom-holder zoomContainer zoomNotClickable">
+							<div class="article-image-holder">
+
+
+								<div class="controls">
+									<img class="left-arrow" th:src="@{/resources/images/left.png}" />
+									<img class="right-arrow"
+										th:src="@{/resources/images/right.png}" />
+								</div>
+
+							</div>
+
+						</div>
 
 						<div th:if="${user != null}">
 							<input type="button"
@@ -139,8 +267,6 @@
 
 					</div>
 
-
-
 				</div>
 
 				<div class="article-tags">
@@ -150,17 +276,18 @@
 
 			</div>
 
-
 			<div class="pagination dark">
 				<a th:class="'page dark gradient'"
 					th:if="${not currentPage.isFirst()}"
 					th:href="@{${'/home'}(page=${currentPage.number-1})}">Previous
 				</a> <a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
 					th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
-					th:text="${pageNo + 1}" th:href="@{${'/home'}(page=${pageNo})}">
+					th:text="${pageNo + 1}"
+					th:href="@{${'/home'}(page=${pageNo})}">
 				</a> <a th:if="${not currentPage.isLast()}"
 					th:class="'page dark gradient'"
-					th:href="@{${'/home'}(page=${currentPage.number+1})}">Next </a>
+					th:href="@{${'/home'}(page=${currentPage.number+1})}">Next
+				</a>
 			</div>
 
 		</div>

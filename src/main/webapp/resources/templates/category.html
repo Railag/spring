@@ -219,7 +219,7 @@
 			<div class="pagination dark">
 				<a th:class="'page dark gradient'"
 					th:if="${not currentPage.isFirst()}"
-					th:href="@{${'/category'}(page=${currentPage.number-1})}">Previous
+					th:href="@{${'/category'}(category=${category}, page=${currentPage.number-1})}">Previous
 				</a> <a th:each="pageNo : ${#numbers.sequence(0, pages.size() - 1)}"
 					th:class="${currentPage.number eq pageNo}? 'page dark gradient active' : 'page dark gradient'"
 					th:text="${pageNo + 1}"
