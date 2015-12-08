@@ -72,22 +72,12 @@
 					swapImagesRight(images);
 				});
 				
-				
-				/* item.find(".zoom-image").on("click", function() {
-					// TODO
-				}); */
 			}
 			
-			/* if (imagesNumber > 0) {
-				item.find(".article-image-holder").click(function(evt) {
-			        $(this).zoomTo({targetsize:0.75, duration:600});
-			        evt.stopPropagation();
-			    });
-			} */
-			
-			//	item.find(".article-image-holder").zoomTarget();
-
-			
+			if (imagesNumber == 0) {
+				$(item).find(".article-html").width('100%');	
+				$(item).find(".article-zoom-holder").hide();
+			}
 			
 			
 		});
