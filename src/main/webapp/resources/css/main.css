@@ -146,7 +146,6 @@ body {
 .article-body {
 	width: 85%;
 	margin: 0 7.5%;
-	float: left;
 }
 
 .article-description {
@@ -154,14 +153,13 @@ body {
 	text-align: right;
 	border: solid 1px black;
 	padding: 15px;
-	margin: 0 auto;
 	word-wrap: break-word;
 	overflow: auto;
 	cursor: default !important;
 }
 
 .article-html {
-	width: 50%;
+	width: 60%;
 	text-align: right;
 	float: right;
 	padding: 15px;
