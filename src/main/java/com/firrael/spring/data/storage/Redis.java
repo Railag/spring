@@ -1,8 +1,13 @@
 package com.firrael.spring.data.storage;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
@@ -12,12 +17,18 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ScanOptions.ScanOptionsBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.Template;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.firrael.spring.data.Category;
 import com.firrael.spring.data.Channel;
+import com.firrael.spring.data.Host;
 import com.firrael.spring.data.models.Article;
 import com.firrael.spring.data.models.User;
+import com.firrael.spring.parsing.HabrHandler;
 
 public class Redis {
 	
@@ -89,6 +100,55 @@ public class Redis {
 	
 	public static List<Article> getFavArticlesForUser(User user) {
 		return UserStorage.getFavArticlesForUser(user);
+	}
+	
+	public static List<Article> loadFeed() {
+		ArrayList<Article> articles = new ArrayList<>();
+		articles.addAll(getFeed(Host.HABR_HOST));
+		articles.addAll(getFeed(Host.GEEKTIMES_HOST));
+		articles.addAll(getFeed(Host.MEGAMOZG_HOST));
+		return articles;
+	}
+	
+	private static List<Article> getFeed(String host) {
+		RestTemplate template = new RestTemplate();
+
+		ResponseEntity<?> response = null;
+		try {
+			response = template.getForEntity(host, String.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		List<Article> newArticles = null;
+
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		try {
+			SAXParser saxParser = factory.newSAXParser();
+			HabrHandler handler = new HabrHandler();
+			saxParser.parse(new InputSource(new StringReader(response.getBody().toString())), handler);
+			newArticles = handler.getArticles();
+			saveArticles(new ArrayList<>(newArticles));
+			return newArticles;
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return new ArrayList<>();
+
+	}
+	
+	public static List<Article> getCachedArticles(String login) {
+		if (login != null)
+			return Redis.getArticlesForUser(login);
+		else {
+			ArticleStorage storage = new ArticleStorage();
+			return new ArrayList<>(storage.getItems(100));
+		}
 	}
 	
 	// returns list with related CIDs

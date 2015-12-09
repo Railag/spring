@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -74,6 +75,11 @@ public class HomeController {
 		return "category";
 	}
 	
+	@ExceptionHandler(Exception.class)
+    public String handleException(Exception e) {
+        return "404";
+    }   
+	
 	@RequestMapping(value = { "/search" }, method = RequestMethod.GET)
 	public String search(Locale locale, Model model, @RequestParam(required = true) String search) {
 
@@ -116,10 +122,10 @@ public class HomeController {
 
 		logger.info("/home controller");
 
-		List<Article> articles = getCachedArticles(login);
+		List<Article> articles = Redis.getCachedArticles(login);
 
 		if (articles.isEmpty()) {
-			articles = loadFeed();
+			articles = Redis.loadFeed();
 		}
 		
 		Collections.sort(articles);
@@ -137,67 +143,13 @@ public class HomeController {
 		return "home";
 	}
 
-	private List<Article> loadFeed() {
-		Redis.initialize(template);
-
-		ArrayList<Article> articles = new ArrayList<>();
-		articles.addAll(getFeed(Host.HABR_HOST));
-		articles.addAll(getFeed(Host.GEEKTIMES_HOST));
-		articles.addAll(getFeed(Host.MEGAMOZG_HOST));
-		return articles;
-	}
-
 	// request feed every 5 minutes
 	@Scheduled(fixedDelay = PULL_DELAY)
-
 	private void pullNewArticles() {
+		Redis.initialize(template);
 		logger.info("feed updated");
-		loadFeed();
+		Redis.loadFeed();
 	}
 
-	private void cacheArticles(List<Article> articles) {
-		Redis.saveArticles(articles);
-	}
-
-	private List<Article> getCachedArticles(String login) {
-		if (login != null)
-			return Redis.getArticlesForUser(login);
-		else {
-			ArticleStorage storage = new ArticleStorage();
-			return new ArrayList<>(storage.getItems(100));
-		}
-	}
-
-	private List<Article> getFeed(String host) {
-		RestTemplate template = new RestTemplate();
-
-		ResponseEntity<?> response = null;
-		try {
-			response = template.getForEntity(host, String.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		List<Article> newArticles = null;
-
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		try {
-			SAXParser saxParser = factory.newSAXParser();
-			HabrHandler handler = new HabrHandler();
-			saxParser.parse(new InputSource(new StringReader(response.getBody().toString())), handler);
-			newArticles = handler.getArticles();
-			cacheArticles(new ArrayList<>(newArticles));
-			return newArticles;
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return new ArrayList<>();
-
-	}
-
+	
 }
