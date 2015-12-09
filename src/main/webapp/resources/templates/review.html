@@ -54,6 +54,11 @@
 						$form.find("input[type=text], textarea").val(""); // clear fields
 						$form.find("input[type=text], textarea").removeClass("error-field"); // clear error classes
 						$form.find("div").eq(2).remove(); // remove error messages
+						
+						var textarea = $form.find("textarea");
+						textarea.height(42);
+						textarea.height(textarea.scrollHeight + parseFloat($(textarea).css("borderTopWidth")) + parseFloat($(textarea).css("borderBottomWidth")));
+	
 						$(".review-container").eq(1).prepend(response); // inject new review
 						$(".review-container").eq(1).children().first().hide(); // animate it
 						$(".review-container").eq(1).children().first().slideDown(2000);
