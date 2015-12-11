@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.firrael.spring.api.ArticlesResponse;
+import com.firrael.spring.api.SuccessfulResponse;
 import com.firrael.spring.data.Category;
 import com.firrael.spring.data.Channel;
 import com.firrael.spring.data.UserFields;
@@ -104,7 +105,7 @@ public class ApiController {
 		Collections.sort(allChannels);
 		Collections.sort(allCategories);
 
-		SelectionModel selectionModel = new SelectionModel(); // TODO replace SelectionModel with more lightweight model (no checked, only ids or titles)
+		SelectionModel selectionModel = new SelectionModel();
 		selectionModel.setAllCategories(allCategories);
 		selectionModel.setAllChannels(allChannels);
 		selectionModel.setSelectedCategories(userCategories);
@@ -114,7 +115,7 @@ public class ApiController {
 	}
 
 	@RequestMapping(value = { "/updateSelectedChannels" }, method = RequestMethod.POST, params = "selectedChannels")
-	public String selectionChannels(Locale locale, Model model, Principal principal,
+	public @ResponseBody SuccessfulResponse selectionChannels(Locale locale, Model model, Principal principal,
 			@RequestParam List<Channel> selectedChannels) {
 		String login = principal.getName();
 
@@ -123,11 +124,13 @@ public class ApiController {
 
 		Redis.updateUserChannels(user, selectedChannels);
 
-		return ""; // TODO some valid response
+		SuccessfulResponse response = new SuccessfulResponse(true);
+		
+		return response;
 	}
 
 	@RequestMapping(value = { "/updateSelectedCategories" }, method = RequestMethod.POST, params = "selectedCategories")
-	public String selectionCategories(Locale locale, Model model, Principal principal,
+	public @ResponseBody SuccessfulResponse selectionCategories(Locale locale, Model model, Principal principal,
 			@RequestParam List<Category> selectedCategories) {
 		String login = principal.getName();
 
@@ -142,7 +145,17 @@ public class ApiController {
 
 		Redis.updateUserCategories(user, selectedCategories);
 
-		return ""; // TODO some valid response
+		SuccessfulResponse response = new SuccessfulResponse(true);
+		
+		return response;
+	}
+	
+	@RequestMapping(value = { "/session" }, method = RequestMethod.GET)
+	public @ResponseBody SuccessfulResponse session(Locale locale, Model model, Principal principal) {
+
+		SuccessfulResponse response = new SuccessfulResponse(true);
+		
+		return response;
 	}
 	
 	// TODO /login ? gain cookie and use session

@@ -1,5 +1,8 @@
 package com.firrael.spring.data.base;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({ "checked" })
 public class SelectableData implements Comparable<SelectableData> {
 	private String name;
 	private boolean checked;
@@ -29,7 +32,7 @@ public class SelectableData implements Comparable<SelectableData> {
 	public boolean getChecked() {
 		return checked;
 	}
-	
+
 	public Long getCount() {
 		return count;
 	}
@@ -46,10 +49,10 @@ public class SelectableData implements Comparable<SelectableData> {
 		SelectableData secondObject = (SelectableData) obj;
 
 		boolean equals = this.name.equals(secondObject.getName()) && this.getChecked() == secondObject.getChecked();
-		
+
 		return equals;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName();

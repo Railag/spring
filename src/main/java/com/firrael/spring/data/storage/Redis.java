@@ -15,11 +15,9 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ScanOptions.ScanOptionsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.thymeleaf.Template;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -207,6 +205,9 @@ public class Redis {
 	public static Category getCategoryForCid(String cid) {
 		String name = redisTemplate.opsForValue().get(RedisFields.CATEGORY_PREFIX + cid + RedisFields.CATEGORY_NAME_POSTFIX);
 		Long count = redisTemplate.opsForZSet().size(RedisFields.CATEGORY + cid);
+		if ( count < 5)
+			return null;
+		
 		return new Category(name, count);
 	}
 
@@ -220,8 +221,11 @@ public class Redis {
 
 	public static List<Category> getCategoriesForCids(List<String> cids) {
 		List<Category> categories = new ArrayList<>();
-		for (String cid : cids)
-			categories.add(getCategoryForCid(cid));
+		for (String cid : cids) {
+			Category category = getCategoryForCid(cid);
+			if (category != null)
+				categories.add(category);
+		}
 
 		return categories;
 	}
