@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = Image.COLLECTION_NAME)
 public class Image {
 
-	public static final String COLLECTION_NAME = "image";
+	public static final String COLLECTION_NAME = "images";
 
 	@Id
 	private String id;

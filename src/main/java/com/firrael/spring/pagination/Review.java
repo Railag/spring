@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = Review.COLLECTION_NAME)
 public class Review implements Comparable<Review> {
+	
 	public static final String COLLECTION_NAME = "reviews";
 	
 	public static final String FORMAT = "dd/MM/yyyy HH:mm";

@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = SubCategory.COLLECTION_NAME)
 public class SubCategory {
 
-	public static final String COLLECTION_NAME = "subcategory";
+	public static final String COLLECTION_NAME = "subcategories";
 
 	@Id
 	private String id;
