@@ -1,6 +1,17 @@
+@font-face {
+   font-family: Drakkar; 
+   src: url('Drakkar.ttf');
+} 
+
+@font-face {
+   font-family: Sladkoeshka; 
+   src: url('Sladkoeshka.ttf');
+} 
+
 html {
 	margin: 0px;
 	height: 100%;
+	font-family: Sladkoeshka; 
 }
 
 body {

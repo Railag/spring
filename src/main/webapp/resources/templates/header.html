@@ -37,7 +37,7 @@
 				var width = $(window).width();
 				
 				// LEFT HEADER TEXT
-				var leftTextFontSize = width / 50;
+				var leftTextFontSize = width / 28;
 
 				$('.font-left-text').each(function() {
 					if (minLeftTextSize > leftTextFontSize)
@@ -47,7 +47,7 @@
 				});
 				
 				// RIGHT HEADER TEXT
-				var rightTextFontSize = width / 50;
+				var rightTextFontSize = width / 35;
 
 				$('.font-right-text').each(function() {
 					if (minRightTextSize > rightTextFontSize)
@@ -58,7 +58,7 @@
 
 
 				// URL
-				var urlFontSize = width / 45.05;
+				var urlFontSize = width / 36.5;
 				$('.font-url').each(function() {
 					if (minUrlSize > urlFontSize)
 						$(this).css('font-size', minUrlSize);
@@ -66,7 +66,7 @@
 						$(this).css('font-size', urlFontSize);
 				});
 
-				var titleFontSize = width / 27.5;
+				var titleFontSize = width / 22.5;
 				if (collapseSize > width || minTitleSize > titleFontSize) {
 					$('.font-title').css('font-size', minTitleSize);
 					$('.font-title').css('line-height', minTitleSize + "px");
