@@ -1,25 +1,47 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org">
 
-  <body>
-  
-    <div th:fragment="header">
-            
-          <div class="header-content"> 
-          
-	          <form th:action="@{/search}" method="get" accept-charset="UTF-8">
-	 			<input type="text" th:name="search" class="header-search" />
-				<input th:class="'page dark gradient'" type="submit" value="Search" />
-			  </form>
-		  
-		  </div>
-		  
-		  <hr></hr>
-      
-    </div>
-  
-  </body>
-  
+<body>
+
+	<div th:fragment="header" class="header">
+
+
+		<script type="text/javascript">
+			function toAdmin() {
+				window.location.href = "/spring/admin";
+			};
+
+			function toProfile() {
+				window.location.href = "/spring/profile";
+			};
+		</script>
+
+		<div class="header-content">
+
+			<div class="header-title">
+				<a th:href="@{'/'}" class="header-title-link">Newslist</a>
+			</div>
+
+			<img class="header-admin-icon"
+				th:src="@{/resources/images/super.png}" onclick="toAdmin()"></img>
+
+			<div class="header-right">
+				<form th:action="@{/search}" method="get" accept-charset="UTF-8"
+					class="header-search">
+					<input type="text" th:name="search" /> <input
+						th:class="'page dark gradient'" type="submit" value="Search" />
+				</form>
+
+				<img class="header-user-icon" th:src="@{/resources/images/user.png}"
+					onclick="toProfile()"></img>
+			</div>
+		</div>
+
+
+	</div>
+
+</body>
+
 </html>
