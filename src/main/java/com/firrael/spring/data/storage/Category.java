@@ -16,6 +16,11 @@ public class Category {
 	private String name;
 	private List<SubCategory> subcategories;
 	
+	public Category(String name, List<SubCategory> subs) {
+		setName(name);
+		setSubcategories(subs);
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -38,5 +43,15 @@ public class Category {
 	
 	public void setSubcategories(List<SubCategory> subcategories) {
 		this.subcategories = subcategories;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (! (obj instanceof Category) )
+			return false;
+		
+		Category cat = (Category) obj;
+		
+		return name.equals(cat.getName());
 	}
 }

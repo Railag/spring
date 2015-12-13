@@ -1,25 +1,15 @@
 package com.firrael.spring.data.storage;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.io.InputStream;
 
-@Document(collection = Image.COLLECTION_NAME)
 public class Image {
 
-	public static final String COLLECTION_NAME = "images";
-
-	@Id
-	private String id;
-
 	private String name;
-	private String url;
+	private InputStream content;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+	public Image(String filename, InputStream content) {
+		setName(filename);
+		setContent(content);
 	}
 
 	public String getName() {
@@ -30,11 +20,11 @@ public class Image {
 		this.name = name;
 	}
 
-	public String getUrl() {
-		return url;
+	public InputStream getContent() {
+		return content;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setContent(InputStream content) {
+		this.content = content;
 	}
 }

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Gallery</title>
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}"></script>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+</head>
+
+<script th:inlinetype="text/javascript">
+	$(document).ready(function() {
+		$(".menu a").each(function() {
+			var id = $(this).attr('id');
+			if (id == 'header-gallery') {
+				$(this).addClass('selected');
+				$(this).removeClass('unselected');
+			} else {
+				$(this).addClass('unselected');
+				$(this).removeClass('selected');
+			}
+		});
+
+		setupImageHeights();
+
+		$(window).resize(function() {
+			setupImageHeights();
+		});
+	});
+
+	function setupImageHeights() {
+		var width = $(document).width();
+		var lineWidth = $(".gallery-items").width();
+
+		$(".gallery-items img").each(function(i) {
+			var index = i + 1;
+			
+			if (800 > width) {
+				$(this).width(lineWidth);
+				$(this).removeClass("gallery-last");
+			} else if (1200 > width) {
+				$(this).width(lineWidth * 0.49);
+				if (index % 2 == 0)
+					$(this).addClass("gallery-last");
+				else
+					$(this).removeClass("gallery-last");
+			} else if (1400 > width) {
+				$(this).width(lineWidth * 0.32);
+				if (index % 3 == 0)
+					$(this).addClass("gallery-last");
+				else
+					$(this).removeClass("gallery-last");
+			} else if (1600 > width) {
+				$(this).width(lineWidth * 0.235);
+				if (index % 4 == 0)
+					$(this).addClass("gallery-last");
+				else
+					$(this).removeClass("gallery-last");
+			} else {
+				if (index % 5 == 0)
+					$(this).addClass("gallery-last");
+				else
+					$(this).removeClass("gallery-last");
+			}
+
+			$(this).height($(this).width());
+		});
+	}
+</script>
+
+
+<body>
+	<div class="wrapper">
+
+		<div th:replace="header :: header"></div>
+
+		<div class="content">
+
+			<div class="page-content">
+
+				<div class="gallery-wrapper">
+					<div class="gallery-items">
+						<img th:src="@{/getImage (fileName=${image.name})}"
+							th:each="image, status : ${sub.images}" />
+					</div>
+
+					<div class="gallery-form">
+						<form th:action="@{/saveImage}" th:object="${imageModel}"
+							method="post" enctype="multipart/form-data">
+							<select th:field="*{category}">
+								<option th:each="category : ${imageModel.allCategories}"
+									th:value="${category}" th:text="${category.name}">Category</option>
+							</select> <select th:field="*{subcategory}">
+								<option th:each="sub : ${imageModel.allSubs}" th:value="${sub}"
+									th:text="${sub.name}">SubCategory</option>
+							</select> <input type="text" th:field="*{name}" /> <input type="file"
+								th:field="*{fileImage}" /> <input type="submit" />
+						</form>
+
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+		<div th:replace="footer :: footer"></div>
+	</div>
+</body>
+</html>

@@ -16,6 +16,14 @@ public class SubCategory {
 	private String name;
 	private List<Image> images;
 
+	public SubCategory(String name, List<Image> images) {
+		setName(name);
+		setImages(images);
+	}
+
+	public SubCategory() {
+	}
+
 	public String getId() {
 		return id;
 	}

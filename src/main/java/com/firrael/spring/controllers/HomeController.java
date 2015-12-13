@@ -3,7 +3,6 @@ package com.firrael.spring.controllers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -25,12 +24,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.firrael.spring.data.storage.Category;
+import com.firrael.spring.data.storage.Image;
 import com.firrael.spring.data.storage.MongoDB;
+import com.firrael.spring.data.storage.SubCategory;
 import com.firrael.spring.pagination.PageCreator;
 import com.firrael.spring.pagination.Review;
 import com.firrael.spring.pagination.ReviewPage;
 import com.firrael.spring.upload.ImageModel;
-import com.mongodb.gridfs.GridFSDBFile;
 
 @Controller
 public class HomeController {
@@ -54,7 +55,7 @@ public class HomeController {
 		MongoDB.initialize(mongoTemplate);
 
 		ImageModel imageModel = new ImageModel();
-
+	
 		model.addAttribute("imageModel", imageModel);
 
 		return "uploadImage";
@@ -62,23 +63,22 @@ public class HomeController {
 
 	@RequestMapping(value = "/getImage", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
 	public @ResponseBody byte[] getPhoto(@RequestParam("fileName") String fileName) throws IOException {
-		GridFSDBFile image = MongoDB.getImageByName(fileName);
+		Image image = MongoDB.getImageByName(fileName);
 
-		InputStream imageStream = image.getInputStream();
+		InputStream imageStream = image.getContent();
 		return IOUtils.toByteArray(imageStream);
 	}
 
 	@RequestMapping(value = { "/saveImage" }, method = RequestMethod.POST)
-	public String saveImage(Locale locale, Model model, Principal principal, @ModelAttribute ImageModel imageModel) {
+	public String saveImage(Locale locale, Model model, Principal principal, @ModelAttribute ImageModel imageModel, BindingResult result) {
 
 		logger.info(imageModel.getImageID());
 		logger.info("Image size: " + imageModel.getFileImage().getSize());
-		logger.info("title: " + imageModel.getTitle());
-		logger.info("text: " + imageModel.getDescription());
+		logger.info("title: " + imageModel.getName());
 
 		MongoDB.saveFile(imageModel);
 
-		List<GridFSDBFile> images = MongoDB.getAllImages();
+	/*	List<GridFSDBFile> images = MongoDB.getAllImages();
 
 		List<String> imageNames = new ArrayList<String>();
 
@@ -89,28 +89,43 @@ public class HomeController {
 		// save to mongo
 
 		model.addAttribute("imageNames", imageNames);
-
+*/
 		return "showImages";
 	}
 
-	@RequestMapping(value = { "/images" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/detailGallery" }, method = RequestMethod.GET)
 	public String images(Locale locale, Model model, Principal principal) {
 
 		MongoDB.initialize(mongoTemplate);
 
-		List<GridFSDBFile> images = MongoDB.getAllImages();
+		List<Image> images = MongoDB.getAllImages();
 
-		List<String> imageNames = new ArrayList<String>();
+	//	List<String> imageNames = new ArrayList<String>();
 
-		for (GridFSDBFile image : images) {
+		/*for (GridFSDBFile image : images) {
 			imageNames.add(image.getFilename());
-		}
+		}*/
 
 		// save to mongo
+		
+		SubCategory sub = new SubCategory();
+		sub.setImages(images.subList(0, 5));
+		
+		model.addAttribute("sub", sub);
+		
+		List<Category> allCategories = MongoDB.getAllCategories();
+		List<SubCategory> allSubs = MongoDB.getAllSubCategories();
+		
+		ImageModel imageModel = new ImageModel();
+		
+		imageModel.setAllCategories(allCategories);
+		imageModel.setAllSubs(allSubs);
+		
+		model.addAttribute("imageModel", imageModel);
 
-		model.addAttribute("imageNames", imageNames);
+	//	model.addAttribute("imageNames", imageNames);
 
-		return "showImages";
+		return "detailGallery";
 	}
 
 	@RequestMapping(value = { "/review" }, method = RequestMethod.GET)
