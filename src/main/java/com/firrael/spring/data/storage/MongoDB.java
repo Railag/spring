@@ -127,7 +127,7 @@ public class MongoDB {
 			cursor.close();
 		}
 		
-		categories.add(new Category("test", new ArrayList<SubCategory>()));
+		categories.add(new Category("test", new ArrayList<SubCategory>(), "dw"));
 
 		return categories;
 	}

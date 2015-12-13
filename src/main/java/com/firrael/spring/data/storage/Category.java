@@ -15,10 +15,12 @@ public class Category {
 	
 	private String name;
 	private List<SubCategory> subcategories;
+	private String logoName;
 	
-	public Category(String name, List<SubCategory> subs) {
+	public Category(String name, List<SubCategory> subs, String logoName) {
 		setName(name);
 		setSubcategories(subs);
+		setLogoName(logoName);
 	}
 
 	public String getId() {
@@ -43,6 +45,14 @@ public class Category {
 	
 	public void setSubcategories(List<SubCategory> subcategories) {
 		this.subcategories = subcategories;
+	}
+	
+	public String getLogoName() {
+		return logoName;
+	}
+
+	public void setLogoName(String logoName) {
+		this.logoName = logoName;
 	}
 	
 	@Override

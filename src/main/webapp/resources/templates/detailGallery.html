@@ -30,6 +30,10 @@
 		$(window).resize(function() {
 			setupImageHeights();
 		});
+		
+		$("#lift-me-up").click(function() {
+			 $("html, body").animate({ scrollTop: 0 }, "slow");
+		});
 	});
 
 	function setupImageHeights() {
@@ -83,6 +87,7 @@
 			<div class="page-content">
 
 				<div class="gallery-wrapper">
+					<div th:text="${sub.name}" class="gallery-title"></div>
 					<div class="gallery-items">
 						<img th:src="@{/getImage (fileName=${image.name})}"
 							th:each="image, status : ${sub.images}" />
@@ -116,7 +121,7 @@
 						</form>
 
 					</div>
-
+					<div id="lift-me-up" class="gallery-title">Наверх</div>
 				</div>
 
 			</div>

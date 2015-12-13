@@ -90,7 +90,7 @@ public class HomeController {
 
 		model.addAttribute("imageNames", imageNames);
 */
-		return "showImages";
+		return "redirect:/detailGallery";
 	}
 
 	@RequestMapping(value = { "/detailGallery" }, method = RequestMethod.GET)
@@ -109,7 +109,8 @@ public class HomeController {
 		// save to mongo
 		
 		SubCategory sub = new SubCategory();
-		sub.setImages(images.subList(0, 5));
+		sub.setName("Тест");
+		sub.setImages(images);
 		
 		model.addAttribute("sub", sub);
 		
