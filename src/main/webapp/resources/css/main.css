@@ -11,7 +11,7 @@
 html {
 	margin: 0px;
 	height: 100%;
-	font-family: Sladkoeshka; 
+	font-family: Sladkoeshka !important; 
 }
 
 body {
@@ -288,11 +288,26 @@ body {
 }
 
 .gallery-form {
-	display: inline-block;
+	display: block;
 	min-width: 400px;
 	margin: 50px -20px;
 	background: #FFFFFF;
 	padding: 25px;
+}
+
+.gallery-line {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.gallery-button {
+	display: block;
+	float:right;
+}
+
+select, input[type=file], input[type=submit], button, input[type=button], input {
+	font: 18px Sladkoeshka !important;
+	font-family: Sladkoeshka;
 }
 
 /* Pagination */
