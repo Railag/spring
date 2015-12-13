@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.firrael.spring.pagination.ImageFactory;
 import com.firrael.spring.pagination.Review;
 import com.firrael.spring.pagination.ReviewFactory;
+import com.firrael.spring.upload.CategoryModel;
 import com.firrael.spring.upload.ImageModel;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -92,8 +93,33 @@ public class MongoDB {
 		mongo.save(review);
 	}
 
-	public static void saveCategory(Category category) {
+	public static void saveCategory(CategoryModel categoryModel) {
+		Category category = new Category(categoryModel.getCategory(), new ArrayList<SubCategory>());
 		mongo.save(category);
+		saveFile(categoryModel);
+	}
+
+	private static void saveFile(CategoryModel categoryModel) {
+
+		File file = new File("c://images/" + categoryModel.getCategory() + ".jpg");
+
+		try {
+			categoryModel.getFileImage().transferTo(file);
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+
+		DB db = mongo.getDb();
+		GridFS gfsPhoto = new GridFS(db, "photo");
+		GridFSInputFile gfsFile = null;
+		try {
+			gfsFile = gfsPhoto.createFile(file);
+			gfsFile.setFilename(categoryModel.getCategory());
+
+			gfsFile.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void saveSubCategory(SubCategory sub) {
@@ -126,8 +152,6 @@ public class MongoDB {
 		} finally {
 			cursor.close();
 		}
-		
-		categories.add(new Category("test", new ArrayList<SubCategory>(), "dw"));
 
 		return categories;
 	}

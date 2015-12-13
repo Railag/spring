@@ -31,6 +31,7 @@ import com.firrael.spring.data.storage.SubCategory;
 import com.firrael.spring.pagination.PageCreator;
 import com.firrael.spring.pagination.Review;
 import com.firrael.spring.pagination.ReviewPage;
+import com.firrael.spring.upload.CategoryModel;
 import com.firrael.spring.upload.ImageModel;
 
 @Controller
@@ -78,36 +79,40 @@ public class HomeController {
 
 		MongoDB.saveFile(imageModel);
 
-	/*	List<GridFSDBFile> images = MongoDB.getAllImages();
-
-		List<String> imageNames = new ArrayList<String>();
-
-		for (GridFSDBFile image : images) {
-			imageNames.add(image.getFilename());
-		}
-
-		// save to mongo
-
-		model.addAttribute("imageNames", imageNames);
-*/
 		return "redirect:/detailGallery";
+	}
+	
+	@RequestMapping(value = { "/gallery" }, method = RequestMethod.GET)
+	public String gallery(Locale locale, Model model, Principal principal) {
+		
+		MongoDB.initialize(mongoTemplate);
+
+		List<Category> categories = MongoDB.getAllCategories();
+		
+		model.addAttribute("categories", categories);
+		
+		CategoryModel categoryModel = new CategoryModel();
+		
+		model.addAttribute("categoryModel", categoryModel);
+		
+		return "gallery";
+	}
+	
+	@RequestMapping(value = { "/saveCategory" }, method = RequestMethod.POST)
+	public String saveCategory(Locale locale, Model model, Principal principal, @ModelAttribute CategoryModel categoryModel, BindingResult result) {
+
+		MongoDB.saveCategory(categoryModel);
+
+		return "redirect:/gallery";
 	}
 
 	@RequestMapping(value = { "/detailGallery" }, method = RequestMethod.GET)
-	public String images(Locale locale, Model model, Principal principal) {
+	public String detailGallery(Locale locale, Model model, Principal principal) {
 
 		MongoDB.initialize(mongoTemplate);
 
 		List<Image> images = MongoDB.getAllImages();
 
-	//	List<String> imageNames = new ArrayList<String>();
-
-		/*for (GridFSDBFile image : images) {
-			imageNames.add(image.getFilename());
-		}*/
-
-		// save to mongo
-		
 		SubCategory sub = new SubCategory();
 		sub.setName("Тест");
 		sub.setImages(images);
@@ -124,10 +129,12 @@ public class HomeController {
 		
 		model.addAttribute("imageModel", imageModel);
 
-	//	model.addAttribute("imageNames", imageNames);
 
+		
 		return "detailGallery";
 	}
+	
+	
 
 	@RequestMapping(value = { "/review" }, method = RequestMethod.GET)
 	public String review(Locale locale, Model model, Principal principal,
