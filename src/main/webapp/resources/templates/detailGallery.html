@@ -30,9 +30,11 @@
 		$(window).resize(function() {
 			setupImageHeights();
 		});
-		
+
 		$("#lift-me-up").click(function() {
-			 $("html, body").animate({ scrollTop: 0 }, "slow");
+			$("html, body").animate({
+				scrollTop : 0
+			}, "slow");
 		});
 	});
 
@@ -96,26 +98,27 @@
 					<div class="gallery-form">
 						<form th:action="@{/saveImage}" th:object="${imageModel}"
 							method="post" enctype="multipart/form-data">
-							<div class="gallery-line">
+							<!-- <div class="gallery-line">
 								<label th:for="category">Категория:</label> <select
 									th:field="*{category}" class="gallery-button">
 									<option th:each="category : ${imageModel.allCategories}"
-										th:value="${category}" th:text="${category.name}">Category</option>
+										th:value="${category.name}" th:text="${category.name}">Category</option>
 								</select>
-							</div>
-							<div class="gallery-line">
+							</div> -->
+							<!-- <div class="gallery-line">
 								<label th:for="subcategory">Подкатегория:</label> <select
 									th:field="*{subcategory}" class="gallery-button">
-									<option th:each="sub : ${imageModel.allSubs}" th:value="${sub}"
+									<option th:each="sub : ${imageModel.allSubs}" th:value="${sub.name}"
 										th:text="${sub.name}">SubCategory</option>
 								</select>
-							</div>
+							</div> -->
+							<input type="hidden" name="subcategory" th:value="${sub.name}" />
 							<div class="gallery-line">
 								<label th:for="name">Название:</label> <input type="text"
 									th:field="*{name}" class="gallery-button" />
 							</div>
 							<div class="gallery-line">
-								<input type="file" th:field="*{fileImage}"  /> <input
+								<input type="file" th:field="*{fileImage}" /> <input
 									type="submit" class="gallery-button" />
 							</div>
 						</form>

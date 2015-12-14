@@ -12,8 +12,8 @@ public class ImageModel {
 	private int imageID;
 	private MultipartFile fileImage;
 	private String name;
-	private Category category;
-	private SubCategory subcategory;
+	private String category;
+	private String subcategory;
 	
 	private List<Category> allCategories;
 	private List<SubCategory> allSubs;
@@ -42,22 +42,6 @@ public class ImageModel {
 		this.name = name;
 	}
 
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
-	public SubCategory getSubcategory() {
-		return subcategory;
-	}
-
-	public void setSubcategory(SubCategory subcategory) {
-		this.subcategory = subcategory;
-	}
-
 	public List<Category> getAllCategories() {
 		return allCategories;
 	}
@@ -72,5 +56,21 @@ public class ImageModel {
 
 	public void setAllSubs(List<SubCategory> allSubs) {
 		this.allSubs = allSubs;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getSubcategory() {
+		return subcategory;
+	}
+
+	public void setSubcategory(String subcategory) {
+		this.subcategory = subcategory;
 	}
 }

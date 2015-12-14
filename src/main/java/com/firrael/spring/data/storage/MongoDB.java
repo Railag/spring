@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.firrael.spring.pagination.ImageFactory;
@@ -13,9 +14,12 @@ import com.firrael.spring.pagination.Review;
 import com.firrael.spring.pagination.ReviewFactory;
 import com.firrael.spring.upload.CategoryModel;
 import com.firrael.spring.upload.ImageModel;
+import com.firrael.spring.upload.SubModel;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.QueryBuilder;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
@@ -49,10 +53,16 @@ public class MongoDB {
 		GridFSInputFile gfsFile = null;
 		try {
 			gfsFile = gfsPhoto.createFile(file);
-			// TODO сюда категорию и сабкатегорию передавать
+
 			gfsFile.setFilename(imageModel.getName());
 
 			gfsFile.save();
+			
+			Image image = getImageByName(imageModel.getName());
+			SubCategory sub = getSubByName(imageModel.getSubcategory());
+			sub.getImages().add(image);
+			mongo.save(sub);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,8 +91,6 @@ public class MongoDB {
 
 		BasicDBObject inQuery = new BasicDBObject();
 		inQuery.put("filename", name);
-
-		// List<File> fileList = new ArrayList<File>();
 
 		Image image = ImageFactory.buildImage(gfsPhoto.findOne(inQuery));
 
@@ -120,10 +128,6 @@ public class MongoDB {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void saveSubCategory(SubCategory sub) {
-		mongo.save(sub);
 	}
 
 	public static List<Review> getAllReviews() {
@@ -167,9 +171,66 @@ public class MongoDB {
 		} finally {
 			cursor.close();
 		}
-		
+
 		subCategories.add(new SubCategory("test", new ArrayList<Image>()));
 
 		return subCategories;
+	}
+
+	public static Category getCategoryByName(String categoryName) {
+
+		BasicDBObject query = new BasicDBObject();
+		query.put("name", categoryName);
+
+		DBObject source = mongo.getCollection(Category.COLLECTION_NAME).findOne(query);
+
+		Category category = CategoryFactory.buildCategory(source);
+
+		return category;
+	}
+
+	public static void saveSub(SubModel subModel) {
+		SubCategory sub = new SubCategory(subModel.getSub(), new ArrayList<Image>());
+
+		Category category = getCategoryByName(subModel.getCategory());
+
+		mongo.save(sub);
+
+		List<SubCategory> subs = category.getSubcategories();
+		if (subs == null)
+			subs = new ArrayList<SubCategory>();
+		subs.add(sub);
+		mongo.save(category);
+
+	}
+
+	public static SubCategory getSubById(String id) {
+		return mongo.findById(id, SubCategory.class, SubCategory.COLLECTION_NAME);
+	}
+
+	public static Image getImageById(String id) {
+		GridFS gfsPhoto = new GridFS(mongo.getDb(), "photo");
+/*
+		BasicDBObject inQuery = new BasicDBObject();
+		inQuery.put("_id", id);*/
+
+		ObjectId obj = new ObjectId(id);
+		GridFSDBFile file = gfsPhoto.findOne(obj);
+		
+		Image image = ImageFactory.buildImage(file);
+
+		return image;
+
+	}
+
+	public static SubCategory getSubByName(String name) {
+		BasicDBObject query = new BasicDBObject();
+		query.put("name", name);
+
+		DBObject source = mongo.getCollection(SubCategory.COLLECTION_NAME).findOne(query);
+
+		SubCategory sub = SubCategoryFactory.buildSubCategory(source);
+
+		return sub;
 	}
 }

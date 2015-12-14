@@ -33,6 +33,7 @@ import com.firrael.spring.pagination.Review;
 import com.firrael.spring.pagination.ReviewPage;
 import com.firrael.spring.upload.CategoryModel;
 import com.firrael.spring.upload.ImageModel;
+import com.firrael.spring.upload.SubModel;
 
 @Controller
 public class HomeController {
@@ -79,7 +80,7 @@ public class HomeController {
 
 		MongoDB.saveFile(imageModel);
 
-		return "redirect:/detailGallery";
+		return detailGallery(locale, model, principal, imageModel.getSubcategory());
 	}
 	
 	@RequestMapping(value = { "/gallery" }, method = RequestMethod.GET)
@@ -105,17 +106,41 @@ public class HomeController {
 
 		return "redirect:/gallery";
 	}
+	
+	@RequestMapping(value = { "/galleryCategory" }, method = RequestMethod.GET)
+	public String galleryCategory(Locale locale, Model model, Principal principal, @RequestParam String categoryName) {
+		
+		MongoDB.initialize(mongoTemplate);
+		
+		Category category = MongoDB.getCategoryByName(categoryName);
+		
+		model.addAttribute("category", category);
+		
+		SubModel subModel = new SubModel();
+		
+		model.addAttribute("subModel", subModel);
+		
+		return "galleryCategory";
+	}
+	
+	@RequestMapping(value = { "/saveSub" }, method = RequestMethod.POST)
+	public String saveSub(Locale locale, Model model, Principal principal, @ModelAttribute SubModel subModel, BindingResult result) {
+
+		MongoDB.saveSub(subModel);
+
+		return galleryCategory(locale, model, principal, subModel.getCategory());
+	}
 
 	@RequestMapping(value = { "/detailGallery" }, method = RequestMethod.GET)
-	public String detailGallery(Locale locale, Model model, Principal principal) {
+	public String detailGallery(Locale locale, Model model, Principal principal, @RequestParam String subcategory) {
 
 		MongoDB.initialize(mongoTemplate);
 
-		List<Image> images = MongoDB.getAllImages();
+		//List<Image> images = MongoDB.getAllImages();
 
-		SubCategory sub = new SubCategory();
-		sub.setName("Тест");
-		sub.setImages(images);
+		SubCategory sub = MongoDB.getSubByName(subcategory);
+		//sub.setName("Тест");
+		//sub.setImages(images);
 		
 		model.addAttribute("sub", sub);
 		
@@ -129,8 +154,6 @@ public class HomeController {
 		
 		model.addAttribute("imageModel", imageModel);
 
-
-		
 		return "detailGallery";
 	}
 	

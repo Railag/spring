@@ -4,12 +4,22 @@ import java.io.InputStream;
 
 public class Image {
 
+	private String id;
 	private String name;
 	private InputStream content;
 
-	public Image(String filename, InputStream content) {
-		setName(filename);
+	public Image(String id, String fileName, InputStream content) {
+		setId(id);
+		setName(fileName);
 		setContent(content);
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -27,4 +37,5 @@ public class Image {
 	public void setContent(InputStream content) {
 		this.content = content;
 	}
+
 }

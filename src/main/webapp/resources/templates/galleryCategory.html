@@ -31,11 +31,6 @@
 			setupImageHeights();
 		});
 
-		$("#lift-me-up").click(function() {
-			$("html, body").animate({
-				scrollTop : 0
-			}, "slow");
-		});
 	});
 
 	function setupImageHeights() {
@@ -69,45 +64,35 @@
 			<div class="page-content">
 
 				<div class="gallery-wrapper">
-					<div class="gallery-content">
-						<div class="gallery-category"
-							th:each="category, status : ${categories}">
-							<img
-								th:class="${status.odd}? 'category-right category-image' : 'category-left category-image' "
-								th:src="@{/getImage (fileName=${category.name})}" />
-							<div
-								th:class="${status.odd}? 'category-left category-text' : 'category-right category-text'">
-								<div class="centerer"></div>
-								<div class="category-text-wrapper">
-									<a th:text="${category.name}"
-										class="gallery-title category-name"
-										th:href="@{${'/galleryCategory'}(categoryName=${category.name})}"></a>
+					<div class="gallery-category">
+						<img class="category-left category-image"
+							th:src="@{/getImage (fileName=${category.name})}" />
+						<div class="category-right category-text">
+							<div th:text="${category.name}" class="gallery-title"></div>
 
-									<ul>
-										<li th:each="sub : ${category.subcategories}"><a
-											th:text="${sub.name}"
-											th:href="@{${'/detailGallery'}(subcategory=${sub.name})}"
-											class="sub-link"></a></li>
-									</ul>
-								</div>
-							</div>
+							<ul>
+								<li th:each="sub : ${category.subcategories}"><a
+									th:text="${sub.name}"
+									th:href="@{${'/detailGallery'}(subcategory=${sub.name})}"
+									class="sub-link"></a></li>
+							</ul>
 						</div>
 					</div>
 					<div class="category-form">
-						<form th:action="@{/saveCategory}" th:object="${categoryModel}"
+						<form th:action="@{/saveSub}" th:object="${subModel}"
 							method="post" enctype="multipart/form-data">
 							<div class="gallery-line">
 								<label th:for="name">Название:</label> <input type="text"
-									th:field="*{category}" class="gallery-button" />
+									th:field="*{sub}" class="gallery-button" />
 							</div>
+							<input type="hidden" name="category" th:value="${category.name}" />
+
 							<div class="gallery-line">
-								<input type="file" th:field="*{fileImage}" /> <input
-									type="submit" class="gallery-button" />
+								<input type="submit" class="gallery-button" />
 							</div>
 						</form>
 
 					</div>
-					<div id="lift-me-up" class="gallery-title category-left">Наверх</div>
 				</div>
 
 			</div>

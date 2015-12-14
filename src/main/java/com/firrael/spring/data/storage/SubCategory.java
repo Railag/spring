@@ -1,12 +1,19 @@
 package com.firrael.spring.data.storage;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = SubCategory.COLLECTION_NAME)
-public class SubCategory {
+public class SubCategory implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5084580435806737796L;
 
 	public static final String COLLECTION_NAME = "subcategories";
 
@@ -14,9 +21,17 @@ public class SubCategory {
 	private String id;
 
 	private String name;
+
+	@DBRef
 	private List<Image> images;
 
 	public SubCategory(String name, List<Image> images) {
+		setName(name);
+		setImages(images);
+	}
+
+	public SubCategory(String id, String name, List<Image> images) {
+		setId(id);
 		setName(name);
 		setImages(images);
 	}
