@@ -15,11 +15,11 @@
 		   	<div class="content">
 		    
 				<div th:object="${user}" class="detail-user">
-					<div th:text="*{uid}">Uid</div>
-					<div th:text="*{login}">Login</div>
-					<div th:text="*{password}">Password</div>
-					<div th:text="*{email}">Email</div>
-					<div th:text="*{role}">Role</div>	
+					<div th:text="'Uid: ' +  *{uid}">Uid</div>
+					<div th:text="'Login: ' + *{login}">Login</div>
+					<div th:text="'Password: ' + *{password}">Password</div>
+					<div th:text="'Email: ' + *{email}">Email</div>
+					<div th:text="'Role: ' + *{role}">Role</div>	
 					
 					<div class="user-favs">
 							<a th:each="fav : ${user.favoriteArticleHashes}"

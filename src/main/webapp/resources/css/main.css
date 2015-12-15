@@ -13,8 +13,9 @@ body {
 .wrapper {
 	width: 85%;
 	min-height: 100%;
-	position: relative;
+	min-width: 340px; position : relative;
 	margin: 0 auto;
+	position: relative;
 }
 
 .header {
@@ -40,7 +41,7 @@ body {
 }
 
 .header-title-link:hover {
-	color: #AADD00	;
+	color: #AADD00;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -121,6 +122,7 @@ body {
 }
 
 .article-body {
+	
 }
 
 .article-description {
@@ -278,16 +280,32 @@ body {
 }
 
 .article-edit-button {
-	display: block;
-	width: 10%;
-	text-align: center;
-	margin: 20px auto;
+	display: block !important;
+	padding: 15px;
+	margin-bottom: 5px;
 }
 
 .detail-user {
-	display: inline-block;
-	padding: 15px;
-	margin-bottom: 50px;
+	display: block;
+	padding: 10px;
+	margin-top: 50px;
+	margin-bottom: 15px;
+	border: 1px solid black;
+}
+
+.user-edit {
+	display: block;
+	padding: 10px;
+	margin-top: 50px;
+	margin-bottom: 15px;
+	border: 1px solid black;
+}
+
+.user-header {
+	display: block;
+	padding: 10px;
+	margin-top: 50px;
+	margin-bottom: 15px;
 }
 
 .search-content {
@@ -318,6 +336,29 @@ body {
 	padding: 20px;
 	margin-bottom: 20px;
 	margin: 0 auto;
+}
+
+.user-field {
+	display: inline-block;
+	width: 15%;
+}
+
+.user-edit label {
+	display: block;
+	margin-right: 10px;
+	clear: left;
+}
+
+.user-field-input {
+	display: inline-block;
+	width: 80%;
+	padding: 10px;
+	margin: 15px 0px;
+}
+
+.pagination-bottom {
+	position: relative;
+	bottom: 120 !important;
 }
 
 .page {

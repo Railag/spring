@@ -16,31 +16,23 @@
 		
 		<div class="content">
 		
-			<form th:action="@{/updateUser}" method="post" th:object="${user}" accept-charset="UTF-8">
-				 <div class="user-edit"  > 
-				 	<input type="hidden" th:field="*{uid}"/>
-					<input type="text" th:field ="*{login}" />
-					<input type="text" th:field="*{password}"/>
-		 			<input type="text" th:field="*{email}"/>
-		 			<input type="text" th:field="*{role}"/> <!-- Replace with list selection for roles -->
+			<form th:action="@{/updateUser}" method="post" th:object="${user}" accept-charset="UTF-8" class="user-edit">
+				 
+					<label for="login">Login: </label><input type="text" class="user-field-input" th:field ="*{login}" />
+					<label for="password">Password: </label><input type="text" class="user-field-input" th:field="*{password}"/>
+		 			<label for="email">Email: </label><input type="text" class="user-field-input" th:field="*{email}"/>
+		 			<label for="role">Role: </label><input type="text" class="user-field-input" th:field="*{role}"/> <!-- Replace with list selection for roles -->
 					<div th:field="*{favoriteArticleHashes}" th:each="fav, stat : *{favoriteArticleHashes}">
-						<input type="text"  th:field="*{favoriteArticleHashes[__${stat.index}__]}" />
-					</div> 
-					
-					<div th:field="*{selectedCategories}" th:each="category, stat : *{selectedCategories}">
-						<input type="text"  th:field="*{selectedCategories[__${stat.index}__]}" />
-					</div> 
-					
-					<div th:field="*{selectedChannels}" th:each="channel, stat : *{selectedChannels}">
-						<input type="text"  th:field="*{selectedChannels[__${stat.index}__]}" />
+						<label th:for="*{favoriteArticleHashes[__${stat.index}__]}}">Uid</label><input type="text" class="user-field-input"  th:field="*{favoriteArticleHashes[__${stat.index}__]}" />
 					</div> 
 						
-				 </div>
-			
+		
 				<input th:class="'page dark gradient article-edit-button'" type="submit" value="Update user" />
+				
+				<a th:class="'page dark gradient'" th:href="@{${'/removeUser'}(userUid=${user.uid})}">Remove</a>
+				
 			</form>
 			
-			<a th:class="'page dark gradient article-edit-button'" th:href="@{${'/removeUser'}(userUid=${user.uid})}">Remove</a>
 			
 		</div>
 		

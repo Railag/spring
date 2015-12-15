@@ -14,16 +14,25 @@
 		    
 		    <div class="content">
 		    
+		    
+		    	<div class="user-header">
+					<div class="user-field">Uid</div>
+					<div class="user-field">Login</div>
+					<div class="user-field">Email</div>
+					<div class="user-field">Role</div>	
+					<div class="user-field">Detail</div>	
+				</div>
+					
 				<div th:each="user, userStatus : ${currentPage.getItems()}"
 					th:if="${userStatus.index &lt; 5}" class="detail-user">
-					<div th:text="${user.uid}">Uid</div>
-					<div th:text="${user.login}">Login</div>
-					<div th:text="${user.email}">Email</div>
-					<div th:text="${user.role}">Role</div>	
+					<div th:text="${user.uid}" class="user-field">Uid</div>
+					<div th:text="${user.login}" class="user-field">Login</div>
+					<div th:text="${user.email}" class="user-field">Email</div>
+					<div th:text="${user.role}" class="user-field">Role</div>	
 					<a th:class="'page dark gradient'" th:href="@{${'/detailUser'}(userUid=${user.uid})}">Detail</a>	
 				</div>	
 				
-				<div class="pagination dark">
+				<div class="pagination dark pagination-bottom">
 					<a th:class="'page dark gradient'"
 						th:if="${not currentPage.isFirst()}"
 						th:href="@{${'/users'}(page=${currentPage.number-1})}">Previous
