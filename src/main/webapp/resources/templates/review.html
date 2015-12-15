@@ -84,6 +84,22 @@
 			});
 		})
 	};
+
+	function showEdit(edit) {
+		$form = $(".review-form").clone();
+		$item = $(edit).parent().parent().parent();
+		var author = $item.find(".author").val();
+		var message = $item.find(".message").val();
+		var date = $item.find("date").val();
+		
+		$item.hide();
+
+		$item.replaceWith($form);
+		
+		$form.find("#author").val(author);
+		$form.find("#message").val(message);
+		$form.find("#date").val(date);
+	}
 </script>
 
 
@@ -130,28 +146,26 @@
 							<div class="message" th:utext="${review.message}">Message</div>
 							<div class="author" th:text="${review.author}">Author</div>
 							<div class="date" th:utext="${review.date}">Date</div>
-							
-							
+							<div class="email" th:utext="${review.contact}">Contact</div>
+
+
 							<div class="review-admin-buttons" th:if="true">
-							<div class="review-admin-button">
-								<a class="review-admin-button"
-									th:href="@{${'/hideReview'}(id=${review.id})}">Скрыть
-								</a>
+								<div class="review-admin-button">
+									<a class="review-admin-button"
+										th:href="@{${'/hideReview'}(id=${review.id})}">Скрыть </a>
+								</div>
+								<div class="review-admin-button">
+									<a class="review-admin-button"
+										th:href="@{${'/removeReview'}(id=${review.id})}">Удалить </a>
+								</div>
+								<div class="review-admin-button">
+									<a class="review-admin-button" onclick="showEdit(this)">Редактировать
+									</a>
+								</div>
 							</div>
-							<div class="review-admin-button">
-								<a class="review-admin-button"
-									th:href="@{${'/removeReview'}(id=${review.id})}">Удалить
-								</a>
-							</div>
-							<div class="review-admin-button">
-								<a class="review-admin-button"
-									th:href="@{${'/updateReview'}(id=${review.id})}">Редактировать
-								</a>
-							</div>
-						</div>
 						</div>
 
-						
+
 					</div>
 				</div>
 
