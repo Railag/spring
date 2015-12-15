@@ -57,7 +57,7 @@ public class HomeController {
 		MongoDB.initialize(mongoTemplate);
 
 		ImageModel imageModel = new ImageModel();
-	
+
 		model.addAttribute("imageModel", imageModel);
 
 		return "uploadImage";
@@ -72,7 +72,8 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = { "/saveImage" }, method = RequestMethod.POST)
-	public String saveImage(Locale locale, Model model, Principal principal, @ModelAttribute ImageModel imageModel, BindingResult result) {
+	public String saveImage(Locale locale, Model model, Principal principal, @ModelAttribute ImageModel imageModel,
+			BindingResult result) {
 
 		logger.info(imageModel.getImageID());
 		logger.info("Image size: " + imageModel.getFileImage().getSize());
@@ -82,49 +83,51 @@ public class HomeController {
 
 		return detailGallery(locale, model, principal, imageModel.getSubcategory());
 	}
-	
+
 	@RequestMapping(value = { "/gallery" }, method = RequestMethod.GET)
 	public String gallery(Locale locale, Model model, Principal principal) {
-		
+
 		MongoDB.initialize(mongoTemplate);
 
 		List<Category> categories = MongoDB.getAllCategories();
-		
+
 		model.addAttribute("categories", categories);
-		
+
 		CategoryModel categoryModel = new CategoryModel();
-		
+
 		model.addAttribute("categoryModel", categoryModel);
-		
+
 		return "gallery";
 	}
-	
+
 	@RequestMapping(value = { "/saveCategory" }, method = RequestMethod.POST)
-	public String saveCategory(Locale locale, Model model, Principal principal, @ModelAttribute CategoryModel categoryModel, BindingResult result) {
+	public String saveCategory(Locale locale, Model model, Principal principal,
+			@ModelAttribute CategoryModel categoryModel, BindingResult result) {
 
 		MongoDB.saveCategory(categoryModel);
 
 		return "redirect:/gallery";
 	}
-	
+
 	@RequestMapping(value = { "/galleryCategory" }, method = RequestMethod.GET)
 	public String galleryCategory(Locale locale, Model model, Principal principal, @RequestParam String categoryName) {
-		
+
 		MongoDB.initialize(mongoTemplate);
-		
+
 		Category category = MongoDB.getCategoryByName(categoryName);
-		
+
 		model.addAttribute("category", category);
-		
+
 		SubModel subModel = new SubModel();
-		
+
 		model.addAttribute("subModel", subModel);
-		
+
 		return "galleryCategory";
 	}
-	
+
 	@RequestMapping(value = { "/saveSub" }, method = RequestMethod.POST)
-	public String saveSub(Locale locale, Model model, Principal principal, @ModelAttribute SubModel subModel, BindingResult result) {
+	public String saveSub(Locale locale, Model model, Principal principal, @ModelAttribute SubModel subModel,
+			BindingResult result) {
 
 		MongoDB.saveSub(subModel);
 
@@ -136,28 +139,26 @@ public class HomeController {
 
 		MongoDB.initialize(mongoTemplate);
 
-		//List<Image> images = MongoDB.getAllImages();
+		// List<Image> images = MongoDB.getAllImages();
 
 		SubCategory sub = MongoDB.getSubByName(subcategory);
-		//sub.setName("Тест");
-		//sub.setImages(images);
-		
+		// sub.setName("Тест");
+		// sub.setImages(images);
+
 		model.addAttribute("sub", sub);
-		
+
 		List<Category> allCategories = MongoDB.getAllCategories();
 		List<SubCategory> allSubs = MongoDB.getAllSubCategories();
-		
+
 		ImageModel imageModel = new ImageModel();
-		
+
 		imageModel.setAllCategories(allCategories);
 		imageModel.setAllSubs(allSubs);
-		
+
 		model.addAttribute("imageModel", imageModel);
 
 		return "detailGallery";
 	}
-	
-	
 
 	@RequestMapping(value = { "/review" }, method = RequestMethod.GET)
 	public String review(Locale locale, Model model, Principal principal,
@@ -212,9 +213,13 @@ public class HomeController {
 		} else {
 			MongoDB.initialize(mongoTemplate);
 
-			review.setFormattedDate(new Date());
+			if (review.getId() != null) {
+				MongoDB.updateReview(review.getId(), review);
+			} else {
+				review.setFormattedDate(new Date());
 
-			MongoDB.saveReview(review);
+				MongoDB.saveReview(review);
+			}
 
 			model.addAttribute("review", review);
 
@@ -234,7 +239,7 @@ public class HomeController {
 
 		return "redirect:/review";
 	}
-	
+
 	@RequestMapping(value = { "/hideReview" }, method = RequestMethod.GET)
 	public String hideReview(Locale locale, Model model, Principal principal, @RequestParam String id) {
 
@@ -244,7 +249,7 @@ public class HomeController {
 
 		return "redirect:/review";
 	}
-	
+
 	@RequestMapping(value = { "/removeReview" }, method = RequestMethod.GET)
 	public String removeReview(Locale locale, Model model, Principal principal, @RequestParam String id) {
 
@@ -254,9 +259,10 @@ public class HomeController {
 
 		return "redirect:/review";
 	}
-	
+
 	@RequestMapping(value = { "/updateReview" }, method = RequestMethod.POST)
-	public String removeReview(Locale locale, Model model, Principal principal, @RequestParam String id, @ModelAttribute Review review, BindingResult result) {
+	public String removeReview(Locale locale, Model model, Principal principal, @RequestParam String id,
+			@ModelAttribute Review review, BindingResult result) {
 
 		MongoDB.initialize(mongoTemplate);
 
@@ -264,8 +270,6 @@ public class HomeController {
 
 		return "redirect:/review";
 	}
-	
-	
 
 	@RequestMapping(value = { "/reviews" }, method = RequestMethod.GET)
 	public String reviews(Locale locale, Model model, Principal principal,
