@@ -219,10 +219,8 @@ body {
 }
 
 .article-tags {
-	padding: 3px 15px;
 	display: inline-block;
-	width: 85%;
-	margin: 50px 7.5%;
+	width: 100%;
 	text-align: center;
 	background-color: black;
 	border: solid 1px black;
@@ -334,8 +332,10 @@ body {
 .pagination {
 	background: #f2f2f2;
 	padding: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 50px;
 	margin-bottom: 20px;
-	margin: 0 auto;
 }
 
 .user-field {
