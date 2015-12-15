@@ -418,6 +418,28 @@ ul li {
 	
 }
 
+.review-admin-buttons {
+	display:inline-block;
+	float:left;
+	width: 100%;
+	clear: both;	
+	border: 1px solid black;
+}
+
+.review-admin-button {
+	display: inline-block;
+	margin: 5px 10px;
+	font-size: 20px;
+	color: #383838;
+	text-decoration: none;
+}
+
+.review-admin-button:hover {
+	color: #00A0C6;
+	text-decoration: none;
+	cursor: pointer;
+}
+
 .category-form {
 	display: block;
 	width: 100%;

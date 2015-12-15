@@ -13,26 +13,33 @@
 </head>
 
 <script th:inlinetype="text/javascript">
-	$(document).ready(function() {
-		$(".menu a").each(function() {
-			var id = $(this).attr('id');
-			if (id == 'header-review') {
-				$(this).addClass('selected');
-				$(this).removeClass('unselected');
-			} else {
-				$(this).addClass('unselected');
-				$(this).removeClass('selected');
-			}
-		});
-		
-		setupFormSubmit();
-		
-		$(".review-form textarea").keyup(function(e) {
-		    $(this).height(42);
-		    $(this).height(this.scrollHeight + parseFloat($(this).css("borderTopWidth")) + parseFloat($(this).css("borderBottomWidth")));
-		});
-		
-	});
+	$(document).ready(
+			function() {
+				$(".menu a").each(function() {
+					var id = $(this).attr('id');
+					if (id == 'header-review') {
+						$(this).addClass('selected');
+						$(this).removeClass('unselected');
+					} else {
+						$(this).addClass('unselected');
+						$(this).removeClass('selected');
+					}
+				});
+
+				setupFormSubmit();
+
+				$(".review-form textarea").keyup(
+						function(e) {
+							$(this).height(42);
+							$(this).height(
+									this.scrollHeight
+											+ parseFloat($(this).css(
+													"borderTopWidth"))
+											+ parseFloat($(this).css(
+													"borderBottomWidth")));
+						});
+
+			});
 
 	function setupFormSubmit() {
 
@@ -52,16 +59,21 @@
 				success : function(response) {
 					if ($(response).hasClass("review-item")) { // validation success
 						$form.find("input[type=text], textarea").val(""); // clear fields
-						$form.find("input[type=text], textarea").removeClass("error-field"); // clear error classes
+						$form.find("input[type=text], textarea").removeClass(
+								"error-field"); // clear error classes
 						$form.find("div").eq(2).remove(); // remove error messages
-						
+
 						var textarea = $form.find("textarea");
 						textarea.height(42);
-						textarea.height(textarea.scrollHeight + parseFloat($(textarea).css("borderTopWidth")) + parseFloat($(textarea).css("borderBottomWidth")));
-	
+						textarea.height(textarea.scrollHeight
+								+ parseFloat($(textarea).css("borderTopWidth"))
+								+ parseFloat($(textarea).css(
+										"borderBottomWidth")));
+
 						$(".review-container").eq(1).prepend(response); // inject new review
 						$(".review-container").eq(1).children().first().hide(); // animate it
-						$(".review-container").eq(1).children().first().slideDown(2000);
+						$(".review-container").eq(1).children().first()
+								.slideDown(2000);
 					} else { // validation error
 						$('body').html(response); // refresh page with errors
 					}
@@ -90,32 +102,56 @@
 						<div class="review-line name-line">
 							<label th:for="author" class="review-field">Имя:</label> <span
 								class="span-wrapping"><input th:field="*{author}"
-								type='text' class="review-field" th:errorclass="error-field"/> </span>
+								type='text' class="review-field" th:errorclass="error-field" />
+							</span>
 						</div>
 						<div class="review-line">
 							<label>E-mail:</label> <span class="span-wrapping"><input
-								th:field="*{contact}" type='text' class="review-field" th:errorclass="error-field" /></span>
+								th:field="*{contact}" type='text' class="review-field"
+								th:errorclass="error-field" /></span>
 						</div>
 
 						<textarea th:field="*{message}" placeholder='Текст сообщения'
 							class="review-field" th:errorclass="error-field"> </textarea>
 
 						<input class='review-field' type='submit' />
-						
+
 						<div th:if="${#fields.hasAnyErrors()}">
-  							<p th:each="err : ${#fields.allErrors()}" th:text="${err}">...</p>
+							<p th:each="err : ${#fields.allErrors()}" th:text="${err}">...</p>
 						</div>
 					</form>
 
 				</div>
 				<div class="review-container">
 					<div th:each="review, status : ${currentPage.getItems()}"
-						th:if="${status.index &lt; 5}" class="review-item-wrapper" >
-						<div th:fragment="review" th:object="${review}" class="review-item page-content">
+						th:if="${status.index &lt; 5}" class="review-item-wrapper">
+						<div th:fragment="review" th:object="${review}"
+							class="review-item page-content">
 							<div class="message" th:utext="${review.message}">Message</div>
 							<div class="author" th:text="${review.author}">Author</div>
 							<div class="date" th:utext="${review.date}">Date</div>
+							
+							
+							<div class="review-admin-buttons" th:if="true">
+							<div class="review-admin-button">
+								<a class="review-admin-button"
+									th:href="@{${'/hideReview'}(id=${review.id})}">Скрыть
+								</a>
+							</div>
+							<div class="review-admin-button">
+								<a class="review-admin-button"
+									th:href="@{${'/removeReview'}(id=${review.id})}">Удалить
+								</a>
+							</div>
+							<div class="review-admin-button">
+								<a class="review-admin-button"
+									th:href="@{${'/updateReview'}(id=${review.id})}">Редактировать
+								</a>
+							</div>
 						</div>
+						</div>
+
+						
 					</div>
 				</div>
 

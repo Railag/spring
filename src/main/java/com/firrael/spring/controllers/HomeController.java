@@ -232,8 +232,40 @@ public class HomeController {
 
 		MongoDB.saveReview(review);
 
-		return "redirect:/reviews";
+		return "redirect:/review";
 	}
+	
+	@RequestMapping(value = { "/hideReview" }, method = RequestMethod.GET)
+	public String hideReview(Locale locale, Model model, Principal principal, @RequestParam String id) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		MongoDB.hideReview(id);
+
+		return "redirect:/review";
+	}
+	
+	@RequestMapping(value = { "/removeReview" }, method = RequestMethod.GET)
+	public String removeReview(Locale locale, Model model, Principal principal, @RequestParam String id) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		MongoDB.removeReview(id);
+
+		return "redirect:/review";
+	}
+	
+	@RequestMapping(value = { "/updateReview" }, method = RequestMethod.POST)
+	public String removeReview(Locale locale, Model model, Principal principal, @RequestParam String id, @ModelAttribute Review review, BindingResult result) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		MongoDB.updateReview(id, review);
+
+		return "redirect:/review";
+	}
+	
+	
 
 	@RequestMapping(value = { "/reviews" }, method = RequestMethod.GET)
 	public String reviews(Locale locale, Model model, Principal principal,

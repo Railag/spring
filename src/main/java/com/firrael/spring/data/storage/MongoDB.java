@@ -17,9 +17,9 @@ import com.firrael.spring.upload.ImageModel;
 import com.firrael.spring.upload.SubModel;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.QueryBuilder;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
@@ -57,12 +57,12 @@ public class MongoDB {
 			gfsFile.setFilename(imageModel.getName());
 
 			gfsFile.save();
-			
+
 			Image image = getImageByName(imageModel.getName());
 			SubCategory sub = getSubByName(imageModel.getSubcategory());
 			sub.getImages().add(image);
 			mongo.save(sub);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -132,7 +132,8 @@ public class MongoDB {
 
 	public static List<Review> getAllReviews() {
 		List<Review> reviews = new ArrayList<>();
-		DBCursor cursor = mongo.getCollection(Review.COLLECTION_NAME).find();
+		BasicDBObject query = new BasicDBObject().append(ReviewFactory.HIDDEN, 0);
+		DBCursor cursor = mongo.getCollection(Review.COLLECTION_NAME).find(query);
 		try {
 			while (cursor.hasNext()) {
 				Review review = ReviewFactory.buildReview(cursor.next());
@@ -143,6 +144,52 @@ public class MongoDB {
 		}
 
 		return reviews;
+	}
+
+	public static void hideReview(String id) {
+
+		ObjectId objId = new ObjectId(id);
+		BasicDBObject searchQuery = new BasicDBObject().append("_id", objId);
+
+		DBCollection collection = mongo.getCollection(Review.COLLECTION_NAME);
+
+		DBObject obj = collection.findOne(searchQuery);
+
+		BasicDBObject update = new BasicDBObject();
+		update.append("$set", new BasicDBObject().append(ReviewFactory.HIDDEN, 1));
+
+		collection.update(obj, update);
+	}
+
+	public static void removeReview(String id) {
+
+		ObjectId objId = new ObjectId(id);
+		BasicDBObject searchQuery = new BasicDBObject().append("_id", objId);
+
+		DBCollection collection = mongo.getCollection(Review.COLLECTION_NAME);
+
+		DBObject obj = collection.findOne(searchQuery);
+
+		collection.remove(obj);
+	}
+
+	public static void updateReview(String id, Review review) {
+		ObjectId objId = new ObjectId(id);
+		BasicDBObject searchQuery = new BasicDBObject().append("_id", objId);
+
+		DBCollection collection = mongo.getCollection(Review.COLLECTION_NAME);
+
+		DBObject obj = collection.findOne(searchQuery);
+
+		BasicDBObject update = new BasicDBObject();
+		update.append("$set", new BasicDBObject().append(ReviewFactory.AUTHOR, review.getAuthor())
+				.append(ReviewFactory.MESSAGE, review.getMessage()).append(ReviewFactory.CONTACT, review.getContact()));
+
+		collection.update(obj, update);
+	}
+
+	public static Review getReviewById(String id) {
+		return mongo.findById(id, Review.class, Review.COLLECTION_NAME);
 	}
 
 	public static List<Category> getAllCategories() {
@@ -210,13 +257,13 @@ public class MongoDB {
 
 	public static Image getImageById(String id) {
 		GridFS gfsPhoto = new GridFS(mongo.getDb(), "photo");
-/*
-		BasicDBObject inQuery = new BasicDBObject();
-		inQuery.put("_id", id);*/
+		/*
+		 * BasicDBObject inQuery = new BasicDBObject(); inQuery.put("_id", id);
+		 */
 
 		ObjectId obj = new ObjectId(id);
 		GridFSDBFile file = gfsPhoto.findOne(obj);
-		
+
 		Image image = ImageFactory.buildImage(file);
 
 		return image;

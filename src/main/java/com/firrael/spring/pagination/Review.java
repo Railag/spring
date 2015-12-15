@@ -36,12 +36,16 @@ public class Review implements Comparable<Review> {
 	private String contact;
 	
 	private String date;
+	
+	private int hidden;
 
-	public Review(String author, String message, String contact, String date) {
+	public Review(String id, String author, String message, String contact, String date, int hidden) {
+		this.id = id;
 		this.author = author;
 		this.message = message;
 		this.contact = contact;
 		this.date = date;
+		this.hidden = hidden;
 	}
 	
 	public Review() {
@@ -107,5 +111,13 @@ public class Review implements Comparable<Review> {
 	@Override
 	public int compareTo(Review secondReview) {
 		return secondReview.getComparingDate().compareTo(getComparingDate());
+	}
+
+	public int getHidden() {
+		return hidden;
+	}
+
+	public void setHidden(int hidden) {
+		this.hidden = hidden;
 	}
 }
