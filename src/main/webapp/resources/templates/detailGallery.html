@@ -36,13 +36,48 @@
 				scrollTop : 0
 			}, "slow");
 		});
+
+		$(".gallery-window").hide();
+
+		$(".gallery-image-container").each(function() {
+
+			$(this).on("click", function() {
+
+				var src = $(this).find("img").attr("src");
+				
+				$(".gallery-window-items div").each(function() {
+					var imgSrc = $(this).find("img").attr("src");
+					if (src === imgSrc) {
+						$(this).addClass("current");
+					} else {
+						$(this).addClass("hidden");
+					}
+				});
+				
+				$(".gallery-window").height($(".gallery-wrapper").height());
+
+				$(".gallery-wrapper").fadeOut(1000, function() {
+					$(".gallery-window").fadeIn(1000);
+				});
+
+				$(".left-arrow").on("click", function() {
+					setLeftImage();
+				});
+
+				$(".right-arrow").on("click", function() {
+					setRightImage();
+				});
+			});
+
+		});
+
 	});
 
 	function setupImageHeights() {
 		var width = $(document).width();
 		var lineWidth = $(".gallery-items").width();
 
-		$(".gallery-items img").each(function(i) {
+		$(".gallery-items .gallery-image-container").each(function(i) {
 			var index = i + 1;
 
 			if (800 > width) {
@@ -76,6 +111,48 @@
 			$(this).height($(this).width());
 		});
 	}
+
+	function setupImageSize(image) {
+		var width = $(image).width();
+		var height = $(image).height();
+
+		var isWidth = width > height;
+
+	}
+
+	function setLeftImage() {
+		var images = $(".inside-image");
+
+		images.each(function(i) {
+			if ($(this).hasClass("current")) {
+				if (i == 0)
+					return false;
+
+				$(this).toggleClass("current hidden");
+
+				var nextImageIndex = i - 1;
+				images.eq(nextImageIndex).toggleClass("current hidden");
+				return false;
+			}
+		});
+	}
+
+	function setRightImage() {
+		var images = $(".inside-image");
+
+		images.each(function(i) {
+			if ($(this).hasClass("current")) {
+				if (i == images.length - 1)
+					return false;
+
+				$(this).toggleClass("current hidden");
+
+				var nextImageIndex = i + 1;
+				images.eq(nextImageIndex).toggleClass("current hidden");
+				return false;
+			}
+		});
+	}
 </script>
 
 
@@ -86,13 +163,34 @@
 
 		<div class="content">
 
+
 			<div class="page-content">
+
+				<div class="gallery-window">
+
+					<div class="gallery-window-items">
+						<div th:each="image, status : ${sub.images}"
+						 class="inside-image">
+							<img th:src="@{/getImage (fileName=${image.name})}" />
+						</div>
+					</div>
+
+					<img class="left-arrow" th:src="@{/resources/images/left.png}" />
+
+					<img class="right-arrow" th:src="@{/resources/images/right.png}" />
+
+					<div class="gallery-title">Наверх</div>
+
+
+				</div>
 
 				<div class="gallery-wrapper">
 					<div th:text="${sub.name}" class="gallery-title"></div>
 					<div class="gallery-items">
-						<img th:src="@{/getImage (fileName=${image.name})}"
-							th:each="image, status : ${sub.images}" />
+						<div class="gallery-image-container"
+							th:each="image, status : ${sub.images}">
+							<img th:src="@{/getImage (fileName=${image.name})}" />
+						</div>
 					</div>
 
 					<div class="gallery-form">
@@ -123,8 +221,12 @@
 							</div>
 						</form>
 
+
+
 					</div>
 					<div id="lift-me-up" class="gallery-title">Наверх</div>
+
+
 				</div>
 
 			</div>

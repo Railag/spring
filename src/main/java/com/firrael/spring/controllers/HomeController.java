@@ -139,11 +139,7 @@ public class HomeController {
 
 		MongoDB.initialize(mongoTemplate);
 
-		// List<Image> images = MongoDB.getAllImages();
-
 		SubCategory sub = MongoDB.getSubByName(subcategory);
-		// sub.setName("Тест");
-		// sub.setImages(images);
 
 		model.addAttribute("sub", sub);
 
