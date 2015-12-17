@@ -398,12 +398,12 @@ select, input[type=file], input[type=submit], button, input[type=button],
 
 .gallery-window-items .hidden {
 	display: inline-block;
-	width: 0;
+	width: 0 !important;
 }
 
 .gallery-window-items .hidden img {
 	display: inline-block;
-	width: 0;
+	width: 0 !important;
 	background: red;
 }
 

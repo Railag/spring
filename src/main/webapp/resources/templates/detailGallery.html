@@ -269,7 +269,7 @@
 					
 					
 
-					<div class="review-container">
+					<div class="review-container" sec:authorize="hasRole('ROLE_ADMIN')">
 						<div class="gallery-form">
 							<form th:action="@{/saveImage}" th:object="${imageModel}"
 								method="post" enctype="multipart/form-data">

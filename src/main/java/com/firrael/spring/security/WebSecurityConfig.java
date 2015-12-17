@@ -1,29 +1,18 @@
 package com.firrael.spring.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.firrael.spring.data.storage.UserStorage;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebMvcSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	@Autowired
-    @Qualifier("userDetailsService")
-    UserStorage userDetailsService;
-	
-	@Autowired
-	@Qualifier("passwordEncoder")
-	PasswordEncoder encoder;
 	
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -36,8 +25,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .permitAll()
                 .and()
-            .logout()
-            .logoutSuccessUrl("/")
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/")
                 .permitAll();
     }
 
@@ -46,8 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         
     	auth
             .inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER");
+                .withUser("amashilda").password("if").roles("ADMIN");
         
-        auth.userDetailsService(userDetailsService).passwordEncoder(encoder);
     }
 }

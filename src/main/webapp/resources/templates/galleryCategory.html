@@ -80,7 +80,7 @@
 					</div>
 
 					<div class="review-container">
-						<div class="gallery-form">
+						<div class="gallery-form" sec:authorize="hasRole('ROLE_ADMIN')">
 							<form th:action="@{/saveSub}" th:object="${subModel}"
 								method="post" enctype="multipart/form-data">
 								<div class="gallery-line">

@@ -51,6 +51,14 @@ public class HomeController {
 		return "home";
 	}
 	
+	@RequestMapping(value = { "/login" }, method = RequestMethod.GET)
+	public String login(Locale locale, Model model, Principal principal) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		return "login";
+	}
+	
 	@RequestMapping(value = { "/about" }, method = RequestMethod.GET)
 	public String about(Locale locale, Model model, Principal principal) {
 
