@@ -50,6 +50,23 @@ public class HomeController {
 
 		return "home";
 	}
+	
+	@RequestMapping(value = { "/about" }, method = RequestMethod.GET)
+	public String about(Locale locale, Model model, Principal principal) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		return "about";
+	}
+	
+	@RequestMapping(value = { "/contacts" }, method = RequestMethod.GET)
+	public String contacts(Locale locale, Model model, Principal principal) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		return "contacts";
+	}
+	
 
 	@RequestMapping(value = { "/uploadImage" }, method = RequestMethod.GET)
 	public String uploadImage(Locale locale, Model model, Principal principal) {
