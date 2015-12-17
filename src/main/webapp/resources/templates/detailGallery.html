@@ -58,14 +58,50 @@
 
 				$(".gallery-wrapper").fadeOut(1000, function() {
 					$(".gallery-window").fadeIn(1000);
+					var image = $(".current img").first();
+					fitImage(image);
+					
+					var realW = $(image).width();
+		    		var realH = $(image).height();
+		    		
+		    		var maxWidth = $(image).parent().width();
+		            var maxHeight = $(image).parent().height();
+						
+					if (realW >= realH) {
+				        $(image).css("top", maxHeight / 2 - realH / 2);
+					} 
 				});
 
 				$(".left-arrow").on("click", function() {
 					setLeftImage();
+					var image = $(".current img").first();
+					fitImage(image);
+					
+					var realW = $(image).width();
+		    		var realH = $(image).height();
+		    		
+		    		var maxWidth = $(image).parent().width();
+		            var maxHeight = $(image).parent().height();
+						
+					if (realW >= realH) {
+				        $(image).css("top", maxHeight / 2 - realH / 2);
+					} 
 				});
 
 				$(".right-arrow").on("click", function() {
 					setRightImage();
+					var image = $(".current img").first();
+					fitImage(image);
+					
+					var realW = $(image).width();
+		    		var realH = $(image).height();
+		    		
+		    		var maxWidth = $(image).parent().width();
+		            var maxHeight = $(image).parent().height();
+						
+					if (realW >= realH) {
+				        $(image).css("top", maxHeight / 2 - realH / 2);
+					} 
 				});
 			});
 
@@ -111,57 +147,53 @@
 			$(this).height($(this).width());
 			
 
-			$(".gallery-image-container img").each(function(i) {
-				$(this).one("load", function() {
-					  // do stuff
-					}).each(function() {
-					  if(this.complete) $(this).load();
-					  
-					});
-		        var ratio = 0;  
-				var width = $(this).width();
-				var height = $(this).height();
-				
-				var maxWidth = $(this).parent().width();
-		        var maxHeight = $(this).parent().height();    
-
-				 
-			        // Check if the current width is larger than the max
-			        if(width > maxWidth){
-			            ratio = maxWidth / width;   // get ratio for scaling image
-			            $(this).css("width", maxWidth); // Set new width
-			            $(this).css("height", height * ratio);  // Scale height based on ratio
-			            height = height * ratio;    // Reset height to match scaled image
-			            width = width * ratio;    // Reset width to match scaled image
-			        }
-
-			        // Check if current height is larger than max
-			        if(height > maxHeight){
-			            ratio = maxHeight / height; // get ratio for scaling image
-			            $(this).css("height", maxHeight);   // Set new height
-			            $(this).css("width", width * ratio);    // Scale width based on ratio
-			            width = width * ratio;    // Reset width to match scaled image
-			            height = height * ratio;    // Reset height to match scaled image
-			        }
-			        
-
-			    
-			    	$(this).on("load", function() {
-			    		var realW = $(this).width();
-			    		var realH = $(this).height();
-						console.log(realW, realH);
-							
-						if (realW >= realH) {
-					        $(this).css("top", maxHeight / 2 - realH / 2);
-						} 
-
-			    	});
-			        // 50%
-			 
-			}); 
+			$(".gallery-image-container img").each(function() {
+				fitImage($(this));
+			});
 
 		});
 	}
+	
+	function fitImage(image) {
+	
+        var ratio = 0;  
+		var width = $(image).width();
+		var height = $(image).height();
+		
+		var maxWidth = $(image).parent().width();
+        var maxHeight = $(image).parent().height();    
+
+		 
+	        if(width > maxWidth){
+	            ratio = maxWidth / width;   
+	            $(image).css("width", maxWidth); 
+	            $(image).css("height", height * ratio);  
+	            height = height * ratio;   
+	            width = width * ratio;   
+	        }
+
+	        
+	        if(height > maxHeight){
+	            ratio = maxHeight / height;
+	            $(image).css("height", maxHeight);   
+	            $(image).css("width", width * ratio);    
+	            width = width * ratio;  
+	            height = height * ratio;   
+	        }
+	        
+
+	    
+	    	$(image).on("load", function() {
+	    		var realW = $(image).width();
+	    		var realH = $(image).height();
+					
+				if (realW >= realH) {
+			        $(image).css("top", maxHeight / 2 - realH / 2);
+				} 
+
+	    	});
+	 
+	}; 
 
 	function setupImageSize(image) {
 		var width = $(image).width();
