@@ -363,6 +363,18 @@ body {
 	padding: 10px;
 }
 
+.articles-right {
+	float: left;
+}
+
+.articles-title {
+	margin-left: 10px;
+}
+
+.articles-item {
+	margin-bottom: 10px;
+}
+
 .pagination-bottom {
 	position: relative;
 	bottom: 120 !important;

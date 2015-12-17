@@ -16,10 +16,9 @@
 		<div class="content">
 		
 			<div th:each="article, articleStatus : ${currentPage.getItems()}"
-				th:if="${articleStatus.index &lt; 5}">
-				<span th:text="${article.title}">Title</span>
-				<span th:utext="${article.link}">http://habrahabr.ru</span>
-				<a th:class="'page dark gradient'" th:href="@{${'/detailArticle'}(articleAid=${article.aid})}">Detail</a>
+				th:if="${articleStatus.index &lt; 5}" class="articles-item">
+				<span th:text="${article.title}" class="articles-title">Title</span>
+				<a th:class="'page dark gradient articles-right'" th:href="@{${'/detailArticle'}(articleAid=${article.aid})}">Detail</a>
 			</div>
 		
 		
