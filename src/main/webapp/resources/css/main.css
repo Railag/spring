@@ -279,9 +279,12 @@ body {
 }
 
 .article-edit-button {
-	display: block !important;
-	padding: 15px;
-	margin-bottom: 5px;
+	display: inline-block;
+	width: 95%;
+	clear:both;
+	text-align: center;
+	margin: 10px 30px;
+	padding: 10px !important;
 }
 
 .detail-user {
