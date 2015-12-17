@@ -307,15 +307,16 @@ body {
 	margin-right: 0 !important;
 }
 
-.gallery-items img {
+.gallery-items .gallery-image-container img {
 	position: relative;
-	top: 25%;
 	max-width: 100%;
 	max-height: 100%;
 	width: auto;
 	height: auto;
 	background: green;
+	vertical-align: middle;
 }
+
 
 .gallery-image-container {
 	display: inline-block;
@@ -324,6 +325,7 @@ body {
 	margin-bottom: 1%;
 	background: red;
 	cursor: pointer;
+	vertical-align: middle;
 }
 
 .gallery-form {
