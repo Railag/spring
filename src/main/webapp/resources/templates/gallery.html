@@ -93,20 +93,48 @@
 							</div>
 						</div>
 					</div>
-					<div class="category-form">
-						<form th:action="@{/saveCategory}" th:object="${categoryModel}"
-							method="post" enctype="multipart/form-data">
-							<div class="gallery-line">
-								<label th:for="name">Название:</label> <input type="text"
-									th:field="*{category}" class="gallery-button" />
-							</div>
-							<div class="gallery-line">
-								<input type="file" th:field="*{fileImage}" /> <input
-									type="submit" class="gallery-button" />
-							</div>
-						</form>
+
+					<div class="review-container">
+						<div class="gallery-form">
+							<form th:action="@{/saveImage}" th:object="${imageModel}"
+								method="post" enctype="multipart/form-data">
+								<input type="hidden" name="subcategory" th:value="${sub.name}" />
+								<div class="gallery-line">
+									<label th:for="name">Название:</label> <span
+										class="span-wrapping"> <input type="text"
+										th:field="*{name}" />
+									</span>
+								</div>
+								<div class="gallery-line">
+									<input type="file" th:field="*{fileImage}" class="gallery-line" />
+									<input type="submit" class="gallery-line" />
+								</div>
+							</form>
+						</div>
+
 
 					</div>
+
+					<div class="review-container">
+						<div class="gallery-form">
+							<form th:action="@{/saveCategory}" th:object="${categoryModel}"
+								method="post" enctype="multipart/form-data">
+								<div class="gallery-line">
+									<label th:for="name">Название:</label> <span
+										class="span-wrapping"> <input type="text"
+										th:field="*{category}" class="gallery-line" />
+									</span>
+								</div>
+								<div class="gallery-line">
+									<input type="file" th:field="*{fileImage}" class="gallery-line" />
+									<input type="submit" class="gallery-line" />
+								</div>
+							</form>
+
+						</div>
+
+					</div>
+
 					<div id="lift-me-up" class="gallery-title category-left">Наверх</div>
 				</div>
 

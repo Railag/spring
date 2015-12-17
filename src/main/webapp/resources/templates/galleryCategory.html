@@ -78,21 +78,31 @@
 							</ul>
 						</div>
 					</div>
-					<div class="category-form">
-						<form th:action="@{/saveSub}" th:object="${subModel}"
-							method="post" enctype="multipart/form-data">
-							<div class="gallery-line">
-								<label th:for="name">Название:</label> <input type="text"
-									th:field="*{sub}" class="gallery-button" />
-							</div>
-							<input type="hidden" name="category" th:value="${category.name}" />
 
-							<div class="gallery-line">
-								<input type="submit" class="gallery-button" />
-							</div>
-						</form>
+					<div class="review-container">
+						<div class="gallery-form">
+							<form th:action="@{/saveSub}" th:object="${subModel}"
+								method="post" enctype="multipart/form-data">
+								<div class="gallery-line">
+									<label th:for="name">Название:</label> <span
+										class="span-wrapping"> <input type="text"
+										th:field="*{sub}" class="gallery-line" />
+									</span>
+								</div>
+								<input type="hidden" name="category" th:value="${category.name}" />
+
+								<div class="gallery-line">
+									<input type="submit" class="gallery-line" />
+								</div>
+							</form>
+
+						</div>
 
 					</div>
+
+
+
+
 				</div>
 
 			</div>

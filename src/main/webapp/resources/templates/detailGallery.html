@@ -44,7 +44,7 @@
 			$(this).on("click", function() {
 
 				var src = $(this).find("img").attr("src");
-				
+
 				$(".gallery-window-items div").each(function() {
 					var imgSrc = $(this).find("img").attr("src");
 					if (src === imgSrc) {
@@ -53,7 +53,7 @@
 						$(this).addClass("hidden");
 					}
 				});
-				
+
 				$(".gallery-window").height($(".gallery-wrapper").height());
 
 				$(".gallery-wrapper").fadeOut(1000, function() {
@@ -169,8 +169,7 @@
 				<div class="gallery-window">
 
 					<div class="gallery-window-items">
-						<div th:each="image, status : ${sub.images}"
-						 class="inside-image">
+						<div th:each="image, status : ${sub.images}" class="inside-image">
 							<img th:src="@{/getImage (fileName=${image.name})}" />
 						</div>
 					</div>
@@ -192,35 +191,25 @@
 							<img th:src="@{/getImage (fileName=${image.name})}" />
 						</div>
 					</div>
+					
+					
 
-					<div class="gallery-form">
-						<form th:action="@{/saveImage}" th:object="${imageModel}"
-							method="post" enctype="multipart/form-data">
-							<!-- <div class="gallery-line">
-								<label th:for="category">Категория:</label> <select
-									th:field="*{category}" class="gallery-button">
-									<option th:each="category : ${imageModel.allCategories}"
-										th:value="${category.name}" th:text="${category.name}">Category</option>
-								</select>
-							</div> -->
-							<!-- <div class="gallery-line">
-								<label th:for="subcategory">Подкатегория:</label> <select
-									th:field="*{subcategory}" class="gallery-button">
-									<option th:each="sub : ${imageModel.allSubs}" th:value="${sub.name}"
-										th:text="${sub.name}">SubCategory</option>
-								</select>
-							</div> -->
-							<input type="hidden" name="subcategory" th:value="${sub.name}" />
-							<div class="gallery-line">
-								<label th:for="name">Название:</label> <input type="text"
-									th:field="*{name}" class="gallery-button" />
-							</div>
-							<div class="gallery-line">
-								<input type="file" th:field="*{fileImage}" /> <input
-									type="submit" class="gallery-button" />
-							</div>
-						</form>
-
+					<div class="review-container">
+						<div class="gallery-form">
+							<form th:action="@{/saveImage}" th:object="${imageModel}"
+								method="post" enctype="multipart/form-data">
+								<input type="hidden" name="subcategory" th:value="${sub.name}" />
+								<div class="gallery-line">
+									<label th:for="name">Название:</label> <span
+								class="span-wrapping"> <input type="text"
+										th:field="*{name}" /> </span>
+								</div>
+								<div class="gallery-line">
+									<input type="file" th:field="*{fileImage}" class="gallery-line" /> <input
+										type="submit" class="gallery-line"  />
+								</div>
+							</form>
+						</div>
 
 
 					</div>

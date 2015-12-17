@@ -322,9 +322,10 @@ body {
 }
 
 .gallery-form {
-	display: block;
+	display: inline-block;
+	width: 60%;
 	min-width: 400px;
-	margin: 50px -20px;
+	margin: 50px 0px;
 	background: #FFFFFF;
 	padding: 25px;
 }
