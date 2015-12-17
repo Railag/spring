@@ -155,6 +155,18 @@ public class HomeController {
 
 		return "detailGallery";
 	}
+	
+	@RequestMapping(value = { "/works" }, method = RequestMethod.GET)
+	public String works(Locale locale, Model model, Principal principal) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		List<Image> images = MongoDB.getAllImages();
+
+		model.addAttribute("images", images);
+
+		return "works";
+	}
 
 	@RequestMapping(value = { "/review" }, method = RequestMethod.GET)
 	public String review(Locale locale, Model model, Principal principal,
@@ -288,4 +300,6 @@ public class HomeController {
 
 		return "reviews";
 	}
+	
+	
 }

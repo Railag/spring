@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Портфолио</title>
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
+
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}"></script>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+</head>
+
+<script th:inlinetype="text/javascript">
+	$(document).ready(function() {
+		$(".menu a").each(function() {
+			var id = $(this).attr('id');
+			if (id == 'header-works') {
+				$(this).addClass('selected');
+				$(this).removeClass('unselected');
+			} else {
+				$(this).addClass('unselected');
+				$(this).removeClass('selected');
+			}
+		});
+
+		setupImageHeights();
+
+		$(window).resize(function() {
+			setupImageHeights();
+		});
+
+		$("#lift-me-up").click(function() {
+			$("html, body").animate({
+				scrollTop : 0
+			}, "slow");
+		});
+
+	});
+
+	function setupImageHeights() {
+		var width = $(document).width();
+		var imgWidth = $(".gallery-category").width();
+
+		$(".category-image").each(function() {
+
+			if (1200 > width) {
+				$(this).width(imgWidth);
+				$(".category-text").width(imgWidth);
+			} else {
+				$(this).width(imgWidth * 0.49);
+				$(".category-text").width(imgWidth * 0.49);
+			}
+
+			$(this).height($(this).width());
+			$(".category-text").height($(this).width());
+		});
+	}
+</script>
+
+
+<body>
+	<div class="wrapper">
+
+		<div th:replace="header :: header"></div>
+
+		<div class="content">
+
+			<div class="page-content">
+
+				<div class="works-container">
+					<div th:each="image, status : ${images}" class="works-image-item">
+						<img th:src="@{/getImage (fileName=${image.name})}" />
+					</div>
+				</div>
+
+				<div id="lift-me-up" class="middle-block">
+					<span class="gallery-title">Наверх</span>
+				</div>
+
+			</div>
+
+		</div>
+		<div th:replace="footer :: footer"></div>
+
+	</div>
+
+</body>
+</html>
