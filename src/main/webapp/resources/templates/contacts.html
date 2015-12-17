@@ -10,6 +10,26 @@
 
 <title>Контакты</title>
 </head>
+
+<script th:inlinetype="text/javascript">
+	$(document).ready(function() {
+		$(".menu a").each(function() {
+			var id = $(this).attr('id');
+			if (id == 'header-contacts') {
+				$(this).addClass('selected');
+				$(this).removeClass('unselected');
+			} else {
+				$(this).addClass('unselected');
+				$(this).removeClass('selected');
+			}
+		});
+
+
+	});
+	}
+</script>
+
+
 <body>
 	<div class="wrapper">
 		<div th:replace="header :: header"></div>

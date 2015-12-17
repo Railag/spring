@@ -27,10 +27,6 @@
 
 		setupImageHeights();
 
-		$(window).resize(function() {
-			setupImageHeights();
-		});
-
 		$("#lift-me-up").click(function() {
 			$("html, body").animate({
 				scrollTop : 0
@@ -40,23 +36,39 @@
 	});
 
 	function setupImageHeights() {
-		var width = $(document).width();
-		var imgWidth = $(".gallery-category").width();
-
-		$(".category-image").each(function() {
-
-			if (1200 > width) {
-				$(this).width(imgWidth);
-				$(".category-text").width(imgWidth);
-			} else {
-				$(this).width(imgWidth * 0.49);
-				$(".category-text").width(imgWidth * 0.49);
-			}
-
-			$(this).height($(this).width());
-			$(".category-text").height($(this).width());
+		$(".works-image-item img").each(function() {
+			fitImage($(this));
 		});
 	}
+	
+	function fitImage(image) {
+		
+        var ratio = 0;  
+		var width = $(image).width();
+		var height = $(image).height();
+		
+		var maxWidth = $(image).parent().width();
+        var maxHeight = $(image).parent().height();    
+
+		 
+	        if(width > maxWidth){
+	            ratio = maxWidth / width;   
+	            $(image).css("width", maxWidth); 
+	            $(image).css("height", height * ratio);  
+	            height = height * ratio;   
+	            width = width * ratio;   
+	        }
+
+	        
+	        if(height > maxHeight){
+	            ratio = maxHeight / height;
+	            $(image).css("height", maxHeight);   
+	            $(image).css("width", width * ratio);    
+	            width = width * ratio;  
+	            height = height * ratio;   
+	        }
+	 
+	}; 
 </script>
 
 
