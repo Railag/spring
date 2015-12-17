@@ -179,6 +179,9 @@ public class HomeController {
 		MongoDB.initialize(mongoTemplate);
 
 		List<Image> images = MongoDB.getAllImages();
+		
+		if (images.size() >= 10)
+			images = images.subList(0, 9);
 
 		model.addAttribute("images", images);
 
