@@ -12,20 +12,21 @@
 		    <div th:replace="header :: header"></div>
 		    
 		    <div class="content">
-		    	<div class="profile-content">
-			        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+		    	<div class="profile-content login">
+			        <h1 th:inline="text" class="inline-center">Hello, [[${#httpServletRequest.remoteUser}]]!</h1>
 			        
 			        <form th:action="@{/users}" method="get">
-			        	<input type="submit" value="Users"/>
+			        	<input type="submit" value="Users" class="admin-button"/>
 			        </form>
 			        
 			        <form th:action="@{/articles}" method="get">
-			        	<input type="submit" value="Articles"/>
+			        	<input type="submit" value="Articles" class="admin-button"/>
 			        </form>
 			        
 			        <form th:action="@{/logout}" method="post">
-			            <input type="submit" value="Sign Out"/>
+			            <input type="submit" value="Sign Out" class="admin-button"/>
 			        </form>
+			      
 		        </div>
 		    </div>
 		        

@@ -14,18 +14,18 @@
 		    <div class="content">
 		    
 			    <div class="profile-content">
-			        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+			        <h1 th:inline="text" class="inline-center">Hello, [[${#httpServletRequest.remoteUser}]]!</h1>
 			        
 			        <form th:action="@{/selection}" method="get">
-			            <input type="submit" value="To selection"/>
+			            <input type="submit" value="To selection" class="admin-button"/>
 			        </form>
 			        
 			        <form th:action="@{/favorites}" method="get">
-			        	<input type="submit" value="To favorites"/>
+			        	<input type="submit" value="To favorites" class="admin-button"/>
 			        </form>
 			        
 			        <form th:action="@{/logout}" method="post">
-			            <input type="submit" value="Sign Out"/>
+			            <input type="submit" value="Sign Out" class="admin-button"/>
 			        </form>
 			        
 			    </div>
