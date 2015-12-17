@@ -116,7 +116,7 @@ public class UserStorage implements Storage<User, UserFields>, UserDetailsServic
 
 	public static List<Category> getCategoriesForUser(User user) {
 		List<String> cids = user.getSelectedCategories();
-		return Redis.getCategoriesForCids(cids);
+		return Redis.getActualCategoriesForCids(cids);
 	}
 
 	public static String getUidForLogin(String login) {

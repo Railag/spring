@@ -204,11 +204,20 @@ public class Redis {
 
 	public static Category getCategoryForCid(String cid) {
 		String name = redisTemplate.opsForValue().get(RedisFields.CATEGORY_PREFIX + cid + RedisFields.CATEGORY_NAME_POSTFIX);
+		
+		return new Category(name, -1L);
+	}
+	
+	public static Category getActualCategoryForCid(String cid) {
+		Category category = getCategoryForCid(cid);
+		
 		Long count = redisTemplate.opsForZSet().size(RedisFields.CATEGORY + cid);
 		if ( count < 5)
 			return null;
 		
-		return new Category(name, count);
+		category.setCount(count);
+		
+		return category;
 	}
 
 	public static List<Channel> getChannelsForChids(List<String> chids) {
@@ -223,6 +232,17 @@ public class Redis {
 		List<Category> categories = new ArrayList<>();
 		for (String cid : cids) {
 			Category category = getCategoryForCid(cid);
+			if (category != null)
+				categories.add(category);
+		}
+
+		return categories;
+	}
+	
+	public static List<Category> getActualCategoriesForCids(List<String> cids) {
+		List<Category> categories = new ArrayList<>();
+		for (String cid : cids) {
+			Category category = getActualCategoryForCid(cid);
 			if (category != null)
 				categories.add(category);
 		}

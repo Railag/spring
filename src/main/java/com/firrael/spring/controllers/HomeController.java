@@ -56,9 +56,17 @@ public class HomeController {
 	private RedisTemplate<String, String> template;
 
 	@RequestMapping(value = { "/category" }, method = RequestMethod.GET)
-	public String category(Locale locale, Model model, @RequestParam(required = true) String category,
+	public String category(Locale locale, Model model, Principal principal, @RequestParam(required = true) String category,
 			@RequestParam(required = false) Integer page) {
 
+		String login = principal != null ? principal.getName() : null;
+
+		if (login != null) {
+			UserStorage storage = new UserStorage();
+			User user = storage.findUserByLogin(login);
+			model.addAttribute("user", user);
+		}
+		
 		List<Article> articles = Redis.getArticlesForCategory(category);
 
 		List<ArticlePage> pages = (List<ArticlePage>) PageCreator.getPagingList(articles, ArticlePage.class);

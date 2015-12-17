@@ -6,52 +6,173 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
-<script th:src="@{/resources/js/jquery-2.1.4.min.js}" />
+<script th:src="@{/resources/js/jquery-2.1.4.min.js}" ></script>
+<script th:src="@{/resources/js/jquery.zoomooz.min.js}"></script>
 <meta name="_csrf" th:content="${_csrf.token}"/>
 <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
 <script type="text/javascript">
-$( document ).ready(function() {
-	  $(".article-description a").each(function() {
-		  var text = $(this).text();
-		  if (text.indexOf("Читать дальше") >= 0)
-		  	$(this).addClass("read-forward");
-	  });
+	$(document).ready(function() {
+		$(".article-description a").each(function() {
+			var text = $(this).text();
+			if (text.indexOf("Читать дальше") >= 0)
+				$(this).addClass("read-forward");
+		});
+		
+		
+		
+		$(".article-item").each(function() {
+			var imagesNumber = 0;
+			
+			var item = $(this);
+			var zIndex = 25;
+			var margin = 25;
+			item.find(".article-description div").first().addClass("article-html");
+			item.find(".article-html img").each(function() {
+				imagesNumber++;
+				var img = $(this);
+				img.css({"z-index": zIndex});
+				img.css({"margin-left": margin});
+				img.addClass(".image");
+				zIndex += 25;
+				margin += 25;
+				
+				var holder = item.find(".article-image-holder");
+				img.insertBefore(holder.find(".controls"));
+				
+				settings = {
+					    targetsize: 1.0,
+					    closeclick: true
+				};
+				
+				
+				holder.zoomTarget(settings);
+				
+			});
+			
+			var description = item.find(".article-html");
+			$(description).html($(description).find('img').remove().end().html());
+			
+			if (1 >= imagesNumber) {
+				item.find(".controls").hide();
+			} else {
+				item.find(".left-arrow").on("click", function(e) {
+					e.stopPropagation();
+					var images = item.find(".article-image-holder>img");
+					swapImagesLeft(images);
+				});
+				
+				item.find(".right-arrow").on("click", function(e) {
+					e.stopPropagation();
+					var images = item.find(".article-image-holder>img");
+					swapImagesRight(images);
+				});
+			
+			}
+			
+			if (imagesNumber == 0) {
+				$(item).find(".article-html").width('100%');	
+				$(item).find(".article-zoom-holder").hide();
+			}
+			
+		});
+		
+		function swapImagesLeft(images) {	
+		    	var image = images.first();
+				
+		    	$(image).animate( {
+		    				"z-index": images.length * 25,
+		    				"margin-left": images.length * 25
+		    	}, 1000, function() {			    		
+
+							images.first().hide();
+							
+				    		images.first().insertAfter(images.last());
+				    		
+				    		var images2 = images.parent().find(">img");
+						
+				    		images2.each(function(i) {
+					    		var img = $(this);
+					    		
+					    		img.animate( {
+					    			"z-index": 25 * (i+1),
+					    			"margin-left" : 25 * (i+1)
+					    		}, 1000);
+			    			});
+				    		
+				    		$(images2).last().delay(200).fadeIn(200, function() {
+				    			
+				    			
+				    			
+				    		});
+				});  	
+		}
+		
+		function swapImagesRight(images) {
+			
+			var image = images.last();
+			
+	    	$(image).animate( {
+	    				"z-index": 25,
+	    				"margin-left": 25
+	    	}, 1000, function() {			    		
+
+						images.last().fadeOut(200);
+						
+			    		images.last().insertBefore(images.first());
+			    		
+			    		var images2 = images.parent().find(">img");
+					
+			    		$(images2).first().delay(200).fadeIn(200, function() {
+			    			
+			    			images2.each(function(i) {
+					    		var img = $(this);
+					    		
+					    		img.animate( {
+					    			"z-index": 25 * (i+1),
+					    			"margin-left" : 25 * (i+1)
+					    		}, 1000);
+			    			});
+			    			
+			    		});
+
+		    	
+			});  	
+	    	
+	};
+
 	});
 
+	function ajaxFavoriteArticle(aid, uid, button) {
 
-function ajaxFavoriteArticle(aid, uid, button) {
-	
-	
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
-	
-				
-        $.ajax({
-        type: "POST",
-        url: "/spring/favoriteArticle",
-        headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json' 
-        },
-        data: '{"aid":"' + aid + '","uid":"' + uid + '"}',
-        dataType:'json',
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(response){
-        	var isFavorite = response["nowFavorite"];
-        	$(button).toggleClass("favorite unfavorite");
-        	if (isFavorite == "true")
-        		$(button).attr("value", "Unfavorite");
-        	else
-        		$(button).attr("value", "Favorite");
-        },
-        error: function(e){
-        	console.log(e)
-        }
-        });
-}
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+
+		$.ajax({
+			type : "POST",
+			url : "/spring/favoriteArticle",
+			headers : {
+				'Accept' : 'application/json',
+				'Content-Type' : 'application/json'
+			},
+			data : '{"aid":"' + aid + '","uid":"' + uid + '"}',
+			dataType : 'json',
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+			success : function(response) {
+				var isFavorite = response["nowFavorite"];
+				$(button).toggleClass("favorite unfavorite");
+				if ($(button).attr("value") === "Favorite")
+					$(button).attr("value", "Unfavorite");
+				else
+					$(button).attr("value", "Favorite");
+			},
+			error : function(e) {
+				console.log(e)
+			}
+		});
+	}
 </script>
 
 <title>Favorites</title>
@@ -83,37 +204,49 @@ function ajaxFavoriteArticle(aid, uid, button) {
 		
 			<div th:each="article, articleStatus : ${currentPage.getItems()}"
 				th:if="${articleStatus.index &lt; 5}" class="article-item">
-				
-				<div class="article-body">
+
+				<div class="article-body  zoomViewport">
 					<div class="article-title">
-						<span  th:text="${article.title}">Title</span>
+						<span th:text="${article.title}">Title</span>
 					</div>
-					
+
 					<div class="article-date">
-						<span  th:utext="${article.getDateFormatted()}">date</span>
+						<span th:utext="${article.getDateFormatted()}">date</span>
+						<span th:utext="${article.author}">author</span>
 					</div>
-					
-					<div class="article-description">
+
+					<div class="article-description zoomNotClickable">
 						<div th:utext="${article.description}">text</div>
-						
-						<div th:if="${user != null}">
-							<input type="button" th:value="${user.isFavoriteArticle(article.aid)? 'Unfavorite' : 'Favorite'}" 
-							th:onclick="' ajaxFavoriteArticle(\'' + ${article.aid}  + '\', \'' + ${user.uid} + '\' ,this) '"  
-							th:class="${user.isFavoriteArticle(article.aid)? 'unfavorite' : 'favorite'}" />
+						<div class="article-zoom-holder zoomContainer zoomNotClickable">
+							<div class="article-image-holder">
+
+
+								<div class="controls">
+									<img class="left-arrow" th:src="@{/resources/images/left.png}" />
+									<img class="right-arrow"
+										th:src="@{/resources/images/right.png}" />
+								</div>
+
+							</div>
+
 						</div>
-					
+
+						<div th:if="${user != null}">
+							<input type="button"
+								th:value="${user.isFavoriteArticle(article.aid)? 'Unfavorite' : 'Favorite'}"
+								th:onclick="' ajaxFavoriteArticle(\'' + ${article.aid}  + '\', \'' + ${user.uid} + '\' ,this) '"
+								th:class="${user.isFavoriteArticle(article.aid)? 'unfavorite' : 'favorite'}" />
+						</div>
+
 					</div>
-					
-				
-					
+
 				</div>
-				
+
 				<div class="article-tags">
-						<a th:each="category : ${article.categories}"
-							th:text="${category}" th:href="@{${'/category'}(category=${category})}">
-						</a>
+					<a th:each="category : ${article.categories}" th:text="${category}"
+						th:href="@{${'/category'}(category=${category})}"> </a>
 				</div>
-				
+
 			</div>
 		
 		

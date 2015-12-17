@@ -188,7 +188,7 @@
 			success : function(response) {
 				var isFavorite = response["nowFavorite"];
 				$(button).toggleClass("favorite unfavorite");
-				if (isFavorite == "true")
+				if ($(button).attr("value") === "Favorite")
 					$(button).attr("value", "Unfavorite");
 				else
 					$(button).attr("value", "Favorite");
@@ -230,6 +230,7 @@
 
 					<div class="article-date">
 						<span th:utext="${article.getDateFormatted()}">date</span>
+						<span th:utext="${article.author}">author</span>
 					</div>
 
 					<div class="article-description zoomNotClickable">

@@ -142,26 +142,6 @@
 	    	
 	};
 
-
-		
-	  /*   but i've tried
-	  		
-	  		$('iframe').each(function(){
-	        function injectCSS(){
-	        	$iframe.contents().find('head').append($('<link/>', {
-					rel : 'stylesheet',
-					href : '/spring/resources/css/iframe.css',
-					type : 'text/css'
-				}));
-	        }
-
-	        var $iframe = $(this);
-	        $iframe.on('load',function(){
-	            injectCSS();
-	        });
-	        injectCSS();
-	    });
- 	*/
 	});
 
 	function ajaxFavoriteArticle(aid, uid, button) {
@@ -184,7 +164,7 @@
 			success : function(response) {
 				var isFavorite = response["nowFavorite"];
 				$(button).toggleClass("favorite unfavorite");
-				if (isFavorite == "true")
+				if ($(button).attr("value") === "Favorite")
 					$(button).attr("value", "Unfavorite");
 				else
 					$(button).attr("value", "Favorite");
