@@ -4,43 +4,34 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <title>Register</title>
-<link
-	href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700'
-	rel='stylesheet' type='text/css' />
-<link href='http://fonts.googleapis.com/css?family=Sofia'
-	rel='stylesheet' type='text/css' />
-<link rel="stylesheet" th:href="@{/resources/css/register.css}" />
+<link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 
 </head>
 <body>
-	
+
 	<div class="wrapper">
 
 		<div th:replace="header :: header"></div>
-	
+
 		<div class="content">
-		
-		
+
+
 			<div th:class='login'>
-				<h2>Register</h2>
 				<form th:action="@{/saveUser}" method="post" th:object="${user}">
-					<input th:field="*{login}" placeholder='Username' type='text' /> 
-					<input id='pw' th:field="*{password}" placeholder='Password' type='password' /> 
-					<input th:field="*{email}" placeholder='E-Mail Address' type='text' />
-					<div class='agree'>
-						<input id='agree' name='agree' type='checkbox' /> <label for='agree'></label>Accept
-						rules and conditions
-					</div>
-					<input class='animated' type='submit' value='Register' /> 
-					<a class='forgot' href='#'>Already have an account?</a>
+					<input th:field="*{login}" placeholder='Username' type='text'
+						class="register-field" /> <input id='pw' th:field="*{password}"
+						placeholder='Password' type='password' class="register-field" />
+					<input th:field="*{email}" placeholder='E-Mail Address' type='text'
+						class="register-field" /> <input class="register-field"
+						type='submit' value='Register' />
 				</form>
 			</div>
-		
+
 		</div>
-		
+
 		<div th:replace="footer :: footer"></div>
-		
+
 	</div>
-		
+
 </body>
 </html>

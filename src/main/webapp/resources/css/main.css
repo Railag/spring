@@ -356,6 +356,13 @@ body {
 	margin: 15px 0px;
 }
 
+.register-field {
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	padding: 10px;
+}
+
 .pagination-bottom {
 	position: relative;
 	bottom: 120 !important;
