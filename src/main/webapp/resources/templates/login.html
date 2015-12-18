@@ -22,20 +22,20 @@
 				<form th:action="@{/login}" method="post" class="review-form">
 				
 					<div>
-						<label class="review-field" for="username"> User Name: </label> <span
+						<label class="review-field" for="username"> Логин: </label> <span
 							class="span-wrapping"> <input type="text" name="username" class="review-field" />
 						</span>
 
 					</div>
 					<div>
-						<label class="review-field" for="password"> Password: </label> <span
+						<label class="review-field" for="password"> Пароль: </label> <span
 							class="span-wrapping"> <input type="password"
 							name="password" class="review-field" />
 						</span>
 
 					</div>
 					<div class="review-field">
-						<input type="submit" value="Sign In" />
+						<input type="submit" value="Войти" />
 					</div>
 					
 					<div class="review-field" th:if="${param.error}">Неверная комбинация
