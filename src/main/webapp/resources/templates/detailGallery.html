@@ -49,8 +49,10 @@
 					var imgSrc = $(this).find("img").attr("src");
 					if (src === imgSrc) {
 						$(this).addClass("current");
+						$(this).removeClass("hidden");
 					} else {
 						$(this).addClass("hidden");
+						$(this).removeClass("current");
 					}
 				});
 
@@ -102,6 +104,11 @@
 					if (realW >= realH) {
 				        $(image).css("top", maxHeight / 2 - realH / 2);
 					} 
+				});
+				
+				$("#take-me-back").on("click", function() {
+					$(".gallery-window").hide();
+					$(".gallery-wrapper").show();
 				});
 			});
 
@@ -217,13 +224,15 @@
 
 		images.each(function(i) {
 			if ($(this).hasClass("current")) {
-				if (i == images.length - 1)
+				if (i == images.length - 1) {
 					return false;
+				}
 
 				$(this).toggleClass("current hidden");
 
 				var nextImageIndex = i + 1;
 				images.eq(nextImageIndex).toggleClass("current hidden");
+				i == images.length - 1;
 				return false;
 			}
 		});
@@ -254,7 +263,7 @@
 
 					<img class="right-arrow" th:src="@{/resources/images/right.png}" />
 
-					<div id="lift-me-up"  class="gallery-title middle-block">Наверх</div>
+					<div id="take-me-back"  class="gallery-title middle-block gallery-window-back">Назад</div>
 
 
 				</div>

@@ -326,6 +326,13 @@ body {
 	vertical-align: middle;
 }
 
+.gallery-window-back {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+}
+
 .gallery-form {
 	display: inline-block;
 	width: 60%;
@@ -357,6 +364,17 @@ select, input[type=file], input[type=submit], button, input[type=button],
 }
 
 #lift-me-up:hover {
+	color: #00A0C6;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#take-me-back {
+	color: #383838;
+	text-decoration: none;
+}
+
+#take-me-back:hover {
 	color: #00A0C6;
 	text-decoration: none;
 	cursor: pointer;
