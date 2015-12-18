@@ -24,6 +24,40 @@
 				$(this).removeClass('selected');
 			}
 		});
+		
+		$("body").keydown(function(e) {
+			  if(e.keyCode == 37) { // left
+				  setLeftImage();
+					var image = $(".current img").first();
+					fitImage(image);
+					
+					var realW = $(image).width();
+		    		var realH = $(image).height();
+		    		
+		    		var maxWidth = $(image).parent().width();
+		            var maxHeight = $(image).parent().height();
+						
+					if (realW >= realH) {
+				        $(image).css("top", maxHeight / 2 - realH / 2);
+					} 
+			  }
+			  else if(e.keyCode == 39) { // right
+				  setRightImage();
+					var image = $(".current img").first();
+					fitImage(image);
+					
+					var realW = $(image).width();
+		    		var realH = $(image).height();
+		    		
+		    		var maxWidth = $(image).parent().width();
+		            var maxHeight = $(image).parent().height();
+						
+					if (realW >= realH) {
+				        $(image).css("top", maxHeight / 2 - realH / 2);
+					} 
+			  }
+		});
+		
 
 		setupImageHeights();
 
