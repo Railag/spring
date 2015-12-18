@@ -380,6 +380,20 @@ select, input[type=file], input[type=submit], button, input[type=button],
 	cursor: pointer;
 }
 
+.login-container {
+	display: block;
+	margin: 0 -20px;
+	text-align: center;
+}
+
+.login-container form {
+	margin: 0 auto;
+	display: inline-block;
+	width: 60%;
+	min-width: 400px;
+	padding: 25px;
+}
+
 .gallery-window {
 	position: relative;
 	width: 100%;
