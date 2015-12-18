@@ -289,12 +289,10 @@ body {
 .gallery-title {
 	font-size: 50px;
 	margin-left: -20px;
-	margin-bottom: 20px;
 }
 
 .middle-block {
 	text-align: center;
-	margin-bottom: 50px;
 }
 
 .gallery-items {
@@ -370,8 +368,13 @@ select, input[type=file], input[type=submit], button, input[type=button],
 }
 
 #take-me-back {
+	margin-bottom: 20px;
 	color: #383838;
 	text-decoration: none;
+}
+
+.margin-top {
+	margin-top: 40px;
 }
 
 #take-me-back:hover {
