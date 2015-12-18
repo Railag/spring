@@ -107,8 +107,12 @@
 				});
 				
 				$("#take-me-back").on("click", function() {
-					$(".gallery-window").hide();
-					$(".gallery-wrapper").show();
+					$(".right-arrow").off("click");
+					$(".left-arrow").off("click");
+					
+					$(".gallery-window").fadeOut(1000, function() {
+						$(".gallery-wrapper").fadeIn(1000);
+					});
 				});
 			});
 
@@ -218,12 +222,14 @@
 			}
 		});
 	}
-
+	
 	function setRightImage() {
 		var images = $(".inside-image");
-
+		
 		images.each(function(i) {
+			
 			if ($(this).hasClass("current")) {
+				
 				if (i == images.length - 1) {
 					return false;
 				}
@@ -232,7 +238,6 @@
 
 				var nextImageIndex = i + 1;
 				images.eq(nextImageIndex).toggleClass("current hidden");
-				i == images.length - 1;
 				return false;
 			}
 		});
