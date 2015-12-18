@@ -106,7 +106,7 @@ public class HomeController {
 
 		MongoDB.saveFile(imageModel);
 
-		return detailGallery(locale, model, principal, imageModel.getSubcategory());
+		return "redirect:/detailGallery?subcategory=" + imageModel.getSubcategory();
 	}
 
 	@RequestMapping(value = { "/gallery" }, method = RequestMethod.GET)
@@ -156,7 +156,7 @@ public class HomeController {
 
 		MongoDB.saveSub(subModel);
 
-		return galleryCategory(locale, model, principal, subModel.getCategory());
+		return "redirect:/galleryCategory?categoryName=" + subModel.getCategory();
 	}
 
 	@RequestMapping(value = { "/detailGallery" }, method = RequestMethod.GET)

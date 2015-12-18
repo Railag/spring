@@ -313,7 +313,6 @@ body {
 	max-height: 100%;
 	width: auto;
 	height: auto;
-	background: green;
 	vertical-align: middle;
 }
 
@@ -323,7 +322,6 @@ body {
 	width: 18.6%;
 	margin-right: 1%;
 	margin-bottom: 1%;
-	background: red;
 	cursor: pointer;
 	vertical-align: middle;
 }
@@ -393,7 +391,6 @@ select, input[type=file], input[type=submit], button, input[type=button],
 	max-height: 100%;
 	width: auto;
 	height: auto;
-	background: green;
 }
 
 .gallery-window-items .hidden {
@@ -404,7 +401,6 @@ select, input[type=file], input[type=submit], button, input[type=button],
 .gallery-window-items .hidden img {
 	display: inline-block;
 	width: 0 !important;
-	background: red;
 }
 
 .left-arrow {

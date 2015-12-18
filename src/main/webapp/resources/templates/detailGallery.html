@@ -247,13 +247,14 @@
 						<div th:each="image, status : ${sub.images}" class="inside-image">
 							<img th:src="@{/getImage (fileName=${image.name})}" />
 						</div>
+						
 					</div>
 
 					<img class="left-arrow" th:src="@{/resources/images/left.png}" />
 
 					<img class="right-arrow" th:src="@{/resources/images/right.png}" />
 
-					<div class="gallery-title">Наверх</div>
+					<div id="lift-me-up"  class="gallery-title middle-block">Наверх</div>
 
 
 				</div>
@@ -288,7 +289,8 @@
 
 
 					</div>
-					<div id="lift-me-up" class="gallery-title">Наверх</div>
+					
+					<div id="lift-me-up" class="gallery-title middle-block">Наверх</div>
 
 
 				</div>
