@@ -224,7 +224,7 @@ public class HomeController {
 	@RequestMapping(value = "/addReviewAsync", method = RequestMethod.POST)
 	public String addReviewAsync(@Valid @ModelAttribute("review") Review review, BindingResult result, Model model) {
 
-		if (result.hasErrors()) {
+		if (result.hasErrors() && review.getId() == null) {
 			logger.info("validation error");
 
 			Integer page = 0;

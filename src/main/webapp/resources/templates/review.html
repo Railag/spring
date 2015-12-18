@@ -168,11 +168,11 @@
 							<div class="message" th:utext="${review.message}">Message</div>
 							<div class="author" th:text="${review.author}">Author</div>
 							<div class="date" th:utext="${review.date}">Date</div>
-							<div class="contact" th:utext="${review.contact}">Contact</div>
+							<div class="contact" th:utext="${review.contact}" sec:authorize="hasRole('ROLE_ADMIN')">Contact</div>
 							<input class="id" name="id" type="hidden" th:value="${review.id}"></input>
 
 
-							<div class="review-admin-buttons" th:if="true">
+							<div class="review-admin-buttons" sec:authorize="hasRole('ROLE_ADMIN')">
 								<div class="review-admin-button">
 									<a class="review-admin-button"
 										th:href="@{${'/hideReview'}(id=${review.id})}">Скрыть </a>
