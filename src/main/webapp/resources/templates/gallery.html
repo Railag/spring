@@ -83,7 +83,7 @@
 										class="gallery-title category-name"
 										th:href="@{${'/galleryCategory'}(categoryName=${category.name})}"></a>
 
-									<ul>
+									<ul class="category-list">
 										<li th:each="sub : ${category.subcategories}"><a
 											th:text="${sub.name}"
 											th:href="@{${'/detailGallery'}(subcategory=${sub.name})}"

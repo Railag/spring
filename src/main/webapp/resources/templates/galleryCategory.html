@@ -74,7 +74,7 @@ function goBack() {
 						<div class="category-right category-text">
 							<div th:text="${category.name}" class="gallery-title"></div>
 
-							<ul>
+							<ul class="category-list">
 								<li th:each="sub : ${category.subcategories}"><a
 									th:text="${sub.name}"
 									th:href="@{${'/detailGallery'}(subcategory=${sub.name})}"

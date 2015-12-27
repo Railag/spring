@@ -10,6 +10,7 @@
 			$(this).addClass('unselected');
 			$(this).removeClass('selected');
 		});
+
 	};
 </script>
 
@@ -20,10 +21,21 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				updateFontSizes();
+				updateHeader();
+				
+				$('.header-menu-toggle').click(function(e) {
+			        $(this).toggleClass('active');
+			        $('.header-line-collapsed ul').toggleClass('active');
+			 
+			        e.preventDefault();
+			    });
 
 				$(window).resize(function() {
 					updateFontSizes();
+
+					updateHeader();
 				});
+
 			});
 
 			function updateFontSizes() {
@@ -35,7 +47,7 @@
 				var collapseSize = 800;
 
 				var width = $(window).width();
-				
+
 				// LEFT HEADER TEXT
 				var leftTextFontSize = width / 28;
 
@@ -45,7 +57,7 @@
 					else
 						$(this).css('font-size', leftTextFontSize);
 				});
-				
+
 				// RIGHT HEADER TEXT
 				var rightTextFontSize = width / 35;
 
@@ -55,7 +67,6 @@
 					else
 						$(this).css('font-size', rightTextFontSize);
 				});
-
 
 				// URL
 				var urlFontSize = width / 36.5;
@@ -76,6 +87,18 @@
 				}
 
 			}
+			
+			function updateHeader() {
+				var width = $(document).width();
+
+				if (860 > width) { // show menu icon
+					$(".header-line-collapsed").show();
+					$(".header-line").hide();
+				} else {
+					$(".header-line").show();
+					$(".header-line-collapsed").hide();
+				}
+			}
 		</script>
 
 
@@ -89,23 +112,44 @@
 						th:href="@{'/'}">Мария Пашкина</a>
 				</div>
 
-
-
-
 				<div class="header-line">
-
-					<a id="header-about" class="unselected font-url"
-						th:href="@{'/about'}">Обо мне</a> <span class="font-url">/</span>
-					<a id="header-works" class="unselected font-url"
-						th:href="@{'/works'}">Портфолио</a> <span class="font-url">/</span>
-					<a id="header-gallery" class="unselected font-url"
-						th:href="@{'/gallery'}">Галерея</a> <span class="font-url">/</span>
-					<a id="header-review" class="unselected font-url"
-						th:href="@{'/review'}">Отзывы</a> <span class="font-url">/</span>
-					<a id="header-contacts" class="unselected font-url"
-						th:href="@{'/contacts'}">Контакты</a>
+						<a id="header-about" class="unselected font-url"
+							th:href="@{'/about'}">Обо мне</a> <span class="font-url">/</span>
+						
+						<a id="header-works" class="unselected font-url"
+							th:href="@{'/works'}">Портфолио</a> <span class="font-url">/</span>
+						
+						<a id="header-gallery" class="unselected font-url"
+							th:href="@{'/gallery'}">Галерея</a> <span class="font-url">/</span>
+						
+						<a id="header-review" class="unselected font-url"
+							th:href="@{'/review'}">Отзывы</a> <span class="font-url">/</span>
+						
+						<a id="header-contacts" class="unselected font-url"
+							th:href="@{'/contacts'}">Контакты</a>
+				</div>
+				
+				<div class="header-line-collapsed">
+					<ul class="active">
+						<li><a id="header-about" class="unselected font-url"
+							th:href="@{'/about'}">Обо мне</a> 
+						</li>
+						<li><a id="header-works" class="unselected font-url"
+							th:href="@{'/works'}">Портфолио</a> 
+						</li>
+						<li><a id="header-gallery" class="unselected font-url"
+							th:href="@{'/gallery'}">Галерея</a> 
+						</li>
+						<li><a id="header-review" class="unselected font-url"
+							th:href="@{'/review'}">Отзывы</a> 
+						</li>
+						<li><a id="header-contacts" class="unselected font-url"
+							th:href="@{'/contacts'}">Контакты</a></li>
+					</ul>
+					<a class="header-menu-toggle" href="#">&#9776;</a>
 
 				</div>
+
 			</div>
 		</div>
 
