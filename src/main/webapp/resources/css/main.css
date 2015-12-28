@@ -655,7 +655,6 @@ select, input[type=file], input[type=submit], button, input[type=button],
 	font-size: 20px;
 	color: #383838;
 	text-decoration: none;
-	margin: 5px 10px;
 }
 
 .review-admin-line:hover {
