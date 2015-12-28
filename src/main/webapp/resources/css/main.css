@@ -179,7 +179,6 @@ body {
 
 .header-menu-toggle:hover, .header-menu-toggle.active {
 	text-decoration: none;
-	
 }
 
 #photographer {
@@ -639,15 +638,27 @@ select, input[type=file], input[type=submit], button, input[type=button],
 	border: 1px solid black;
 }
 
-.review-admin-button {
-	display: inline-block;
-	margin: 5px 10px;
+.review-admin-line {
+	display: block;
+	width: 100%;
+	float: left;
+	margin-bottom: 10px;
 	font-size: 20px;
 	color: #383838;
 	text-decoration: none;
+	clear: both;
 }
 
-.review-admin-button:hover {
+.review-admin-button {
+	display: inline-block;
+	width: 100%;
+	font-size: 20px;
+	color: #383838;
+	text-decoration: none;
+	margin: 5px 10px;
+}
+
+.review-admin-line:hover {
 	color: #00A0C6;
 	text-decoration: none;
 	cursor: pointer;

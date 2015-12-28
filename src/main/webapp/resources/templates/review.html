@@ -25,7 +25,7 @@
 						$(this).removeClass('selected');
 					}
 				});
-				
+
 				setupFormSubmit($(".review-form"));
 
 				$(".review-form textarea").keyup(
@@ -68,14 +68,15 @@
 								+ parseFloat($(textarea).css("borderTopWidth"))
 								+ parseFloat($(textarea).css(
 										"borderBottomWidth")));
-						
+
 						var id = $form.find(".id").val()
 						if (typeof id !== "undefined") {
 							$form.replaceWith(response);
 						} else {
 
 							$(".review-container").eq(1).prepend(response); // inject new review
-							$(".review-container").eq(1).children().first().hide(); // animate it
+							$(".review-container").eq(1).children().first()
+									.hide(); // animate it
 							$(".review-container").eq(1).children().first()
 									.slideDown(2000);
 						}
@@ -98,29 +99,29 @@
 		var date = $item.find(".date").text();
 		var contact = $item.find(".contact").text();
 		var id = $item.find(".id").text();
-		
+
 		var tempItem = $item.clone();
-		
+
 		$item.hide();
 
 		$item.replaceWith($form);
-		
-		
+
 		$form.find("#author").val(author);
 		$form.find("#message").val(message);
 		$form.find("#contact").val(contact);
 		$form.find("input[type=submit]").val("Готово");
-		var $button = $form.find("input[type=submit]").clone().attr('type', 'button');
+		var $button = $form.find("input[type=submit]").clone().attr('type',
+				'button');
 		$button.val("Назад");
 		$button.on("click", function() {
 			$form.replaceWith(tempItem);
 		});
-		
+
 		$form.append($button);
-		
+
 		$form.append(tempItem.find(".id").clone());
-		
-		setupFormSubmit($form);	
+
+		setupFormSubmit($form);
 	}
 </script>
 
@@ -168,22 +169,23 @@
 							<div class="message" th:utext="${review.message}">Message</div>
 							<div class="author" th:text="${review.author}">Author</div>
 							<div class="date" th:utext="${review.date}">Date</div>
-							<div class="contact" th:utext="${review.contact}" sec:authorize="hasRole('ROLE_ADMIN')">Contact</div>
+							<div class="contact" th:utext="${review.contact}"
+								sec:authorize="hasRole('ROLE_ADMIN')">Contact</div>
 							<input class="id" name="id" type="hidden" th:value="${review.id}"></input>
 
 
-							<div class="review-admin-buttons" sec:authorize="hasRole('ROLE_ADMIN')">
-								<div class="review-admin-button">
-									<a class="review-admin-button"
-										th:href="@{${'/hideReview'}(id=${review.id})}">Скрыть </a>
+							<div sec:authorize="hasRole('ROLE_ADMIN')">
+								<div class="review-admin-line">
+									<a th:href="@{${'/hideReview'}(id=${review.id})}"><button
+											class="review-admin-button">Скрыть</button></a>
 								</div>
-								<div class="review-admin-button">
-									<a class="review-admin-button"
-										th:href="@{${'/removeReview'}(id=${review.id})}">Удалить </a>
+								<div class="review-admin-line">
+									<a th:href="@{${'/removeReview'}(id=${review.id})}"><button
+											class="review-admin-button">Удалить</button></a>
 								</div>
-								<div class="review-admin-button">
-									<a class="review-admin-button" onclick="showEdit(this)">Редактировать
-									</a>
+								<div class="review-admin-line">
+									<a onclick="showEdit(this)"><button
+											class="review-admin-button">Редактировать</button> </a>
 								</div>
 							</div>
 						</div>
