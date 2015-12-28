@@ -3,7 +3,7 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-<title>Галерея</title>
+<title th:title="${category.name}">Галерея</title>
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 
 <script th:src="@{/resources/js/jquery-2.1.4.min.js}"></script>
