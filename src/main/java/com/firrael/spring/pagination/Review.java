@@ -30,9 +30,9 @@ public class Review implements Comparable<Review> {
 	@NotNull(message = "Пустое поле с сообщением.")
 	private String message;
 	
-	@Email(message = "Неверный формат email-адреса.")
-	@NotNull(message = "Пустое поле с Email-адресом")
-	@Size(min = 1, message = "Пустое поле 'Email'")
+	//@Email(message = "Неверный формат email-адреса.")
+	//@NotNull(message = "Пустое поле с Email-адресом")
+	//@Size(min = 1, message = "Пустое поле 'Email'")
 	private String contact;
 	
 	private String date;

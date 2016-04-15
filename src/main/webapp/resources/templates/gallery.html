@@ -3,7 +3,7 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-<title>Галерея</title>
+<title>Услуги</title>
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
@@ -18,7 +18,7 @@
 	$(document).ready(function() {
 		$(".header-line a").each(function() {
 			var id = $(this).attr('id');
-			if (id == 'header-gallery') {
+			if (id == 'header-works') {
 				$(this).addClass('selected');
 				$(this).removeClass('unselected');
 			} else {
