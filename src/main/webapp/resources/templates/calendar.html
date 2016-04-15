@@ -8,14 +8,14 @@
 <link rel="stylesheet" th:href="@{/resources/css/main.css}" />
 <script th:src="@{/resources/js/jquery-2.1.4.min.js}"></script>
 
-<title>Контакты</title>
+<title>Календарь</title>
 </head>
 
 <script th:inlinetype="text/javascript">
 	$(document).ready(function() {
 		$(".header-line a").each(function() {
 			var id = $(this).attr('id');
-			if (id == 'header-contacts') {
+			if (id == 'header-gallery') {
 				$(this).addClass('selected');
 				$(this).removeClass('unselected');
 			} else {
@@ -24,39 +24,15 @@
 			}
 		});
 
-
 	});
 </script>
-
 
 <body>
 	<div class="wrapper">
 		<div th:replace="header :: header"></div>
 
 		<div class="content">
-			<p>
-			Телефоны:
-			<br></br>
-			
-			+375(29)7095777
-			<br></br>
-			+375(29)5743814
-			</p>
-			
-			<p>
-			Email:
-			<br></br>
-			
-			amashilda@gmail.com
-			<br></br>
-			whenthegroundcavedin@gmail.com
-			</p>
-			
-			<img th:src="@{/resources/images/minsk.png}" />
-			<p>
-			Описание того, как к нам проехать.
-			</p>
-			
+			<p>Раздел находится в стадии разработки.</p>
 		</div>
 
 		<div th:replace="footer :: footer"></div>

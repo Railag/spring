@@ -48,7 +48,7 @@ public class HomeController {
 
 		MongoDB.initialize(mongoTemplate);
 
-		return "home";
+		return "about";
 	}
 	
 	@RequestMapping(value = { "/login" }, method = RequestMethod.GET)
@@ -65,6 +65,14 @@ public class HomeController {
 		MongoDB.initialize(mongoTemplate);
 
 		return "about";
+	}
+	
+	@RequestMapping(value = { "/calendar" }, method = RequestMethod.GET)
+	public String calendar(Locale locale, Model model, Principal principal) {
+
+		MongoDB.initialize(mongoTemplate);
+
+		return "calendar";
 	}
 	
 	@RequestMapping(value = { "/contacts" }, method = RequestMethod.GET)
